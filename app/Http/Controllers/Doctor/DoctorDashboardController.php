@@ -38,10 +38,7 @@ class DoctorDashboardController extends Controller
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
         $totalSlots = \App\Models\TimeSlot::where('clinic_id', $clinic->id)->count();
-        $totalStaff = \App\Models\User::where('clinic_id', $clinic->id)->count();
-        if ($totalStaff === 0) {
-            $totalStaff = 1;
-        }
+        $totalStaff = 1;
 
         return view('doctor.dashboard', compact(
             'clinic',
