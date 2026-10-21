@@ -54,15 +54,7 @@
       </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('admin.saas.payment_settings') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('admin.saas.payment_settings') }}">
-        <i class="mdi mdi-credit-card-outline nav-icon"></i>
-        <span class="menu-title">Platform Razorpay</span>
-        @if(request()->routeIs('admin.saas.payment_settings'))
-        <i class="mdi mdi-chevron-right nav-chevron"></i>
-        @endif
-      </a>
-    </li>
+
 
     <li class="nav-item nav-category mt-3">
       <span>SETTINGS</span>
