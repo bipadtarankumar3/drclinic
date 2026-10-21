@@ -1,0 +1,522 @@
+
+@media only screen and (max-width: 1280px) {
+
+  .banner-text-main-dis {
+    width: 86%;
+}
+
+.banner-text-main {
+  left: 6%;
+}
+.banner-text {
+  margin-left:0px;
+}
+.banner-text-img {
+  width: 48%;
+}
+
+/* end banner */
+.allp-pop-up-area {
+  width: 55%;
+}
+
+
+
+
+.director-con {
+  padding: 0 20px;
+}
+
+.director-text {
+  padding: 0 0 0 20px;
+}
+.direc-bg {
+  height: 100%;
+}
+.ser-bg-2 {
+  bottom: -13%;
+}
+.fac-bg {
+  display: none;
+}
+
+.facility-bot {
+  width: 95%;
+  margin: 50px auto 0;
+  background-color: #fff;
+  padding: 30px;
+}
+.facility-div {
+  padding: 40px 0 80px;
+}
+.problem-bg {
+  display: none;
+}
+.problems-bot {
+  width: 88%;
+  margin: 0 auto;
+}
+
+
+}
+
+
+@media only screen and (max-width: 1024px) {
+  .banner-text h1 {
+    font-size: 36px;
+}
+.banner-text p {
+  font-size: 18px;
+}
+.banner-text h4 {
+  font-size: 15px;
+  margin-top: 10px;
+}
+
+/* end banner */
+.allp-pop-up-area {
+  width: 65%;
+}
+
+
+
+
+.brain {
+display: none;
+}
+
+.facility-area {
+  width: 47%;
+}
+.facility-text h1 {
+  font-size: 22px;
+}
+.problems-bot {
+  width: 100%;
+}
+.problems-area h1 {
+  font-size: 18px;
+}
+.client-top p {
+  font-size: 14px;
+}
+.client-bot h1 {
+  font-size: 16px;
+}
+.client-bot h5 {
+  font-size: 13px;
+}
+.services-area h1 {
+  font-size: 22px
+}
+.services-area p {
+  font-size: 16px;
+}
+
+
+
+}
+
+@media only screen and (max-width: 912px) {
+  .more-btn {
+    padding: 8px 20px;
+    font-size: 15px;
+}
+
+#tab-img{
+    display: block;
+  }
+  #desk-img{
+    display: none;
+  }
+
+.banner-text-main-dis {
+  width: 89%;
+}
+.banner-text-img {
+  width: 55%;
+}
+
+.banner-text h1 {
+  font-size: 40px;
+}
+.banner-text-ar {
+  width: 42%;
+}
+#preloader {
+  margin-top: 10px;
+}
+
+
+
+/* end banner */
+
+
+
+
+.wel-head h1 {
+  font-size: 39px;
+}
+.wel-area p {
+  width: 100%;
+}
+.director-con {
+  flex-direction: column;
+  gap: 50px;
+  background-color: #253d62;
+  padding: 50px 20px;
+}
+.direc-bg {
+  display: none;
+}
+.director-img {
+  width: 70%;
+}
+.director-text {
+  width: 100%;
+  padding: 0;
+  text-align: center;
+}
+
+.director-bot {
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+}
+.director-area {
+justify-content: center;
+}
+.director-top p {
+  text-align: center;
+}
+.quality-con {
+  flex-direction: column;
+  gap: 50px;
+}
+.quality-area {
+  width: 66%;
+  margin: 0 auto;
+}
+.services-main {
+  flex-direction: column;
+  gap: 50px;
+}
+.services-area {
+  width: 70%;
+  margin: 0 auto;
+}
+
+.facility-area {
+  width: 70%;
+  margin: 0 auto;
+  gap: 40px;
+}
+.problems-area {
+  width: 26%;
+}
+.enque-con {
+  width: 100%;
+}
+.facility-bot {
+  flex-direction: column;
+  gap: 40px;
+}
+
+}
+
+@media only screen and (max-width: 820px) {
+.allp-pop-up-area {
+  width: 75%;
+}
+
+}
+
+@media only screen and (max-width: 768px) {
+  .banner-text h1 {
+    font-size: 35px;
+}
+
+
+
+/* end banner */
+
+
+
+
+  .wel-head h1 {
+      font-size: 35px;
+  }
+  .popup-inner {
+    width: 70%;
+}
+
+}
+
+@media only screen and (max-width: 712px) {
+  .allp-pop-up-area {
+    width: 85%;
+}
+.pop-h p {
+  font-size: 36px;
+}
+.all-popup h1 {
+  font-size: 25px;
+  line-height: 40px;
+}
+.pop-h {
+  width: 40%;
+}
+
+  .wel-head h1 {
+      font-size: 30px;
+  }
+  .quality-area {
+    width: 85%;
+}
+.services-area {
+  width: 100%;
+}
+.facility-area {
+  width: 90%;
+}
+.problems-area {
+  width: 34%;
+}
+.banner-text p {
+  font-size: 14px;
+}
+.wel-head h1 span {
+  font-size: 40px;
+}
+
+
+
+
+
+}
+
+@media only screen and (max-width: 600px) {
+.banner-text h1 {
+  font-size: 30px;
+}
+.banner-text p {
+  font-size: 15px;
+}
+.banner-text-main-dis {
+  width: 91%;
+}
+.banner-text h1 {
+  font-size: 28px;
+}
+.more-btn {
+  padding: 5px 10px;
+  font-size: 14px;
+}
+
+.banner-text h4 {
+  font-size: 12px;
+  margin-top: 10px;
+}
+.psi-line {
+  margin-bottom: 25px;
+}
+
+
+}
+
+
+
+@media only screen and (max-width:540px) {
+  .pop-h p {
+    font-size: 26px;
+}
+.all-popup h1 {
+  font-size: 20px;
+  line-height: 32px;
+}
+
+
+  .psi-line {
+    width: 190px;
+    height: 1px;
+    background-color: #B22D32;
+    margin-top: 8px;
+    margin-bottom: 40px;
+}
+
+
+@keyframes loader{15%{transform:translateX(0)}45%{transform:translateX(190px)}65%{transform:translateX(190px)}95%{transform:translateX(0)}
+}
+.banner-text-img {
+  width: 50%;
+}
+.banner-text-ar {
+  width: 52%;
+}
+
+.banner-text h1 {
+  font-size: 26px;
+}
+.banner-text p {
+  font-size: 12px;
+}
+/* end banner */
+
+  .wel-head h1 {
+      font-size: 26px;
+  }
+  .facility-area {
+    width: 100%;
+}
+.gallery-area {
+  width: 70%;
+  margin: 0 auto;
+}
+.facility-text h1 {
+  font-size: 20px;
+}
+.facility-text p {
+  font-size: 16px;
+}
+.ser-bg-1, .fac-vec {
+  display: none;
+}
+
+}
+
+
+@media only screen and (max-width: 480px) {
+
+    #tab-img{
+        display: none;
+      }
+      #mob-img{
+        display:block;
+      }
+    .banner-text-main{
+      display: none;
+    }
+    
+
+
+    }
+
+
+    @media only screen and (max-width: 430px) {
+      .pop-h {
+        width: 55%;
+        margin: 0 auto 35px;
+    }
+    .allp-pop-up-area {
+      padding: 30px 24px;
+  }
+  .all-popup button {
+    font-size: 27px;
+}
+
+    .problems-area {
+      width: 46%;
+  }
+
+  .gallery-area {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.di-text h1 {
+  font-size: 18px;
+}
+.apply-div {
+  width: 100%;
+}
+.director-img {
+  width: 90%;
+}
+.director-top h1 {
+  font-size: 25px;
+}
+.facility {
+  flex-direction: column-reverse;
+  gap: 10px;
+  text-align: center;
+}
+.wel-head h1 {
+  font-size: 23px;
+}
+
+    }
+
+
+  @media only screen and (max-width: 393px) {
+      .problems-area {
+          width: 51%;
+      }
+      .facility-text p {
+        width: 100%;
+    }
+    
+    
+
+  }
+
+
+  @media only screen and (max-width: 375px) {
+    .quality-area {
+        width: 100%;
+    }
+    .quality-area h1 {
+      font-size: 21px;
+  }
+  .facility-bot {
+    padding: 30px 15px;
+}
+.services-area h1 {
+  font-size: 20px;
+}
+.wel-head h1 {
+  font-size: 20px;
+}
+.all-popup h1 {
+  font-size: 18px;
+  line-height: 30px;
+}    .pop-h p {
+  font-size: 22px;
+}
+.pop-h {
+  margin: 0 auto 25px;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

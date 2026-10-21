@@ -1,0 +1,66 @@
+
+
+@media only screen and (max-width: 1024px) {
+.gal-bo {
+    width: 14%;
+}
+.gal-bo img{
+    width: 100%;
+}
+.gallery-text-ar p {
+    font-size: 16px;
+}
+
+
+}
+
+
+@media only screen and (max-width: 912px) {
+
+.gallery-con {
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gall-top-t {
+    text-align: center;
+    width: 70%;
+    margin: 0 auto;
+}
+
+.gallery-img {
+    width: 100%;
+}
+
+
+}
+
+@media only screen and (max-width: 712px) {
+    .gall-top-t {
+        text-align: center;
+        width: 85%;
+        margin: 0 auto;
+    }
+
+
+
+
+}
+
+
+@media only screen and (max-width: 430px) {
+    .gall-top-t {
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+
+
+}
+
+
+
+
+
+

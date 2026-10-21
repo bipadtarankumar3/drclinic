@@ -1,0 +1,72 @@
+
+@media only screen and (max-width: 1280px) {
+.faq-main-img {
+    display: none;
+}
+
+.faq-area {
+    width: 80%;
+    margin: 0 auto;
+}
+.accordion {
+    padding: 15px 76px 15px 14px;
+}
+.faq {
+    background-position: center;
+}
+
+
+}
+
+@media only screen and (max-width: 912px) {
+    .faq-area {
+        width: 100%;
+    }
+
+
+}
+
+
+
+@media only screen and (max-width: 800px) {
+.accordion h5 {
+    font-size: 18px;
+}
+
+
+}
+
+
+@media only screen and (max-width: 540px) {
+.accordion-icon {
+    right: 10px;
+}
+.accordion::after {
+    right: 17px;
+}
+.accordion {
+    padding: 15px 45px 15px 14px;
+}
+
+}
+
+
+@media only screen and (max-width: 430px) {
+    .accordion h5 {
+        font-size: 16px;
+    }
+    .accordion-content p {
+        font-size: 14px;
+    }
+
+
+
+}
+
+
+
+
+
+
+
+

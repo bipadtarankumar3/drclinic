@@ -1,0 +1,133 @@
+
+.faq {
+    text-align: center;
+    padding: 70px 0;
+    position: relative;
+    background-image: url(../../facilitieimage/faq-bg.png);
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+  
+  .accordion-wrapper {
+    margin-top: 30px;
+  }
+  .faq-area {
+    width: 60%;
+    margin: 0 auto;
+}
+.accordion {
+    width: 100%;
+    background-color: #fff;
+    border: 1px solid #222;
+    outline: none;
+    text-align: left;
+    padding: 15px 14px;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+    transition: background-color 0.2s linear;
+    position: relative;
+    margin-bottom: 5px;
+    box-shadow: 0px 4px 12px #a7a0a0;
+}
+  
+  .accordion h5 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #283C5E;
+  }
+  
+  .accordion-one {
+    margin-bottom: 35px;
+}
+  
+  .btn-img {
+    position: absolute;
+    top: -7px;
+    left: 0px;
+  }
+  
+  .accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s ease-in-out;
+  }
+  
+  .accordion-content p {
+    font-family: "Oxygen", sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: #474341;
+    text-align: left;
+    padding-left: 19px;
+    margin-top: 15px;
+  }
+  
+  .accordion-content h5 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #222222;
+  }
+  
+  .accordion-icon {
+    top: 12px;
+    position: absolute;
+    right: 35px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid #222222;
+    background-color: transparent;
+}
+  
+.accordion::after {
+    top: 14px;
+    position: absolute;
+    right: 42px;
+    font-family: "Fontawesome" !important;
+    content: "\2b" !important;
+}
+  
+  .accordion.is-open:after {
+    content: "\f068" !important;
+  }
+  .accordion.is-open {
+    background-color: #b22d327d;
+}
+
+.faq-main-img {
+  display: none;
+    position: absolute;
+    bottom: 0%;
+    left: 0%;
+    width: 26%;
+}
+
+.faq-main-img img{
+    width: 100%;
+}
+
+.head-4 .head-line{
+    width: 150px;
+}
+
+/* end faq */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

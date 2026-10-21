@@ -1,0 +1,70 @@
+
+
+
+@media only screen and (max-width: 1280px) {
+.apply-div {
+    width: 47%;
+}
+
+.apply-div-3 {
+    width: 100%;
+}
+.footer-top {
+    flex-direction: column;
+    gap: 30px;
+    align-items: center;
+}
+.foot-wp, .foot-phone {
+    width: 80%;
+}
+
+
+}
+
+
+@media only screen and (max-width: 1024px) {
+.foot-wp {
+    padding: 29px 30px;
+}
+
+}
+
+@media only screen and (max-width: 912px) {
+.foot-wp, .foot-phone {
+    width: 100%;
+}
+
+
+}
+
+@media only screen and (max-width: 712px) {
+    .apply-div {
+        width: 100%;
+    }
+    .foot-wp {
+        flex-direction: column;
+        gap: 30px;
+    }
+
+
+}
+
+
+@media only screen and (max-width: 430px) {
+.apply-area {
+    padding: 35px 15px 45px;
+}
+.footer-top {
+    padding: 15px 20px 35px;
+}
+
+}
+
+
+
+
+
+
+
+
+

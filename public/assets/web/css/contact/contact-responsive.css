@@ -1,0 +1,52 @@
+
+
+@media only screen and (max-width: 912px) {
+.contact-con {
+    flex-direction: column;
+    gap: 40px;
+}
+
+.contact-box {
+    width: 100%;
+}
+.con-form {
+    padding: 50px 50px;
+    width: 100%;
+}
+
+}
+
+
+@media only screen and (max-width: 800px) {
+.contact-con {
+    width: 85%;
+}
+
+
+}
+
+@media only screen and (max-width: 712px) {
+    .contact-con {
+        width: 100%;
+    }
+
+
+
+}
+
+@media only screen and (max-width: 540px) {
+    .con-form {
+        padding: 50px 30px;
+    }
+    .form-head h4 {
+        font-size: 20px;
+    }
+
+}
+
+
+
+
+
+
+

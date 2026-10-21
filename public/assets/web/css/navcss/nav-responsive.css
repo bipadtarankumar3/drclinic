@@ -1,0 +1,181 @@
+
+
+@media only screen and (max-width: 1280px) {
+.qui-area-main {
+    gap: 35px;
+}
+.head p {
+    width: 80%;
+}
+
+}
+
+
+@media only screen and (max-width: 1024px) {
+    .qui-area-main {
+        gap: 20px;
+    }
+    .foot-3 {
+        width: 39%;
+    }
+
+    .foot-5 {
+        width: 24%;
+    }
+    .head h1 {
+        font-size: 45px;
+    }
+
+
+}
+
+
+
+@media only screen and (max-width: 912px) {
+.desk-nav{
+    display: none;
+}
+#header{
+    display: block; 
+}
+.upper-nav {
+    display: none;
+}
+
+/* end nav bar */
+.head p {
+    width: 100%;
+}
+.head h1 {
+    font-size: 40px;
+}
+.ban-2-text {
+    width: 100%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.ban-2-text h1 {
+    font-size: 40px;
+    text-align: center;
+}
+
+
+.qui-area-main {
+    flex-wrap: wrap;
+    gap: 27px;
+}
+.foot-con {
+    flex-direction: column;
+    gap: 50px;
+    text-align: center;
+}
+.foot-5 {
+    width: 36%;
+    margin: 0 auto;
+}
+.foot-3 {
+    width: 100%;
+}
+.foot-3 img {
+    width: 26%;
+}
+.foot-4 {
+    width: 49%;
+    margin: 0 auto;
+}
+.foot-contact {
+    flex-direction: column;
+    gap: 30px;
+}
+
+.foot-contact-area {
+    width: 100%;
+    justify-content: center;
+}
+}
+
+
+@media only screen and (max-width: 712px) {
+    .foot-3 img {
+        width: 38%;
+    }
+
+    .foot-4 {
+        width: 65%;
+    }
+    .head h1 {
+        font-size: 35px;
+    }
+
+}
+
+@media only screen and (max-width: 540px) {
+.head h1 {
+    font-size: 30px;
+}
+.ban-2-text h1 {
+    font-size: 35px;
+}
+
+
+}
+
+@media only screen and (max-width: 430px) {
+    .foot-5 {
+        width: 45%;
+        margin: 0 auto;
+    }
+    .foot-4 {
+        width: 83%;
+    }
+    .foot-contact-area-2 p {
+        font-size: 20px;
+    }
+    .head h1 {
+        font-size: 25px;
+    }
+    .head p {
+        font-size: 14px;
+        line-height: 24px;
+    }
+    .ban-2-text h1 {
+        font-size: 30px;
+    }
+
+}
+
+@media only screen and (max-width: 393px) {
+    .foot-4 {
+        width: 92%;
+    }
+}
+
+@media only screen and (max-width: 375px) {
+    .foot-4 {
+        width: 97%;
+    }
+    .foot-cin-text p {
+        font-size: 13px;
+    }
+    .click p {
+        font-size: 13px;
+    }
+    .foot-contact {
+        gap: 20px;
+    }
+
+
+
+}
+
+@media only screen and (max-width: 360px) {
+    .foot-4 {
+        width: 100%;
+    }
+
+}
+
+
+
+

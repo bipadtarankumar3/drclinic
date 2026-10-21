@@ -1,0 +1,203 @@
+
+@media only screen and (max-width: 1280px) {
+.Treatment-area {
+    width: 45%;
+}
+
+
+}
+
+
+@media only screen and (max-width: 1024px) {
+.terat-text p {
+    font-size: 21px;
+}
+
+}
+
+
+@media only screen and (max-width:912px) {
+.mission-box {
+    display: none;
+}
+.mission-con {
+    flex-direction: column;
+    gap: 50px;
+}
+
+.mission-area {
+    width: 48%;
+    margin: 0 auto;
+}
+
+.quality {
+    flex-direction: column;
+}
+
+.quality-area {
+    width: 60%;
+    margin: 0 auto;
+}
+
+.trust-vec {
+   display: none;
+}
+
+.Treatment-1 {
+    flex-direction: column;
+}
+.Treatment-area {
+    width: 75%;
+    margin: 0 auto;
+}
+
+.Expert-con {
+    flex-direction: column;
+}
+.Expert-area {
+    width: 67%;
+    margin: 0 auto;
+}
+.over-con {
+    flex-direction: column;
+    gap: 50px;
+}
+.over-img {
+    width: 70%;
+    margin: 0 auto;
+}
+.over-text {
+    width: 100%;
+    text-align: center;
+}
+.over-text p {
+    font-size: 17px;
+    text-align: center;
+}
+.mission-head h4::after {
+    display: none;
+}
+.mission-head h4 {
+    text-align: center;
+    font-size: 26px;
+}
+
+
+}
+
+
+@media only screen and (max-width: 800px) {
+    .mission-area {
+        width: 53%;
+    }
+    .quality-area {
+        width: 75%;
+    }
+    .Expert-area {
+        width: 75%;
+    }
+
+}
+
+
+@media only screen and (max-width: 712px) {
+    .over-img {
+        width: 100%;
+    }
+    .mission-area {
+        width: 74%;
+    }
+    .quality-area {
+        width: 90%;
+    }
+    .Treatment-area {
+        width: 100%;
+    }
+    .Expert-area {
+        width: 100%;
+    }
+
+
+}
+
+
+@media only screen and (max-width: 540px) {
+    .terat-text p {
+        font-size: 19px;
+    }
+    .quality-area h1 {
+        font-size: 22px;
+    }
+    .over-text h1 {
+        font-size: 33px;
+    }
+
+}
+
+@media only screen and (max-width: 430px) {
+.exp-text h2 {
+    font-size: 22px;
+}
+.quality-area {
+    width: 100%;
+}
+.over-text h1 {
+    font-size: 30px;
+}
+.mission-area {
+    width: 85%;
+}
+
+
+}
+
+
+@media only screen and (max-width: 393px) {
+
+.Treatment-area {
+    padding: 5px 20px;
+    gap: 15px;
+}
+.terat-text p {
+    font-size: 16px;
+}
+.exp-text h2 {
+    font-size: 19px;
+}
+.export-bot p {
+    font-size: 16px;
+}
+
+
+}
+
+
+@media only screen and (max-width: 360px) {
+    .mission-area {
+        width: 95%;
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

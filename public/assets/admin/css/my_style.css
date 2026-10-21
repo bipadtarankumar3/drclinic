@@ -1,0 +1,30 @@
+p {
+    font-size: 1rem;
+}
+
+
+.form-group label{
+    font-size: 1rem !important;
+}
+.table.select-table th{
+    font-size: 13px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Dashboard ------------------------------------------ */
+.home-tab .statistics-details .statistics-title{
+    font-size: 16px;
+}
+
+

@@ -1,0 +1,160 @@
+
+@media only screen and (max-width: 1280px) {
+
+    .stoke-bot {
+        padding: 0 0 0 80px;
+    }
+    .stoke-text p {
+        padding: 0 50px 0 40px;
+        line-height: 27px;
+        font-size: 15px;
+    }
+    .sympoms-area {
+        width: 46%;
+    }
+    .preven-area {
+        width: 46%;
+        gap: 20px;
+    }
+    .preven-text p {
+        font-size: 15px;
+    }
+    .stroke .head p {
+        width: 85%;
+    }
+    .stoke-bot-2 .stoke-text p {
+        padding: 0 40px 0 0px;
+    }
+    .stoke-bot.stoke-bot-2 {
+        padding:0 50px;
+    }
+
+
+
+}
+
+@media only screen and (max-width: 1024px) {
+
+    .stoke-bot {
+        flex-direction: column;
+        gap: 50px;
+        padding: 0 50px;
+    }
+    .stoke-img {
+        width: 58%;
+    }
+    .stoke-text {
+        width: 100%;
+        text-align: center;
+    }
+    .stoke-text p {
+        padding: 0 0px;
+        text-align: center;
+    }
+    .stoke-bot {
+        background: linear-gradient(180deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 1) 0%, rgba(233, 225, 238, 1) 42%, rgba(155, 190, 251, 0.24693627450980393) 89%, rgba(206, 223, 253, 0.196516106442577) 106%, rgba(255, 255, 255, 0) 100%);
+    }
+  
+
+}
+
+
+@media only screen and (max-width: 1024px) {
+.preven-con {
+    flex-direction: column;
+}
+.sympoms-area {
+    width: 80%;
+    margin: 0 auto;
+}
+
+.preven-area {
+    width: 90%;
+    margin: 0 auto;
+}
+.preventive-head h1, .symptoms-head h1 {
+    text-align: center;
+}
+.preventive-head h1::after, .symptoms-head h1::after {
+   display: none;
+}
+
+
+
+}
+
+@media only screen and (max-width: 712px) {
+    .stroke .head p {
+        width: 93%;
+    }
+    .stoke-img {
+        width: 70%;
+    }
+    .sympoms-area {
+        width: 100%;
+    }
+    .preven-area {
+        width: 100%;
+    }
+
+
+
+}
+
+
+@media only screen and (max-width: 540px) {
+    .stoke-bot {
+        padding: 0 20px;
+    }
+    .stoke-bot.stoke-bot-2 {
+        padding: 0 20px;
+    }
+    .stoke-bot-2 .stoke-text p {
+        padding: 0 0px 0 0px;
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .stoke-img {
+        width: 90%;
+    }
+
+
+
+
+}
+
+@media only screen and (max-width: 393px) {
+.preven-text p {
+    font-size: 11px;
+}
+.sympoms-text h1 {
+    font-size: 16px;
+}
+.preventive-head h1, .symptoms-head h1 {
+    font-size: 20px;
+}
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
