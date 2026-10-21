@@ -19,13 +19,24 @@
       </button>
     </div>
     <div>
-      <a class="navbar-brand brand-logo" href="{{URL::To('admin/dashboard')}}">
-        {{-- <img src="{{URL::to('public/assets/admin/images/logo.svg') }}" alt="logo" /> --}}
-        Roy neuro 
+      @php
+        $brandRoute = URL::to('admin/dashboard');
+        $brandName = 'Roy Neuro';
+        if (Auth::check()) {
+            if (Auth::user()->isSuperAdmin() && !session('impersonating_admin_id')) {
+                $brandRoute = route('admin.saas.dashboard');
+                $brandName = 'SaaS Platform';
+            } elseif (Auth::user()->clinic) {
+                $brandRoute = route('doctor.dashboard');
+                $brandName = Auth::user()->clinic->name ?? 'Doctor Clinic';
+            }
+        }
+      @endphp
+      <a class="navbar-brand brand-logo font-weight-bold" href="{{ $brandRoute }}" style="color: #2563eb; font-size: 18px; text-decoration: none;">
+        <i class="mdi mdi-hospital-building me-1"></i> {{ \Illuminate\Support\Str::limit($brandName, 18) }}
       </a>
-      <a class="navbar-brand brand-logo-mini" href="{{URL::To('admin/dashboard')}}">
-        {{-- <img src="{{URL::to('public/assets/admin/images/logo-mini.svg') }}" alt="logo" /> --}}
-        Roy neuro 
+      <a class="navbar-brand brand-logo-mini font-weight-bold" href="{{ $brandRoute }}" style="color: #2563eb;">
+        <i class="mdi mdi-hospital-building"></i>
       </a>
     </div>
   </div>
@@ -62,10 +73,21 @@
           </div>
           
         </form>
-    </li>
-     
-    
-      
+      @if(session('impersonating_admin_id'))
+      <li class="nav-item d-flex align-items-center ms-2">
+        <div class="d-flex align-items-center bg-danger bg-opacity-10 px-3 py-1 rounded-3 border border-danger">
+          <span class="badge bg-danger text-white font-weight-bold me-2" style="font-size: 11px;">
+            <i class="mdi mdi-account-switch me-1"></i> VIEWING DOCTOR
+          </span>
+          <span class="font-weight-bold text-dark font-13 me-3 d-none d-md-inline">
+            Dr. {{ Auth::user()->name }} ({{ Auth::user()->clinic->name ?? 'Clinic' }})
+          </span>
+          <a href="{{ route('admin.saas.stop_impersonate') }}" class="btn btn-danger btn-xs font-weight-bold py-1 px-3 shadow-sm text-white" style="border-radius: 4px;">
+            <i class="mdi mdi-arrow-left font-weight-bold me-1"></i> Back to Super Admin
+          </a>
+        </div>
+      </li>
+      @endif
     </ul>
     <ul class="navbar-nav ms-auto">
       

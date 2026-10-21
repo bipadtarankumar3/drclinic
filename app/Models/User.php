@@ -65,6 +65,11 @@ class User extends Authenticatable
 
     public function isDoctor(): bool
     {
-        return $this->user_type === 'doctor';
+        return $this->user_type === 'doctor' || ($this->clinic()->exists() && !$this->isSuperAdmin());
+    }
+
+    public function isStaff(): bool
+    {
+        return in_array($this->user_type, ['office_employee', 'field_employee', 'sales_employee', 'transport_employee', 'staff', 'employee']);
     }
 }

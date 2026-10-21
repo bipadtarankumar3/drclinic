@@ -179,6 +179,22 @@ class SaaSAdminController extends Controller
     }
 
     /**
+     * Directly Visit / View a Doctor's Subscription Plan
+     */
+    public function visitDoctorPlan($id)
+    {
+        $clinic = Clinic::findOrFail($id);
+        if (!$clinic->user) {
+            return back()->with('error', 'This clinic does not have an attached doctor account.');
+        }
+
+        session(['impersonating_admin_id' => Auth::id()]);
+        Auth::login($clinic->user);
+
+        return redirect()->route('doctor.subscription.index')->with('info', "Viewing subscription & plan for Dr. {$clinic->user->name} ({$clinic->name})");
+    }
+
+    /**
      * Stop Impersonating and Return to Super Admin
      */
     public function stopImpersonate()
@@ -189,7 +205,7 @@ class SaaSAdminController extends Controller
             if ($adminUser) {
                 Auth::login($adminUser);
                 session()->forget('impersonating_admin_id');
-                return redirect()->route('admin.saas.dashboard')->with('success', 'Returned to Super Admin Panel.');
+                return redirect()->route('admin.saas.clinics')->with('success', 'Returned to Super Admin Panel.');
             }
         }
 

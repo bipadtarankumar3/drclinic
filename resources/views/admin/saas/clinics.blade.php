@@ -110,11 +110,14 @@
                       @endif
                     </small>
                   </td>
-                  <td class="text-end">
-                    <a href="{{ route('admin.saas.impersonate', $c->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Login as Doctor / Clinic Admin">
-                      <i class="mdi mdi-login-variant mr-1"></i> Enter Clinic
+                  <td class="text-end text-nowrap">
+                    <a href="{{ route('admin.saas.visit_doctor_plan', $c->id) }}" class="btn btn-sm btn-outline-warning me-1 font-weight-bold" title="Visit & Manage Doctor's Plan & Billing">
+                      <i class="mdi mdi-crown text-warning me-1"></i> Visit Plan
                     </a>
-                    <a href="{{ route('admin.saas.clinic.edit', $c->id) }}" class="btn btn-sm btn-outline-secondary" title="Edit Settings">
+                    <a href="{{ route('admin.saas.impersonate', $c->id) }}" class="btn btn-sm btn-outline-primary me-1 font-weight-bold" title="Login as Doctor / Clinic Admin">
+                      <i class="mdi mdi-login-variant me-1"></i> Enter Clinic
+                    </a>
+                    <a href="{{ route('admin.saas.clinic.edit', $c->id) }}" class="btn btn-sm btn-outline-secondary font-weight-bold" title="Edit Settings">
                       <i class="mdi mdi-tune"></i> Manage
                     </a>
                   </td>

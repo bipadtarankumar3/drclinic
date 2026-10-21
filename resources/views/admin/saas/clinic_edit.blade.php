@@ -9,6 +9,9 @@
         <p class="text-muted mb-0">Doctor: {{ $clinic->user->name ?? 'Admin' }} ({{ $clinic->user->email ?? $clinic->email }})</p>
       </div>
       <div>
+        <a href="{{ route('admin.saas.visit_doctor_plan', $clinic->id) }}" class="btn btn-outline-warning btn-sm font-weight-bold me-2">
+          <i class="mdi mdi-crown text-warning mr-1"></i> Visit Doctor Plan
+        </a>
         <a href="{{ route('admin.saas.impersonate', $clinic->id) }}" class="btn btn-outline-primary btn-sm font-weight-bold me-2">
           <i class="mdi mdi-login-variant mr-1"></i> Log in as Doctor
         </a>

@@ -104,6 +104,7 @@ Route::group(['prefix' => 'admin/saas', 'as' => 'admin.saas.', 'middleware' => [
     Route::get('/clinics/{id}/edit', [SaaSAdminController::class, 'editClinic'])->name('clinic.edit');
     Route::put('/clinics/{id}', [SaaSAdminController::class, 'updateClinic'])->name('clinic.update');
     Route::get('/clinics/{id}/impersonate', [SaaSAdminController::class, 'impersonate'])->name('impersonate');
+    Route::get('/clinics/{id}/visit-plan', [SaaSAdminController::class, 'visitDoctorPlan'])->name('visit_doctor_plan');
     Route::get('/stop-impersonate', [SaaSAdminController::class, 'stopImpersonate'])->name('stop_impersonate');
 
     // Plans Management

@@ -9,6 +9,26 @@
     </div>
   </div>
 
+  <!-- Super Admin Impersonation Notice Bar -->
+  @if(session('impersonating_admin_id'))
+  <div class="alert border-0 shadow-sm rounded-4 mb-4 p-3 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: #fff7ed; border-left: 5px solid #f97316 !important; border-radius: 14px;">
+    <div class="d-flex align-items-center">
+      <div class="rounded-circle p-2 bg-warning bg-opacity-25 text-warning font-22 me-3 d-flex align-items-center justify-content-center" style="width: 44px; height: 44px;">
+        <i class="mdi mdi-shield-account"></i>
+      </div>
+      <div>
+        <h6 class="font-weight-bold text-dark mb-0">Super Admin Visiting Doctor's Plan & Billing</h6>
+        <p class="text-muted mb-0 font-13">You are previewing Dr. {{ Auth::user()->name }}'s subscription status. You can test plan upgrades or return back to admin directory anytime.</p>
+      </div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <a href="{{ route('admin.saas.stop_impersonate') }}" class="btn btn-warning font-weight-bold btn-sm text-dark px-3 py-2 shadow-sm" style="border-radius: 8px;">
+        <i class="mdi mdi-arrow-left-bold me-1"></i> Back to Super Admin
+      </a>
+    </div>
+  </div>
+  @endif
+
   <!-- Current Plan Status Card -->
   <div class="row mb-4">
     <div class="col-12">
