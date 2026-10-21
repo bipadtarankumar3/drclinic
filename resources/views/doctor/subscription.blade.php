@@ -122,7 +122,7 @@
                 </tr>
               </thead>
               <tbody>
-                @forelse($subscriptions as $sub)
+                @forelse($subscriptions ?? [] as $sub)
                 <tr>
                   <td class="font-weight-bold text-dark">{{ $sub->plan->name ?? 'Standard Plan' }}</td>
                   <td class="font-weight-bold text-success">₹{{ number_format($sub->amount, 2) }}</td>
