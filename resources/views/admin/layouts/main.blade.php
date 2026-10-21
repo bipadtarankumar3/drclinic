@@ -19,6 +19,10 @@
     <link rel="stylesheet" href="{{URL::to('public/assets/admin/vendors/datatables.net-bs4/dataTables.bootstrap4.css') }}">
     <link rel="stylesheet" type="text/css" href="{{URL::to('public/assets/admin/js/select.dataTables.min.css') }}">
     <!-- End plugin css for this page -->
+    <!-- Google Font: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- inject:css -->
     <link rel="stylesheet" href="{{URL::to('public/assets/admin/css/style.css') }}">
     <link rel="stylesheet" href="{{URL::to('public/assets/admin/css/my_style.css') }}">
