@@ -37,6 +37,12 @@ class DoctorDashboardController extends Controller
         // Available subscription plans for upgrade
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
 
+        $totalSlots = \App\Models\TimeSlot::where('clinic_id', $clinic->id)->count();
+        $totalStaff = \App\Models\User::where('clinic_id', $clinic->id)->count();
+        if ($totalStaff === 0) {
+            $totalStaff = 1;
+        }
+
         return view('doctor.dashboard', compact(
             'clinic',
             'totalPatients',
@@ -44,7 +50,9 @@ class DoctorDashboardController extends Controller
             'totalOrders',
             'totalEarnings',
             'recentBookings',
-            'plans'
+            'plans',
+            'totalSlots',
+            'totalStaff'
         ));
     }
 }

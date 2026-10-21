@@ -2,232 +2,305 @@
   <ul class="nav">
     {{-- ========================================================================= --}}
     {{-- CASE 1: SUPER ADMIN (When NOT visiting a clinic)                          --}}
-    {{-- Super Admin sees ONLY his Platform Admin menu, NOT the clinic menu        --}}
+    {{-- Super Admin sees ONLY his Platform Admin menu                             --}}
     {{-- ========================================================================= --}}
     @if(Auth::check() && Auth::user()->isSuperAdmin() && !session('impersonating_admin_id'))
-    <li class="nav-item nav-category">SaaS Platform Admin</li>
+    <li class="nav-item nav-category">
+      <span>MAIN</span>
+    </li>
 
     <li class="nav-item {{ request()->routeIs('admin.saas.dashboard') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.dashboard') }}">
-        <div class="nav-icon-box icon-box-indigo">
-          <i class="mdi mdi-chart-box-outline"></i>
-        </div>
+        <i class="mdi mdi-chart-box-outline nav-icon"></i>
         <span class="menu-title">Platform Analytics</span>
+        @if(request()->routeIs('admin.saas.dashboard'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->routeIs('admin.saas.clinics*') || request()->routeIs('admin.saas.clinic.*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.clinics') }}">
-        <div class="nav-icon-box icon-box-emerald">
-          <i class="mdi mdi-hospital-building"></i>
-        </div>
+        <i class="mdi mdi-hospital-building nav-icon"></i>
         <span class="menu-title">All Doctor Clinics</span>
+        @if(request()->routeIs('admin.saas.clinics*') || request()->routeIs('admin.saas.clinic.*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
+    </li>
+
+    <li class="nav-item nav-category">
+      <span>OPERATIONS</span>
+      <span class="category-action">+</span>
     </li>
 
     <li class="nav-item {{ request()->routeIs('admin.saas.plans*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.plans') }}">
-        <div class="nav-icon-box icon-box-amber">
-          <i class="mdi mdi-package-variant-closed"></i>
-        </div>
+        <i class="mdi mdi-package-variant-closed nav-icon"></i>
         <span class="menu-title">Subscription Plans</span>
+        @if(request()->routeIs('admin.saas.plans*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->routeIs('admin.saas.logs') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.logs') }}">
-        <div class="nav-icon-box icon-box-purple">
-          <i class="mdi mdi-history"></i>
-        </div>
+        <i class="mdi mdi-history nav-icon"></i>
         <span class="menu-title">Activity Audit Logs</span>
+        @if(request()->routeIs('admin.saas.logs'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->routeIs('admin.saas.payment_settings') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.payment_settings') }}">
-        <div class="nav-icon-box icon-box-cyan">
-          <i class="mdi mdi-credit-card-outline"></i>
-        </div>
+        <i class="mdi mdi-credit-card-outline nav-icon"></i>
         <span class="menu-title">Platform Razorpay</span>
+        @if(request()->routeIs('admin.saas.payment_settings'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
+    </li>
+
+    <li class="nav-item nav-category mt-3">
+      <span>SETTINGS</span>
     </li>
 
     <li class="nav-item {{ request()->is('admin/setting*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/setting') }}">
-        <div class="nav-icon-box icon-box-slate">
-          <i class="mdi mdi-cog-outline"></i>
-        </div>
+        <i class="mdi mdi-cog-outline nav-icon"></i>
         <span class="menu-title">Platform Settings</span>
+        @if(request()->is('admin/setting*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
     @endif
 
     {{-- ========================================================================= --}}
     {{-- CASE 2: DOCTOR CLINIC (Visible to Doctors OR Admin VISITING a clinic)     --}}
-    {{-- Order: 1. Dashboard, 2. Daily Activity (Bookings), 3. Setup, Pages & Plan --}}
+    {{-- Order: 1. Dashboard, 2. Daily Patient Activity, 3. Clinic Setup & Plans   --}}
     {{-- ========================================================================= --}}
     @if(Auth::check() && (Auth::user()->isDoctor() || session('impersonating_admin_id')))
     
-    <li class="nav-item nav-category">Daily Activity</li>
+    <li class="nav-item nav-category">
+      <span>MAIN</span>
+    </li>
 
-    {{-- 1. Dashboard --}}
+    {{-- 1. Overview / Dashboard --}}
     <li class="nav-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.dashboard') }}">
-        <div class="nav-icon-box icon-box-blue">
-          <i class="mdi mdi-view-dashboard-outline"></i>
-        </div>
+        <i class="mdi mdi-view-dashboard-outline nav-icon"></i>
         <span class="menu-title">Doctor Dashboard</span>
+        @if(request()->routeIs('doctor.dashboard'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     {{-- 2. Daily Patient & Appointments Activity --}}
-    <li class="nav-item {{ request()->is('admin/patient*') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->is('admin/patient') || request()->is('admin/patient/*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/patient') }}">
-        <div class="nav-icon-box icon-box-emerald">
-          <i class="mdi mdi-calendar-plus"></i>
-        </div>
+        <i class="mdi mdi-calendar-plus nav-icon"></i>
         <span class="menu-title">Patient booking</span>
+        @if(request()->is('admin/patient') || request()->is('admin/patient/*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/booking_history*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/booking_history') }}">
-        <div class="nav-icon-box icon-box-indigo">
-          <i class="mdi mdi-clipboard-text-clock-outline"></i>
-        </div>
+        <i class="mdi mdi-clipboard-text-clock-outline nav-icon"></i>
         <span class="menu-title">Booking history</span>
+        @if(request()->is('admin/booking_history*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/history_of_customer*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/history_of_customer') }}">
-        <div class="nav-icon-box icon-box-rose">
-          <i class="mdi mdi-folder-account-outline"></i>
-        </div>
+        <i class="mdi mdi-folder-account-outline nav-icon"></i>
         <span class="menu-title">Patient history</span>
+        @if(request()->is('admin/history_of_customer*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/time_slot*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/time_slot') }}">
-        <div class="nav-icon-box icon-box-cyan">
-          <i class="mdi mdi-clock-time-four-outline"></i>
-        </div>
+        <i class="mdi mdi-clock-time-four-outline nav-icon"></i>
         <span class="menu-title">Time Slot</span>
+        @if(request()->is('admin/time_slot*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/availability*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/availability') }}">
-        <div class="nav-icon-box icon-box-amber">
-          <i class="mdi mdi-calendar-remove-outline"></i>
-        </div>
+        <i class="mdi mdi-calendar-remove-outline nav-icon"></i>
         <span class="menu-title">Unavailability</span>
+        @if(request()->is('admin/availability*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/payments*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/payments') }}">
-        <div class="nav-icon-box icon-box-teal">
-          <i class="mdi mdi-credit-card-check-outline"></i>
-        </div>
+        <i class="mdi mdi-credit-card-check-outline nav-icon"></i>
         <span class="menu-title">Payment Logs</span>
+        @if(request()->is('admin/payments*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
-    {{-- 3. Configuration & Plans (AT THE LAST: Plan, Custom, Clinic & Razorpay) --}}
-    <li class="nav-item nav-category">Clinic Setup & Plan</li>
+    {{-- 3. Operations / Clinic Setup & Plans (AT THE LAST) --}}
+    <li class="nav-item nav-category">
+      <span>OPERATIONS</span>
+      <span class="category-action">+</span>
+    </li>
 
     <li class="nav-item {{ request()->routeIs('doctor.subscription.*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.subscription.index') }}">
-        <div class="nav-icon-box icon-box-amber">
-          <i class="mdi mdi-crown text-warning"></i>
-        </div>
-        <span class="menu-title font-weight-bold">Plan & Billing</span>
+        <i class="mdi mdi-crown-outline nav-icon"></i>
+        <span class="menu-title">Plan & Billing</span>
+        @if(request()->routeIs('doctor.subscription.*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.pages.index') }}">
-        <div class="nav-icon-box icon-box-purple">
-          <i class="mdi mdi-file-document-edit-outline"></i>
-        </div>
+        <i class="mdi mdi-file-document-edit-outline nav-icon"></i>
         <span class="menu-title">Custom Pages</span>
+        @if(request()->routeIs('doctor.pages.*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
     <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.settings') }}">
-        <div class="nav-icon-box icon-box-teal">
-          <i class="mdi mdi-tune"></i>
-        </div>
+        <i class="mdi mdi-tune nav-icon"></i>
         <span class="menu-title">Clinic & Razorpay</span>
+        @if(request()->routeIs('doctor.settings'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
       </a>
     </li>
 
+    @if(Auth::check() && Auth::user()->clinic)
+      @php
+        $clinicStorefront = Auth::user()->clinic->custom_domain 
+          ? 'https://' . Auth::user()->clinic->custom_domain 
+          : url('/c/' . (Auth::user()->clinic->subdomain ?? Auth::user()->clinic->slug));
+      @endphp
+      <li class="nav-item">
+        <a class="nav-link" href="{{ $clinicStorefront }}" target="_blank">
+          <i class="mdi mdi-open-in-new nav-icon"></i>
+          <span class="menu-title">View Storefront</span>
+        </a>
+      </li>
+    @endif
+
+    {{-- Exit to Admin if Impersonating --}}
     @if(session('impersonating_admin_id'))
-    <li class="nav-item mt-4 pt-2 border-top">
-      <a class="nav-link text-danger font-weight-bold d-flex align-items-center" href="{{ route('admin.saas.stop_impersonate') }}" style="background: rgba(239, 68, 68, 0.06); border-radius: 10px;">
-        <div class="nav-icon-box" style="background: #fee2e2; color: #dc2626;">
-          <i class="mdi mdi-arrow-left-bold"></i>
-        </div>
-        <span class="menu-title">Exit Back to Admin</span>
+    <li class="nav-item mt-2">
+      <a class="nav-link text-danger" href="{{ route('admin.saas.stop_impersonate') }}" style="background: rgba(239, 68, 68, 0.06); font-weight: 600;">
+        <i class="mdi mdi-arrow-left-bold nav-icon text-danger"></i>
+        <span class="menu-title text-danger">Exit Back to Admin</span>
       </a>
     </li>
     @endif
+
+    <li class="nav-item nav-category mt-2">
+      <span>SETTINGS</span>
+    </li>
+
+    <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.settings') }}">
+        <i class="mdi mdi-cog-outline nav-icon"></i>
+        <span class="menu-title">Settings</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{{ URL::To('admin/contact') }}">
+        <i class="mdi mdi-help-circle-outline nav-icon"></i>
+        <span class="menu-title">Support</span>
+      </a>
+    </li>
     @endif
 
     {{-- ========================================================================= --}}
     {{-- CASE 3: CLINIC STAFF / EMPLOYEE                                           --}}
-    {{-- Staff members who are neither Super Admin nor Doctor                      --}}
     {{-- ========================================================================= --}}
     @if(Auth::check() && Auth::user()->isStaff())
-    <li class="nav-item nav-category">Appointments & Patients</li>
+    <li class="nav-item nav-category">
+      <span>MAIN</span>
+    </li>
 
     <li class="nav-item {{ request()->is('admin/patient*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/patient') }}">
-        <div class="nav-icon-box icon-box-emerald">
-          <i class="mdi mdi-calendar-plus"></i>
-        </div>
+        <i class="mdi mdi-calendar-plus nav-icon"></i>
         <span class="menu-title">Patient booking</span>
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/booking_history*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/booking_history') }}">
-        <div class="nav-icon-box icon-box-indigo">
-          <i class="mdi mdi-clipboard-text-clock-outline"></i>
-        </div>
+        <i class="mdi mdi-clipboard-text-clock-outline nav-icon"></i>
         <span class="menu-title">Booking history</span>
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/history_of_customer*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/history_of_customer') }}">
-        <div class="nav-icon-box icon-box-rose">
-          <i class="mdi mdi-folder-account-outline"></i>
-        </div>
+        <i class="mdi mdi-folder-account-outline nav-icon"></i>
         <span class="menu-title">Patient history</span>
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/time_slot*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/time_slot') }}">
-        <div class="nav-icon-box icon-box-cyan">
-          <i class="mdi mdi-clock-time-four-outline"></i>
-        </div>
+        <i class="mdi mdi-clock-time-four-outline nav-icon"></i>
         <span class="menu-title">Time Slot</span>
       </a>
     </li>
 
     <li class="nav-item {{ request()->is('admin/availability*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/availability') }}">
-        <div class="nav-icon-box icon-box-amber">
-          <i class="mdi mdi-calendar-remove-outline"></i>
-        </div>
+        <i class="mdi mdi-calendar-remove-outline nav-icon"></i>
         <span class="menu-title">Unavailability</span>
       </a>
     </li>
     @endif
   </ul>
+
+  <!-- Bottom User Profile Card (Fixed at the bottom of sidebar) -->
+  <div class="sidebar-footer-section">
+    <a href="{{ Auth::check() && Auth::user()->isSuperAdmin() ? URL::To('admin/setting') : route('doctor.settings') }}" class="sidebar-user-card">
+      <div class="d-flex align-items-center text-truncate" style="gap: 10px;">
+        <div class="sidebar-user-avatar">
+          {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}
+        </div>
+        <div class="text-truncate">
+          <div class="sidebar-user-name d-flex align-items-center" style="gap: 4px;">
+            <span class="text-truncate">{{ Auth::user()->name ?? 'Admin User' }}</span>
+            <i class="mdi mdi-check-decagram text-primary font-12" title="Verified"></i>
+          </div>
+          <div class="sidebar-user-email text-truncate">{{ Auth::user()->email ?? 'admin@gmail.com' }}</div>
+        </div>
+      </div>
+      <i class="mdi mdi-chevron-right text-muted font-16 ms-2"></i>
+    </a>
+  </div>
 </nav>
