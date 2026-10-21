@@ -41,9 +41,6 @@ class AdminAuthController extends Controller
                 $request->session()->flash('success', 'Login Success');
                 return redirect()->route('admin.saas.dashboard');  
             }
-        }
-               
-           
         } else {
             $request->session()->flash('error', 'You have entered wrong Email or Password.');
             return redirect()->back();
