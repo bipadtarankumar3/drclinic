@@ -148,8 +148,7 @@ class WebViewController extends Controller
     
 
 
-    public function book_appointment(Request $request) {
-        // Validate that both fields exist and are Base64-encoded
+    public function book_appointment(Request $request, $clinic_slug = null) {
         // Validate that both fields exist and are Base64-encoded
         $validatedData = $request->validate([
             'booking_date' => ['required', function ($attribute, $value, $fail) {
@@ -174,13 +173,13 @@ class WebViewController extends Controller
         }
 
         // Pass decoded values to the view
-        $clinic = $this->getClinic();
+        $clinic = $this->getClinic($clinic_slug);
         view()->share('currentClinic', $clinic);
         $setting = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
         $selectedSlot = TimeSlot::find($decodedTimeSlotId);
 
         $data = [
-            'title' => 'Patient Registration & Booking',
+            'title' => 'Patient Registration & Booking - ' . ($clinic->name ?? 'Dr Clinic'),
             'clinic' => $clinic,
             'currentClinic' => $clinic,
             'availabilities' => Availability::get(),
@@ -205,10 +204,10 @@ class WebViewController extends Controller
     }
 
     // Handle Razorpay payment order creation
-    public function generateOrder(Request $request)
+    public function generateOrder(Request $request, $clinic_slug = null)
     {
         try {
-            $clinic = $this->getClinic();
+            $clinic = $this->getClinic($clinic_slug ?: $request->clinic_slug);
 
             // 1. Prefer Doctor's Personal Razorpay Gateway if configured
             if ($clinic && $clinic->razorpay_enabled && !empty($clinic->razorpay_key) && !empty($clinic->razorpay_secret)) {
@@ -252,12 +251,12 @@ class WebViewController extends Controller
         }
     }
 
-    public function paymentSuccess(Request $request)
+    public function paymentSuccess(Request $request, $clinic_slug = null)
     {
         try {
             DB::beginTransaction();
 
-            $clinic = $this->getClinic();
+            $clinic = $this->getClinic($clinic_slug ?: $request->clinic_slug);
             $clinicId = $clinic?->id;
 
             $patient = Patient::create([
@@ -321,7 +320,8 @@ class WebViewController extends Controller
                 $patient_mobile = $request->mobile_no;
                 $admin_mobile = $Setting ? $Setting->clinic_phone_number : null;
 
-                $invoiceUrl = url("/invoice/{$order->id}");
+                $clinicSlug = $clinic ? ($clinic->subdomain ?? $clinic->slug) : null;
+                $invoiceUrl = $clinicSlug ? url("/c/{$clinicSlug}/invoice/{$order->id}") : url("/invoice/{$order->id}");
                 $baseUrl = "https://app.digitalvyapari.online/api/WhatsApp";
                 $authKey = "RGdQK296NTcyQ2Jyd0NEbEJlbWNiUT09";
 
@@ -362,12 +362,16 @@ class WebViewController extends Controller
         }
     }
 
-    public function paymentFailed(Request $request)
+    public function paymentFailed(Request $request, $clinic_slug = null)
     {
         try {
+            $clinic = $this->getClinic($clinic_slug ?: $request->clinic_slug);
+            $clinicId = $clinic?->id;
+
             $patient = null;
             if ($request->first_name || $request->mobile_no) {
                 $patient = Patient::create([
+                    'clinic_id' => $clinicId,
                     'first_name' => $request->first_name ?? 'Guest',
                     'last_name' => $request->last_name,
                     'dob' => $request->dob,
@@ -382,6 +386,7 @@ class WebViewController extends Controller
             }
 
             $order = Order::create([
+                'clinic_id' => $clinicId,
                 'patient_id' => $patient ? $patient->id : null,
                 'actual_amount' => $request->actual_amount,
                 'total_amount' => $request->amount,
@@ -402,8 +407,19 @@ class WebViewController extends Controller
         }
     }
 
-    public function bookingSuccess($order_id)
+    public function bookingSuccess($param1, $param2 = null)
     {
+        if ($param2 !== null) {
+            $clinic_slug = $param1;
+            $order_id = $param2;
+        } else {
+            $clinic_slug = null;
+            $order_id = $param1;
+        }
+
+        $clinic = $this->getClinic($clinic_slug);
+        view()->share('currentClinic', $clinic);
+
         $order = Order::leftJoin('patients', 'orders.patient_id', '=', 'patients.id')
             ->leftJoin('time_slots', 'orders.time_slot_id', '=', 'time_slots.id')
             ->select(
@@ -427,16 +443,29 @@ class WebViewController extends Controller
             ->latest('orders.id')
             ->first();
 
-        $data['title'] = 'Booking Receipt - Success';
+        $data['title'] = 'Booking Receipt - ' . ($clinic->name ?? 'Roy Neuro Care');
         $data['order_id'] = $order_id;
         $data['order'] = $order;
-        $data['setting'] = Setting::first();
+        $data['clinic'] = $clinic;
+        $data['currentClinic'] = $clinic;
+        $data['setting'] = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
 
         return view('web.pages.bookingSuccess', $data);
     }
 
-    public function bookingFailed($order_id)
+    public function bookingFailed($param1, $param2 = null)
     {
+        if ($param2 !== null) {
+            $clinic_slug = $param1;
+            $order_id = $param2;
+        } else {
+            $clinic_slug = null;
+            $order_id = $param1;
+        }
+
+        $clinic = $this->getClinic($clinic_slug);
+        view()->share('currentClinic', $clinic);
+
         $order = Order::leftJoin('patients', 'orders.patient_id', '=', 'patients.id')
             ->leftJoin('time_slots', 'orders.time_slot_id', '=', 'time_slots.id')
             ->select(
@@ -460,16 +489,29 @@ class WebViewController extends Controller
             ->latest('orders.id')
             ->first();
 
-        $data['title'] = 'Payment Status - Cancelled/Failed';
+        $data['title'] = 'Payment Status - ' . ($clinic->name ?? 'Roy Neuro Care');
         $data['order_id'] = $order_id;
         $data['order'] = $order;
-        $data['setting'] = Setting::first();
+        $data['clinic'] = $clinic;
+        $data['currentClinic'] = $clinic;
+        $data['setting'] = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
 
         return view('web.pages.bookingFailed', $data);
     }
 
-    public function show($id)
+    public function show($param1, $param2 = null)
     {
+        if ($param2 !== null) {
+            $clinic_slug = $param1;
+            $id = $param2;
+        } else {
+            $clinic_slug = null;
+            $id = $param1;
+        }
+
+        $clinic = $this->getClinic($clinic_slug);
+        view()->share('currentClinic', $clinic);
+
         $order = DB::table('orders')
             ->leftJoin('patients', 'orders.patient_id', '=', 'patients.id')
             ->leftJoin('time_slots', 'orders.time_slot_id', '=', 'time_slots.id')
@@ -497,13 +539,21 @@ class WebViewController extends Controller
             abort(404);
         }
 
-        $setting = Setting::first();
+        $setting = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
 
-        return view('web.pages.invoice.show', compact('order', 'setting'));
+        return view('web.pages.invoice.show', compact('order', 'setting', 'clinic'));
     }
 
-    public function viewCustomPage($slug, $clinic_slug = null)
+    public function viewCustomPage($param1, $param2 = null)
     {
+        if ($param2 !== null) {
+            $clinic_slug = $param1;
+            $slug = $param2;
+        } else {
+            $clinic_slug = null;
+            $slug = $param1;
+        }
+
         $clinic = $this->getClinic($clinic_slug);
         if (!$clinic) {
             abort(404, 'Clinic not found.');

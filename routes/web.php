@@ -52,10 +52,24 @@ Route::get('/invoice/{id}', [WebViewController::class, 'show'])->name('invoice.s
 Route::get('/notice-api', [\App\Http\Controllers\api\NoticeController::class, 'getNotice']);
 Route::get('/get-notice', [\App\Http\Controllers\api\NoticeController::class, 'getNotice']);
 
-// Dynamic Custom Pages
+// Dynamic Custom Pages & Clinic-Scoped URLs
 Route::get('/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page');
-Route::get('/c/{clinic_slug}', [WebViewController::class, 'appoinment'])->name('clinic.home');
-Route::get('/c/{clinic_slug}/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page.slug');
+
+// Clinic-Scoped Routes (Every clinic has its own unique URL namespace: /c/{clinic_slug})
+Route::group(['prefix' => 'c/{clinic_slug}'], function () {
+    Route::get('/', [WebViewController::class, 'appoinment'])->name('clinic.home');
+    Route::get('/appoinment', [WebViewController::class, 'appoinment'])->name('clinic.appoinment');
+    Route::any('/book_appointment', [WebViewController::class, 'book_appointment'])->name('clinic.book_appointment');
+    Route::post('/generate-order', [WebViewController::class, 'generateOrder'])->name('clinic.generate_order');
+    Route::post('/payment-success', [WebViewController::class, 'paymentSuccess'])->name('clinic.payment_success');
+    Route::post('/payment-failed', [WebViewController::class, 'paymentFailed'])->name('clinic.payment_failed');
+    Route::get('/booking-success/{order_id}', [WebViewController::class, 'bookingSuccess'])->name('clinic.booking.success');
+    Route::get('/booking-failed/{order_id}', [WebViewController::class, 'bookingFailed'])->name('clinic.booking.failed');
+    Route::get('/invoice/{id}', [WebViewController::class, 'show'])->name('clinic.invoice.show');
+    Route::get('/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page.slug');
+    Route::get('/get-timeslots', [WebViewController::class, 'getTimeSlots']);
+    Route::post('/check_availability', [WebViewController::class, 'checkAvailability']);
+});
 
 
 // ==========================================

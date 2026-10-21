@@ -160,7 +160,7 @@
             <i class="fa-solid fa-circle-check text-warning me-2"></i> Payment Successful & Confirmed
         </div>
         <h2 class="fw-bold mb-1">Appointment Receipt</h2>
-        <p class="mb-0 opacity-75 small">Roy Neuro Care - A Complete Brain & Spine Centre</p>
+        <p class="mb-0 opacity-75 small">{{ $currentClinic->name ?? 'Roy Neuro Care' }} {{ ($currentClinic && $currentClinic->specialization) ? ' - ' . $currentClinic->specialization : '' }}</p>
     </div>
 
     <!-- Receipt Body -->
@@ -256,19 +256,24 @@
             <ul class="mb-0 mt-1 ps-3">
                 <li>Please arrive at the clinic on your scheduled appointment date.</li>
                 <li>Carry this receipt (printed or digital copy on your phone) along with previous medical reports/prescriptions.</li>
-                <li>Clinic Address: Ground Floor, Balaji Bhawan, Cheshire Home Road, Bariatu, Ranchi.</li>
+                <li>Clinic Address: {{ $setting->clinic_address ?? ($currentClinic->address ?? 'Ground Floor, Balaji Bhawan, Cheshire Home Road, Bariatu, Ranchi') }}.</li>
             </ul>
         </div>
     </div>
 
+    @php
+        $clinicHomeUrl = (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug)) : url('/');
+        $invoiceUrl = (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/invoice/' . ($order ? $order->id : '')) : url('invoice/' . ($order ? $order->id : ''));
+    @endphp
+
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <a href="{{ url('/') }}" class="btn btn-outline-secondary">
+        <a href="{{ $clinicHomeUrl }}" class="btn btn-outline-secondary">
             <i class="fa-solid fa-house me-1"></i> Back to Home
         </a>
         <div class="d-flex gap-2">
             @if ($order)
-            <a href="{{ url('invoice/' . $order->id) }}" target="_blank" class="btn btn-outline-primary">
+            <a href="{{ $invoiceUrl }}" target="_blank" class="btn btn-outline-primary">
                 <i class="fa-solid fa-file-invoice me-1"></i> Full Invoice
             </a>
             @endif

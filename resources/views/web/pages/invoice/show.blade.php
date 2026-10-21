@@ -111,8 +111,10 @@
         $backUrl = ($referer && str_contains($referer, '/admin')) ? $referer : url('admin/payments');
         $backText = 'Back to Admin';
     } else {
-        $backUrl = 'https://royneurocare.com/appointment/';
-        $backText = 'Back to Appointment';
+        $backUrl = (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) 
+            ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug)) 
+            : url('/');
+        $backText = 'Back to Clinic';
     }
 @endphp
 
@@ -133,15 +135,19 @@
         <div class="invoice-header d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <div class="d-flex align-items-center gap-3">
-                    <img src="{{ URL::to('public/assets/web/logo.png') }}" alt="Roy Neuro Care Logo" onerror="this.src='{{ URL::to('public/assets/web/homeimage/logo.png') }}'">
+                    @if(isset($currentClinic) && $currentClinic->logo)
+                        <img src="{{ URL::to($currentClinic->logo) }}" alt="{{ $currentClinic->name }}" style="max-height: 60px;">
+                    @else
+                        <img src="{{ URL::to('public/assets/web/logo.png') }}" alt="{{ $currentClinic->name ?? 'Clinic' }}" onerror="this.src='{{ URL::to('public/assets/web/homeimage/logo.png') }}'">
+                    @endif
                     <div>
-                        <h4 class="fw-bold mb-0" style="color: #183e66; font-size: 1.4rem;">Roy Neuro Care</h4>
-                        <div class="text-muted small" style="font-size: 0.82rem; font-weight: 500;">A Complete Brain & Spine Centre</div>
+                        <h4 class="fw-bold mb-0" style="color: #183e66; font-size: 1.4rem;">{{ $currentClinic->name ?? 'Roy Neuro Care' }}</h4>
+                        <div class="text-muted small" style="font-size: 0.82rem; font-weight: 500;">{{ $currentClinic->specialization ?? 'A Complete Healthcare Centre' }}</div>
                     </div>
                 </div>
                 <div class="mt-2 small text-muted">
-                    Ground Floor, Balaji Bhawan, Cheshire Home Road, Bariatu, Ranchi<br>
-                    Phone: +91-96317 75097 | Email: royneurocare@gmail.com
+                    {{ $setting->clinic_address ?? ($currentClinic->address ?? 'Ground Floor, Balaji Bhawan, Cheshire Home Road, Bariatu, Ranchi') }}<br>
+                    Phone: {{ $setting->clinic_phone_number ?? ($currentClinic->phone ?? '+91-96317 75097') }} | Email: {{ $setting->clinic_email ?? ($currentClinic->email ?? 'info@royneurocare.com') }}
                 </div>
             </div>
             <div class="text-md-end">

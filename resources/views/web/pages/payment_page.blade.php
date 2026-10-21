@@ -517,7 +517,7 @@ function payWithRazorpay(e) {
     payBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2" role="status" style="margin-right:8px;"></span>Processing Payment...');
 
     $.ajax({
-        url: "{{ url('generate-order') }}",
+        url: "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/generate-order') : url('generate-order') }}",
         type: "POST",
         data: {
             _token: "{{ csrf_token() }}",
@@ -537,7 +537,7 @@ function payWithRazorpay(e) {
                     "handler": function(paymentResponse) {
                         payBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" style="margin-right:8px;"></span>Finalizing Booking...');
                         $.ajax({
-                            url: "{{ url('payment-success') }}",
+                            url: "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/payment-success') : url('payment-success') }}",
                             type: "POST",
                             data: {
                                 _token: "{{ csrf_token() }}",
@@ -561,7 +561,7 @@ function payWithRazorpay(e) {
                             },
                             success: function(data) {
                                 if (data.success) {
-                                    window.location.href = "{{ url('booking-success/') }}/" + response.order_id;
+                                    window.location.href = "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/booking-success/') : url('booking-success/') }}/" + response.order_id;
                                 } else {
                                     payBtn.prop("disabled", false).html(originalBtnText);
                                     Swal.fire({
@@ -591,7 +591,7 @@ function payWithRazorpay(e) {
                         "ondismiss": function() {
                             payBtn.prop("disabled", false).html(originalBtnText);
                             $.ajax({
-                                url: "{{ url('payment-failed') }}",
+                                url: "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/payment-failed') : url('payment-failed') }}",
                                 type: "POST",
                                 data: {
                                     _token: "{{ csrf_token() }}",
@@ -622,7 +622,7 @@ function payWithRazorpay(e) {
                                         cancelButtonText: 'Try Again'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
-                                            window.location.href = "{{ url('booking-failed/') }}/" + response.order_id;
+                                            window.location.href = "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/booking-failed/') : url('booking-failed/') }}/" + response.order_id;
                                         }
                                     });
                                 }

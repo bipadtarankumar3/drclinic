@@ -918,10 +918,8 @@
                 return;
             }
 
-            let encodedDate = btoa(bookingDate);
-            let encodedTimeSlot = btoa(timeSlotId);
-
-            let actionUrl = `{{ url('book_appointment') }}?booking_date=${encodedDate}&time_slot_id=${encodedTimeSlot}`;
+            let bookingBaseUrl = "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/book_appointment') : url('book_appointment') }}";
+            let actionUrl = `${bookingBaseUrl}?booking_date=${encodedDate}&time_slot_id=${encodedTimeSlot}`;
             window.location.href = actionUrl;
         });
     });

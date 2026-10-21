@@ -160,7 +160,7 @@
             <i class="fa-solid fa-circle-xmark me-2"></i> Payment Not Completed
         </div>
         <h2 class="fw-bold mb-1">Transaction Status Receipt</h2>
-        <p class="mb-0 opacity-75 small">Roy Neuro Care - A Complete Brain & Spine Centre</p>
+        <p class="mb-0 opacity-75 small">{{ $currentClinic->name ?? 'Roy Neuro Care' }} {{ ($currentClinic && $currentClinic->specialization) ? ' - ' . $currentClinic->specialization : '' }}</p>
     </div>
 
     <!-- Receipt Body -->
@@ -235,20 +235,24 @@
         <div class="guideline-alert">
             <i class="fa-solid fa-triangle-exclamation text-danger me-1"></i>
             <strong>Need Assistance with Booking?</strong>
-            <p class="mb-0 mt-1">If you experienced an error or payment issue, you can retry booking your slot or reach out directly to the clinic at <strong>+91-96317 75097</strong>.</p>
+            <p class="mb-0 mt-1">If you experienced an error or payment issue, you can retry booking your slot or reach out directly to the clinic at <strong>{{ $currentClinic->phone ?? '+91-96317 75097' }}</strong>.</p>
         </div>
     </div>
 
+    @php
+        $clinicHomeUrl = (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug)) : url('/');
+    @endphp
+
     <!-- Action Buttons -->
     <div class="action-buttons">
-        <a href="{{ url('/') }}" class="btn btn-outline-secondary">
+        <a href="{{ $clinicHomeUrl }}" class="btn btn-outline-secondary">
             <i class="fa-solid fa-house me-1"></i> Home
         </a>
         <div class="d-flex gap-2">
             <button onclick="window.print()" class="btn btn-outline-secondary">
                 <i class="fa-solid fa-download me-1"></i> Download Receipt
             </button>
-            <a href="{{ url('/') }}" class="btn btn-brand">
+            <a href="{{ $clinicHomeUrl }}" class="btn btn-brand">
                 <i class="fa-solid fa-rotate-right me-1"></i> Try Booking Again
             </a>
         </div>
