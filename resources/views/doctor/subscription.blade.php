@@ -10,68 +10,133 @@
     </div>
   </div>
 
-  <!-- Current Plan Status Card -->
-  <div class="row mb-4">
-    <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4" style="background: linear-gradient(135deg, #1e293b, #0f172a); border-radius: 20px; color: #ffffff;">
-        <div class="card-body p-4 p-md-5">
-          <div class="row align-items-center">
-            <div class="col-md-8">
-              <span class="badge {{ $clinic->isPlanActive() ? 'bg-success' : 'bg-danger' }} px-3 py-2 font-weight-bold text-uppercase mb-3" style="font-size: 12px; letter-spacing: 0.5px;">
-                {{ $clinic->status }}
-              </span>
-              <h3 class="font-weight-bold mb-2">
-                @if($activeSub)
-                  {{ $activeSub->plan->name ?? 'Active Plan' }}
-                @elseif($clinic->status === 'trialing')
-                  Starter Plan &mdash; 7-Day Free Trial
-                @elseif($clinic->status === 'active')
-                  Active Plan
-                @else
-                  Plan Expired
-                @endif
-              </h3>
-              <p class="text-white-50 mb-3" style="font-size: 15px;">
-                @if($clinic->isPlanActive())
-                  @if($clinic->status === 'trialing')
-                    Your free trial expires on <strong>{{ $clinic->trial_ends_at ? $clinic->trial_ends_at->format('d M, Y') : 'in 7 days' }}</strong> ({{ $clinic->trialDaysRemaining() }} days left). Upgrade anytime to guarantee seamless service.
-                  @elseif($activeSub && $activeSub->ends_at)
-                    Your active subscription is valid until <strong>{{ $activeSub->ends_at->format('d M, Y') }}</strong>.
-                  @elseif($clinic->trial_ends_at)
-                    Your active plan is valid until <strong>{{ $clinic->trial_ends_at->format('d M, Y') }}</strong>.
-                  @else
-                    Your clinic plan is active with lifetime access.
-                  @endif
-                @else
-                  Your clinic booking service is currently paused because your subscription plan has expired. Please select a plan below to reactivate your clinic.
-                @endif
-              </p>
+<style>
+.plan-hero-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+  border-radius: 20px !important;
+  color: #ffffff !important;
+  position: relative;
+  overflow: hidden;
+}
+.plan-hero-card .card-body {
+  background: transparent !important;
+  color: #ffffff !important;
+}
+.plan-hero-card h2, .plan-hero-card h3, .plan-hero-card strong {
+  color: #ffffff !important;
+}
+.plan-hero-card p {
+  color: #94a3b8 !important;
+}
+.quota-chip {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  display: inline-flex;
+  align-items: center;
+}
+.quota-chip span {
+  color: #94a3b8 !important;
+}
+.quota-chip strong {
+  color: #ffffff !important;
+  margin-left: 6px;
+}
+.subdomain-box {
+  background: rgba(255, 255, 255, 0.07) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 14px !important;
+  padding: 16px !important;
+  display: inline-block;
+  text-align: left;
+  min-width: 250px;
+}
+</style>
 
-              <!-- Active Quotas summary -->
-              <div class="d-flex flex-wrap gap-3 mt-3">
-                <div class="px-3 py-2 rounded-3" style="background: rgba(255,255,255,0.1); font-size: 13px;">
-                  <span class="text-white-50">Staff Accounts:</span>
-                  <strong class="text-white ml-1">{{ $clinic->getEffectiveQuota('max_staff', 3) }} Max</strong>
-                </div>
-                <div class="px-3 py-2 rounded-3" style="background: rgba(255,255,255,0.1); font-size: 13px;">
-                  <span class="text-white-50">Monthly Bookings:</span>
-                  <strong class="text-white ml-1">{{ $clinic->getEffectiveQuota('max_bookings', 50) }} Appointments</strong>
-                </div>
-                <div class="px-3 py-2 rounded-3" style="background: rgba(255,255,255,0.1); font-size: 13px;">
-                  <span class="text-white-50">Cloud Storage:</span>
-                  <strong class="text-white ml-1">{{ round($clinic->getEffectiveQuota('storage_quota_mb', 1024)/1024, 1) }} GB</strong>
-                </div>
-              </div>
+  <!-- Current Plan Status Card -->
+  <div class="card border-0 shadow-sm rounded-4 mb-4 plan-hero-card">
+    <!-- Decorative background glow -->
+    <div style="position: absolute; top: -60px; right: -60px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(37,99,235,0.25) 0%, transparent 70%); pointer-events: none;"></div>
+
+    <div class="card-body p-4 p-md-5" style="background: transparent !important;">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <div class="mb-3">
+            @if($clinic->status === 'trialing')
+              <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                ● Free Trial Active
+              </span>
+            @elseif($clinic->status === 'active')
+              <span class="badge" style="background: rgba(37, 99, 235, 0.2); color: #60a5fa; border: 1px solid rgba(37, 99, 235, 0.4); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                ● Active Subscription
+              </span>
+            @else
+              <span class="badge" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.4); font-size: 11px; font-weight: 700; padding: 5px 12px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px;">
+                ● Plan Expired
+              </span>
+            @endif
+          </div>
+
+          <h2 class="font-weight-bold mb-2" style="font-size: 26px; letter-spacing: -0.4px; color: #ffffff !important;">
+            @if($activeSub)
+              {{ $activeSub->plan->name ?? 'Active Plan' }}
+            @elseif($clinic->status === 'trialing')
+              Starter Tier &mdash; Free Trial
+            @elseif($clinic->status === 'active')
+              Active Plan
+            @else
+              Subscription Expired
+            @endif
+          </h2>
+
+          <p class="mb-4" style="font-size: 14.5px; line-height: 1.6; max-width: 680px; color: #94a3b8 !important;">
+            @if($clinic->isPlanActive())
+              @if($clinic->status === 'trialing')
+                Your clinic trial is active until <strong style="color: #ffffff !important;">{{ $clinic->trial_ends_at ? $clinic->trial_ends_at->format('d M, Y') : 'in 7 days' }}</strong> (<span style="color: #34d399; font-weight: 700;">{{ $clinic->trialDaysRemaining() }} days left</span>). Upgrade to a commercial tier anytime for uninterrupted bookings.
+              @elseif($activeSub && $activeSub->ends_at)
+                Your subscription plan is active and valid until <strong style="color: #ffffff !important;">{{ $activeSub->ends_at->format('d M, Y') }}</strong>.
+              @elseif($clinic->trial_ends_at)
+                Your active plan is valid until <strong style="color: #ffffff !important;">{{ $clinic->trial_ends_at->format('d M, Y') }}</strong>.
+              @else
+                Your clinic plan is active with full access.
+              @endif
+            @else
+              Your clinic online appointment bookings are currently paused because your subscription plan has expired. Please choose a plan below to reactivate your clinic.
+            @endif
+          </p>
+
+          <!-- Active Quotas Chips -->
+          <div class="d-flex flex-wrap" style="gap: 10px;">
+            <div class="quota-chip">
+              <span><i class="mdi mdi-account-group-outline mr-1" style="color: #60a5fa;"></i> Staff Accounts:</span>
+              <strong>{{ $clinic->getEffectiveQuota('max_staff', 3) }} Max</strong>
             </div>
-            <div class="col-md-4 text-md-end mt-4 mt-md-0">
-              <div class="p-3 rounded-3" style="background: rgba(255,255,255,0.08); display: inline-block; text-align: left;">
-                <div class="text-white-50 font-12 font-weight-bold text-uppercase">Clinic Subdomain Portal</div>
-                <div class="font-weight-bold text-white font-15 mb-2">{{ $clinic->subdomain }}.{{ request()->getHost() }}</div>
-                <a href="http://{{ $clinic->subdomain }}.{{ request()->getHost() }}" target="_blank" class="btn btn-sm btn-light font-weight-bold" style="border-radius: 8px;">
-                  <i class="mdi mdi-open-in-new mr-1"></i> View Live Clinic
-                </a>
-              </div>
+            <div class="quota-chip">
+              <span><i class="mdi mdi-calendar-check-outline mr-1" style="color: #34d399;"></i> Monthly Bookings:</span>
+              <strong>{{ $clinic->getEffectiveQuota('max_bookings', 50) }} Pts</strong>
             </div>
+            <div class="quota-chip">
+              <span><i class="mdi mdi-cloud-outline mr-1" style="color: #a78bfa;"></i> Cloud Storage:</span>
+              <strong>{{ round($clinic->getEffectiveQuota('storage_quota_mb', 1024)/1024, 1) }} GB</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Storefront Link Box -->
+        <div class="col-md-4 text-md-end mt-4 mt-md-0">
+          <div class="subdomain-box">
+            <div class="d-flex align-items-center mb-1" style="gap: 6px;">
+              <span style="width: 8px; height: 8px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+              <span style="color: #94a3b8; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Clinic Storefront Live</span>
+            </div>
+            <div class="font-weight-bold font-14 mb-3" style="color: #ffffff !important; word-break: break-all;">
+              {{ $clinic->subdomain }}.{{ request()->getHost() }}
+            </div>
+            <a href="{{ $clinic->custom_domain ? 'https://' . $clinic->custom_domain : url('/c/' . ($clinic->subdomain ?? $clinic->slug)) }}" target="_blank" class="btn btn-sm w-100 font-weight-bold text-dark d-flex align-items-center justify-content-center" style="background: #ffffff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+              <i class="mdi mdi-open-in-new mr-2" style="margin-right: 6px;"></i> View Storefront
+            </a>
           </div>
         </div>
       </div>
