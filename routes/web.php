@@ -4,21 +4,20 @@ use App\Http\Controllers\web\WebViewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\admin\AdminAuthController;
 use App\Http\Controllers\admin\PaymentController;
+use App\Http\Controllers\Auth\GoogleAuthController;
+use App\Http\Controllers\Doctor\DoctorDashboardController;
+use App\Http\Controllers\Doctor\DoctorSettingsController;
+use App\Http\Controllers\Doctor\DoctorPageController;
+use App\Http\Controllers\Doctor\DoctorSubscriptionController;
+use App\Http\Controllers\Admin\SaaSAdminController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// Public Patient Booking & Clinic Pages (Tenant-aware via TenantMiddleware)
 Route::get('/', [WebViewController::class, 'appoinment'])->name('home');
 Route::get('contact', [WebViewController::class, 'contact']);
 Route::get('about', [WebViewController::class, 'about']);
@@ -41,7 +40,6 @@ Route::get('appoinment', [WebViewController::class, 'appoinment']);
 Route::get('get-timeslots', [WebViewController::class, 'getTimeSlots']);
 Route::post('/check_availability', [WebViewController::class, 'checkAvailability']);
 
-
 Route::any('/book_appointment', [WebViewController::class, 'book_appointment']);
 Route::post('/generate-order', [WebViewController::class, 'generateOrder']);
 Route::post('/payment-success', [WebViewController::class, 'paymentSuccess']);
@@ -54,3 +52,69 @@ Route::get('/invoice/{id}', [WebViewController::class, 'show'])->name('invoice.s
 Route::get('/notice-api', [\App\Http\Controllers\api\NoticeController::class, 'getNotice']);
 Route::get('/get-notice', [\App\Http\Controllers\api\NoticeController::class, 'getNotice']);
 
+// Dynamic Custom Pages
+Route::get('/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page');
+Route::get('/c/{clinic_slug}', [WebViewController::class, 'appoinment'])->name('clinic.home');
+Route::get('/c/{clinic_slug}/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page.slug');
+
+
+// ==========================================
+// Google OAuth & Doctor Onboarding Flow
+// ==========================================
+Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->name('auth.google');
+Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/doctor/onboarding', [GoogleAuthController::class, 'showOnboarding'])->name('doctor.onboarding');
+    Route::post('/doctor/onboarding', [GoogleAuthController::class, 'completeOnboarding'])->name('doctor.onboarding.submit');
+});
+
+
+// ==========================================
+// Doctor / Clinic Portal Routes
+// ==========================================
+Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']], function () {
+    Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
+
+    // Clinic Settings & Doctor Razorpay
+    Route::get('/settings', [DoctorSettingsController::class, 'index'])->name('settings');
+    Route::post('/settings/profile', [DoctorSettingsController::class, 'updateProfile'])->name('settings.profile');
+    Route::post('/settings/razorpay', [DoctorSettingsController::class, 'updateRazorpay'])->name('settings.razorpay');
+    Route::post('/settings/branding', [DoctorSettingsController::class, 'updateBranding'])->name('settings.branding');
+    Route::post('/settings/domain', [DoctorSettingsController::class, 'updateDomain'])->name('settings.domain');
+
+    // Custom Pages Builder
+    Route::resource('pages', DoctorPageController::class);
+
+    // Subscription & Billing
+    Route::get('/subscription', [DoctorSubscriptionController::class, 'index'])->name('subscription.index');
+    Route::post('/subscription/order', [DoctorSubscriptionController::class, 'createOrder'])->name('subscription.order');
+    Route::post('/subscription/verify', [DoctorSubscriptionController::class, 'verifyPayment'])->name('subscription.verify');
+});
+
+
+// ==========================================
+// Super Admin SaaS Platform Routes
+// ==========================================
+Route::group(['prefix' => 'admin/saas', 'as' => 'admin.saas.', 'middleware' => ['auth', 'super_admin']], function () {
+    Route::get('/dashboard', [SaaSAdminController::class, 'dashboard'])->name('dashboard');
+
+    // Clinics Management
+    Route::get('/clinics', [SaaSAdminController::class, 'clinics'])->name('clinics');
+    Route::get('/clinics/{id}/edit', [SaaSAdminController::class, 'editClinic'])->name('clinic.edit');
+    Route::put('/clinics/{id}', [SaaSAdminController::class, 'updateClinic'])->name('clinic.update');
+    Route::get('/clinics/{id}/impersonate', [SaaSAdminController::class, 'impersonate'])->name('impersonate');
+    Route::get('/stop-impersonate', [SaaSAdminController::class, 'stopImpersonate'])->name('stop_impersonate');
+
+    // Plans Management
+    Route::get('/plans', [SaaSAdminController::class, 'plans'])->name('plans');
+    Route::post('/plans', [SaaSAdminController::class, 'storePlan'])->name('plan.store');
+    Route::put('/plans/{id}', [SaaSAdminController::class, 'updatePlan'])->name('plan.update');
+
+    // Audit Logs
+    Route::get('/logs', [SaaSAdminController::class, 'logs'])->name('logs');
+
+    // Platform Razorpay Credentials
+    Route::get('/payment-settings', [SaaSAdminController::class, 'platformPaymentSettings'])->name('payment_settings');
+    Route::post('/payment-settings', [SaaSAdminController::class, 'updatePlatformPaymentSettings'])->name('payment_settings.update');
+});

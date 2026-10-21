@@ -14,4 +14,14 @@ class Order extends Model
     protected $dates = ['deleted_at']; // Add deleted_at 
 
     protected $guarded = [];
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
+
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class, 'patient_id');
+    }
 }

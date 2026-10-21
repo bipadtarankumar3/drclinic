@@ -10,17 +10,25 @@ use App\Models\Setting;
 use App\Models\TimeSlot;
 use App\Models\Order;
 use App\Models\Patient;
+use App\Models\Clinic;
+use App\Models\ClinicPage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Razorpay\Api\Api;
-
 use Illuminate\Support\Facades\Http;
-
 use Illuminate\Support\Facades\DB;
-
 
 class WebViewController extends Controller
 {
+    protected function getClinic($clinic_slug = null)
+    {
+        if ($clinic_slug) {
+            $c = Clinic::where('slug', $clinic_slug)->orWhere('subdomain', $clinic_slug)->first();
+            if ($c) return $c;
+        }
+        return app()->bound('currentClinic') ? app('currentClinic') : Clinic::first();
+    }
+
     public function index(){
         $data['title'] = 'Home';
         return view('web.pages.index',$data);
@@ -188,14 +196,23 @@ class WebViewController extends Controller
     public function generateOrder(Request $request)
     {
         try {
-            $Setting = Setting::first();
-            $key = $Setting && !empty($Setting->pay_key) ? $Setting->pay_key : env('RAZORPAY_KEY');
-            $secret = $Setting && !empty($Setting->pay_secret_key) ? $Setting->pay_secret_key : env('RAZORPAY_SECRET');
+            $clinic = $this->getClinic();
+
+            // 1. Prefer Doctor's Personal Razorpay Gateway if configured
+            if ($clinic && $clinic->razorpay_enabled && !empty($clinic->razorpay_key) && !empty($clinic->razorpay_secret)) {
+                $key = $clinic->razorpay_key;
+                $secret = $clinic->razorpay_secret;
+            } else {
+                // Fallback to setting or environment
+                $Setting = Setting::where('clinic_id', $clinic?->id)->first() ?? Setting::first();
+                $key = $Setting && !empty($Setting->pay_key) ? $Setting->pay_key : env('RAZORPAY_KEY');
+                $secret = $Setting && !empty($Setting->pay_secret_key) ? $Setting->pay_secret_key : env('RAZORPAY_SECRET');
+            }
 
             if (empty($key) || empty($secret)) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Payment gateway keys are not configured in settings.'
+                    'message' => 'Payment gateway keys are not configured for this clinic.'
                 ], 400);
             }
 
@@ -211,7 +228,8 @@ class WebViewController extends Controller
             return response()->json([
                 'success' => true,
                 'order_id' => $order['id'],
-                'amount' => $order['amount']
+                'amount' => $order['amount'],
+                'key' => $key
             ]);
         } catch (\Exception $e) {
             \Log::error('Razorpay generateOrder error: ' . $e->getMessage());
@@ -227,7 +245,11 @@ class WebViewController extends Controller
         try {
             DB::beginTransaction();
 
+            $clinic = $this->getClinic();
+            $clinicId = $clinic?->id;
+
             $patient = Patient::create([
+                'clinic_id' => $clinicId,
                 'first_name' => $request->first_name,
                 'last_name' => $request->last_name,
                 'dob' => $request->dob,
@@ -241,6 +263,7 @@ class WebViewController extends Controller
             ]);
 
             $order = Order::create([
+                'clinic_id' => $clinicId,
                 'patient_id' => $patient->id,
                 'actual_amount' => $request->actual_amount,
                 'total_amount' => $request->amount,
@@ -254,7 +277,7 @@ class WebViewController extends Controller
 
             DB::commit();
 
-            $Setting = Setting::first();
+            $Setting = Setting::where('clinic_id', $clinicId)->first() ?? Setting::first();
             $timeSlot = TimeSlot::find($order->time_slot_id);
 
             // Send Booking Notification Email to Clinic (wrapped in try-catch so mail issues never block booking response)
@@ -465,5 +488,25 @@ class WebViewController extends Controller
         $setting = Setting::first();
 
         return view('web.pages.invoice.show', compact('order', 'setting'));
+    }
+
+    public function viewCustomPage($slug, $clinic_slug = null)
+    {
+        $clinic = $this->getClinic($clinic_slug);
+        if (!$clinic) {
+            abort(404, 'Clinic not found.');
+        }
+
+        $page = ClinicPage::where('clinic_id', $clinic->id)
+            ->where('slug', $slug)
+            ->where('is_published', true)
+            ->firstOrFail();
+
+        return view('web.pages.custom_page', [
+            'title' => $page->title . ' - ' . $clinic->name,
+            'page' => $page,
+            'clinic' => $clinic,
+            'currentClinic' => $clinic,
+        ]);
     }
 }

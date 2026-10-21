@@ -53,4 +53,18 @@ class User extends Authenticatable
         return $this->hasOne(Employee::class, 'user_id', 'id');
     }
 
+    public function clinic()
+    {
+        return $this->hasOne(Clinic::class, 'user_id');
+    }
+
+    public function isSuperAdmin(): bool
+    {
+        return in_array($this->user_type, ['admin', 'super_admin']);
+    }
+
+    public function isDoctor(): bool
+    {
+        return $this->user_type === 'doctor';
+    }
 }

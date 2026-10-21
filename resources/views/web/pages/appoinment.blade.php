@@ -7,12 +7,14 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
-
-/* Big Calander */
+@php
+  $activeTheme = $currentClinic->theme_color ?? '#0d6efd';
+@endphp
+/* Big Calendar Dynamic Clinic Color */
   .fc .fc-daygrid-day.fc-daygrid-day-selected,
   .fc-daygrid-day-selected,
   .fc .fc-day-today.fc-daygrid-day-selected {
-    background-color: #b22d32 !important;
+    background-color: {{ $activeTheme }} !important;
     color: #ffffff !important;
   }
 
@@ -26,13 +28,13 @@
   }
 
   .fc .fc-day-today {
-    background-color: #f7b2b6 !important;
-    color: #8b1e22 !important;
+    background-color: #e0f2fe !important;
+    color: #0369a1 !important;
   }
 
   .fc .fc-day-today a,
   .fc .fc-day-today .fc-daygrid-day-number {
-    color: #8b1e22 !important;
+    color: #0369a1 !important;
     font-weight: 700;
   }
 
@@ -251,11 +253,17 @@
                     <span>{{ $setting->frontend_notice }}</span>
                     <span class="notice-divider">&bull;</span>
                 @endif
-                <span>For any payment-related issues, please contact our helpline at <a href="tel:+919631775097" class="notice-link"><i class="fa-solid fa-phone me-1"></i>+91-9631775097</a> / <a href="tel:+919341284362" class="notice-link"><i class="fa-solid fa-phone me-1"></i>+91-9341284362</a> or email us at <a href="mailto:royneurocare@gmail.com" class="notice-link"><i class="fa-solid fa-envelope me-1"></i>royneurocare@gmail.com</a></span>
-                <span class="notice-divider">&bull;</span>
-                <span>Roy Neuro Care &bull; Complete Brain & Spine Centre, Bariatu, Ranchi</span>
-                <span class="notice-divider">&bull;</span>
-                <span>For any payment-related issues, please contact our helpline at <a href="tel:+919631775097" class="notice-link"><i class="fa-solid fa-phone me-1"></i>+91-9631775097</a> / <a href="tel:+919341284362" class="notice-link"><i class="fa-solid fa-phone me-1"></i>+91-9341284362</a> or email us at <a href="mailto:royneurocare@gmail.com" class="notice-link"><i class="fa-solid fa-envelope me-1"></i>royneurocare@gmail.com</a></span>
+                @if(isset($currentClinic))
+                    <span><strong>{{ $currentClinic->name }}</strong> &bull; {{ $currentClinic->specialization ?? 'Medical Consultation' }} &bull; {{ $currentClinic->address ?? '' }}</span>
+                    <span class="notice-divider">&bull;</span>
+                    @if($currentClinic->phone)
+                        <span>For appointment assistance, call: <a href="tel:{{ $currentClinic->phone }}" class="notice-link"><i class="fa-solid fa-phone me-1"></i>{{ $currentClinic->phone }}</a></span>
+                    @endif
+                    @if($currentClinic->email)
+                        <span class="notice-divider">&bull;</span>
+                        <span>Email: <a href="mailto:{{ $currentClinic->email }}" class="notice-link"><i class="fa-solid fa-envelope me-1"></i>{{ $currentClinic->email }}</a></span>
+                    @endif
+                @endif
             </div>
         </div>
     </div>

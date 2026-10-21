@@ -10,6 +10,7 @@
         "laravel/framework": "^10.0",
         "laravel/passport": "*",
         "laravel/sanctum": "^3.2",
+        "laravel/socialite": "^5.30",
         "laravel/tinker": "^2.8",
         "razorpay/razorpay": "^2.9"
     },

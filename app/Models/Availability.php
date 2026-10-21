@@ -9,4 +9,9 @@ class Availability extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function clinic()
+    {
+        return $this->belongsTo(Clinic::class);
+    }
 }

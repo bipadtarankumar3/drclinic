@@ -29,11 +29,16 @@ class AdminAuthController extends Controller
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
 
-            if(Auth::user()->user_type=="admin"){
+            if (in_array(Auth::user()->user_type, ['admin', 'super_admin'])) {
                 return redirect('admin/dashboard'); 
-            }else{
-                 $request->session()->flash('success', 'Login Success');
-                return redirect('vendor/dashboard');  
+            } elseif (Auth::user()->user_type === 'doctor') {
+                if (!Auth::user()->clinic) {
+                    return redirect()->route('doctor.onboarding');
+                }
+                return redirect()->route('doctor.dashboard');
+            } else {
+                $request->session()->flash('success', 'Login Success');
+                return redirect('admin/dashboard');  
             }
                
            

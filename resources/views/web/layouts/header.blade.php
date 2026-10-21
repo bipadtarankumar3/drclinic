@@ -1,111 +1,146 @@
+@php
+  $clinic = $currentClinic ?? \App\Models\Clinic::first();
+  $themeColor = $clinic->theme_color ?? '#0d6efd';
+@endphp
+<style>
+  :root {
+    --primary-color: {{ $themeColor }};
+  }
+  .desk-nav {
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    padding: 12px 0;
+  }
+  .desk-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .clinic-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: #0f172a;
+  }
+  .clinic-brand img {
+    max-height: 50px;
+    object-fit: contain;
+  }
+  .clinic-brand-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.3px;
+  }
+  .clinic-tagline {
+    font-size: 12px;
+    color: #64748b;
+    font-weight: 600;
+  }
+  .nav-custom-links {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .nav-custom-links a {
+    color: #334155;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    transition: color 0.2s;
+  }
+  .nav-custom-links a:hover {
+    color: var(--primary-color);
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .btn-header-login {
+    color: #475569;
+    font-weight: 600;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+  .btn-header-login:hover {
+    background: #f8fafc;
+    color: #0f172a;
+  }
+  .btn-header-book {
+    background: var(--primary-color);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 14px;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    transition: opacity 0.2s;
+  }
+  .btn-header-book:hover {
+    opacity: 0.9;
+    color: #ffffff;
+  }
+</style>
 
-      <header>
-      
-      <div class="desk-nav">
-        <div class="desk-main">
-          <div class="desk-img">
-            <a href="https://royneurocare.com/"><img src="{{ URL::to('public/assets/web/homeimage/logo.png')}}" alt=""></a>
+<header>
+  <div class="desk-nav">
+    <div class="desk-main">
+      <a href="{{ url('/') }}" class="clinic-brand">
+        @if($clinic && $clinic->logo)
+          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}">
+        @else
+          <div style="width: 44px; height: 44px; border-radius: 10px; background: {{ $themeColor }}; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px;">
+            <i class="fa-solid fa-hospital"></i>
           </div>
-          {{-- <div class="desk-text">
-           <div class="desk-ar"><a href="{{ URL::to('/')}}"><p>Home</p></a></div>
-           <div class="desk-ar"><a href="{{ URL::to('about')}}"><p>About Us</p></a></div>
-           <div class="desk-ar">
-            <li class="dropdown dropdown-1">
-              our Treatment <i class="fa-solid fa-caret-down chev"></i>
-              <ul class="dropdown_menu dropdown_menu-1">
-                <li class="dropdown_item-1"><a href="{{ URL::to('paralysis_stroke')}}">Paralysis/Stroke</a></li>
-                <li class="dropdown_item-2"><a href="{{ URL::to('migraine')}}">Headache / Migraine</a></li>
-                <li class="dropdown_item-3"><a href="{{ URL::to('fits_treatment')}}">Fits Treatment</a></li>
-                  <li class="dropdown_item-4"><a href="{{ URL::to('parkinson_disease')}}">Parkinson’s disease Treatment</a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('neck_back_pain')}}">Neck pain & back pain</a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('brain_fever')}}">Brain Fever Treatment</a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('dizziness_vertigo')}}">Dizziness / Vertigo</a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('muscle_disorders')}}">Muscle Disorders</a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('memory')}}">Memory Loss / Dementia </a></li>
-                  <li class="dropdown_item-5"><a href="{{ URL::to('pediatric ')}}">Pediatric Neurology</a></li>
-              </ul>
-            </li>
-           </div>
-           <div class="desk-ar"><a href="{{ URL::to('facilities')}}"><p>Facilities</p></a></div>
-           <div class="desk-ar"><a href="{{ URL::to('testimonials')}}"><p>Testimonials</p></a></div>
-           <div class="desk-ar">
-            <li class="dropdown dropdown-1">
-              Gallery<i class="fa-solid fa-caret-down chev"></i>
-              <ul class="dropdown_menu dropdown_menu-1 dropdown_menu-2">
-                <li class="dropdown_item-1"><a href="{{ URL::to('gallery')}}">Our Gallery</a></li>
-                <li class="dropdown_item-2"><a href="{{ URL::to('faq')}}">Faq</a></li>
-                <li class="dropdown_item-3"><a href="{{ URL::to('carrer')}}">Career</a></li>
-              </ul>
-            </li>
-           </div>
-           <div class="desk-ar"><a href="{{ URL::to('contact')}}"><p>Contact Us</p></a></div>
-          </div> --}}
-          <div class="desk-appointment">
-             <div class="book-an"><a href="https://royneurocare.com/" class="bo-btn">Back</a></div>
-          </div>
+        @endif
+        <div>
+          <div class="clinic-brand-text">{{ $clinic->name ?? 'Dr Clinic' }}</div>
+          <div class="clinic-tagline">{{ $clinic->specialization ?? 'Certified Healthcare Services' }}</div>
         </div>
+      </a>
+
+      <!-- Dynamic Custom Pages Navigation -->
+      @if($clinic && $clinic->pages && $clinic->pages->where('is_published', true)->count() > 0)
+      <ul class="nav-custom-links d-none d-lg-flex">
+        <a href="{{ url('/') }}">Appointment</a>
+        @foreach($clinic->pages->where('is_published', true) as $cp)
+          <a href="{{ url('/page/' . $cp->slug) }}">{{ $cp->title }}</a>
+        @endforeach
+      </ul>
+      @endif
+
+      <div class="header-actions">
+        @if(auth()->check())
+          @if(auth()->user()->isSuperAdmin())
+            <a href="{{ route('admin.saas.dashboard') }}" class="btn-header-login">
+              <i class="fa-solid fa-shield-halved"></i> Super Admin
+            </a>
+          @else
+            <a href="{{ route('doctor.dashboard') }}" class="btn-header-login">
+              <i class="fa-solid fa-user-doctor"></i> Doctor Portal
+            </a>
+          @endif
+        @else
+          <a href="{{ url('/admin/login') }}" class="btn-header-login">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Doctor Login
+          </a>
+        @endif
+
+        <a href="{{ url('/') }}" class="btn-header-book">
+          <i class="fa-regular fa-calendar-check"></i> Book Now
+        </a>
       </div>
-      
-      
-      
-      <header class="header" id="header">
-        <section class="wrapper container">
-           <a href="{{ URL::to('/')}}" class="brand"><img src="{{ URL::to('public/assets/web/homeimage/Logo.png')}}" alt=""></a>
-           <div class="book-an"><a href="https://royneurocare.com/" class="bo-btn">Back</a></div>
-           <div class="burger" id="burger">
-              <span class="burger-line"></span>
-              <span class="burger-line"></span>
-              <span class="burger-line"></span>
-           </div>
-           
-           <span class="overlay">
-            <div class="cross"><i class="fa-solid fa-xmark cross-icon"></i></div>
-           </span>
-           {{-- <nav class="navbar" id="navbar">
-              <ul class="menu" id="menu">
-                 <li class="menu-item"><a href="{{ URL::to('/')}}" class="menu-link">HOME</a></li>
-                 <li class="menu-item"><a href="{{ URL::to('about')}}" class="menu-link">ABOUT US</a></li>
-                 <li class="menu-item menu-dropdown">
-                    <span class="menu-link" data-toggle="submenu">OUR TREATMENT<i class="fa-solid fa-chevron-down"></i></span>
-                    <ul class="submenu">
-                       <li class="submenu-item"><a href="{{ URL::to('paralysis_stroke')}}" class="submenu-link">Paralysis/Stroke</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('migraine')}}" class="submenu-link">Headache / Migraine</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('fits_treatment')}}" class="submenu-link">Fits Treatment</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('parkinson_disease')}}" class="submenu-link">Parkinson’s disease Treatment</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('neck_back_pain')}}" class="submenu-link">Neck pain & back pain</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('brain_fever')}}" class="submenu-link">Brain Fever Treatment</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('dizziness_vertigo')}}" class="submenu-link">Dizziness / Vertigo</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('muscle_disorders')}}" class="submenu-link">Muscle Disorders</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('memory')}}" class="submenu-link">Memory Loss / Dementia </a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('pediatric ')}}" class="submenu-link">Pediatric Neurology</a></li>
-                    </ul>
-                 </li>
-      
-                 <li class="menu-item"><a href="{{ URL::to('facilities')}}" class="menu-link">FACILITIES</a></li>
-                 <li class="menu-item"><a href="{{ URL::to('testimonials')}}" class="menu-link">TESTIMONIALS</a></li>
-      
-                 <li class="menu-item menu-dropdown">
-                    <span class="menu-link" data-toggle="submenu">GALLERY<i class="fa-solid fa-chevron-down"></i></span>
-                    <ul class="submenu">
-                       <li class="submenu-item"><a href="{{ URL::to('gallery')}}" class="submenu-link">Our Gallery</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('faq')}}" class="submenu-link">Faq</a></li>
-                       <li class="submenu-item"><a href="{{ URL::to('carrer')}}" class="submenu-link">Career</a></li>
-                    </ul>
-                 </li>
-                 
-                 <li class="menu-item"><a href="{{ URL::to('contact')}}" class="menu-link">CONTACT US</a></li>
-                 
-              </ul>
-      
-           </nav> --}}
-        </section>
-      </header>
-      
-      
-      
-      
-      
-      
-      
-      </header>
-      
+    </div>
+  </div>
+</header>

@@ -394,12 +394,12 @@ function payWithRazorpay(e) {
             if (response.success) {
                 let fullName = (first_name + " " + (last_name || "")).trim();
                 let options = {
-                    "key": "{{ isset($setting) && !empty($setting->pay_key) ? $setting->pay_key : env('RAZORPAY_KEY') }}",
+                    "key": response.key || "{{ (isset($currentClinic) && $currentClinic->razorpay_enabled && $currentClinic->razorpay_key) ? $currentClinic->razorpay_key : (isset($setting) && !empty($setting->pay_key) ? $setting->pay_key : env('RAZORPAY_KEY')) }}",
                     "amount": response.amount,
                     "currency": "INR",
-                    "name": "Roy Neuro Care",
-                    "description": "Appointment Booking Consultation Fee",
-                    "image": "{{ URL::to('public/assets/web/logo/favicon-32x32.png') }}",
+                    "name": "{{ $currentClinic->name ?? 'Dr Clinic' }}",
+                    "description": "Appointment Consultation Fee - {{ $currentClinic->name ?? 'Dr Clinic' }}",
+                    "image": "{{ (isset($currentClinic) && $currentClinic->logo) ? asset($currentClinic->logo) : URL::to('public/assets/web/logo/favicon-32x32.png') }}",
                     "order_id": response.order_id,
                     "handler": function(paymentResponse) {
                         payBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Finalizing Booking...');
