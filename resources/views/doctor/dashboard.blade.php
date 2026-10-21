@@ -60,7 +60,7 @@
       <div>
         <h2 class="font-weight-bold mb-1">{{ $clinic->name }}</h2>
         <p class="text-muted mb-0">
-          <i class="mdi mdi-doctor text-primary"></i> Dr. {{ Auth::user()->name }} 
+          <i class="mdi mdi-doctor text-primary"></i> Dr. {{ Auth::user()->name ?? ($clinic->user->name ?? 'Doctor') }} 
           @if($clinic->specialization) &bull; <span class="badge badge-light-primary">{{ $clinic->specialization }}</span> @endif
         </p>
       </div>

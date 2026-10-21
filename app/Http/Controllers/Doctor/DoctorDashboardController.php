@@ -26,7 +26,7 @@ class DoctorDashboardController extends Controller
         $totalOrders = Order::where('clinic_id', $clinic->id)->count();
         $totalEarnings = Order::where('clinic_id', $clinic->id)
             ->whereIn('payment_status', ['paid', 'success', 'captured'])
-            ->sum('amount');
+            ->sum('total_amount');
 
         // Recent bookings
         $recentBookings = Patient::where('clinic_id', $clinic->id)
