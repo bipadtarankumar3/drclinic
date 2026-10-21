@@ -52,10 +52,10 @@ const resizeWindow = () => {
    }
 };
 
-// Initialize Event Listeners
-burgerMenu.addEventListener("click", toggleMenu);
-overlayMenu.addEventListener("click", toggleMenu);
-navbarMenu.addEventListener("click", toggleSubMenu);
+// Initialize Event Listeners safely
+if (burgerMenu) burgerMenu.addEventListener("click", toggleMenu);
+if (overlayMenu) overlayMenu.addEventListener("click", toggleMenu);
+if (navbarMenu) navbarMenu.addEventListener("click", toggleSubMenu);
 window.addEventListener("resize", resizeWindow);
 
 

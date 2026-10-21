@@ -120,29 +120,22 @@
 
 
 <script>
-  
 window.addEventListener("load", function(){
-
-setTimeout(
-    function open(event){
-      document.querySelector(".all-popup") .style.display = "block";
-    },
-   
-
-)
-
+  let popup = document.querySelector(".all-popup");
+  if (popup) {
+    setTimeout(function open(event){
+      popup.style.display = "block";
+    }, 1000);
+  }
 });
 
-document.querySelector("#close-bttt") .addEventListener("click", function(){
-document.querySelector(".all-popup") .style.display = "none";
-
-
-});
-
-
-
-
-
+let closeBtn = document.querySelector("#close-bttt");
+if (closeBtn) {
+  closeBtn.addEventListener("click", function(){
+    let popup = document.querySelector(".all-popup");
+    if (popup) popup.style.display = "none";
+  });
+}
 </script>
 
 
