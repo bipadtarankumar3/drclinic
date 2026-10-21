@@ -564,26 +564,63 @@ body.sidebar-icon-only .nav-chevron {
   transform: translateY(-1px);
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 991px) {
-  .sidebar {
-    width: var(--sidebar-width) !important;
-  }
-  .navbar .navbar-brand-wrapper {
-    width: 70px !important;
-    padding: 12px !important;
-  }
-  .navbar .navbar-menu-wrapper {
-    width: calc(100% - 70px) !important;
-  }
-  .main-panel,
-  .page-body-wrapper > .content-wrapper,
-  .page-body-wrapper > .container-xxl,
-  .page-body-wrapper > div:not(.sidebar) {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
-  .container-xxl, .content-wrapper {
-    padding: 16px !important;
-  }
+/* Quick Filter Pills Bar */
+.quick-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none !important;
+  transition: all 0.15s ease;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
 }
+.quick-filter-pill:hover {
+  background: #f8fafc;
+  color: #0f172a;
+}
+.quick-filter-pill.active-pill {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  border-color: #0f172a !important;
+}
+.quick-filter-pill.active-pill .pill-count {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+.pill-count {
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 9999px;
+}
+.green-pill { background: #f0fdf4 !important; border-color: #bbf7d0 !important; color: #15803d !important; }
+.amber-pill { background: #fffbeb !important; border-color: #fde68a !important; color: #b45309 !important; }
+.blue-pill  { background: #eff6ff !important; border-color: #bfdbfe !important; color: #1d4ed8 !important; }
+.cyan-pill  { background: #ecfeff !important; border-color: #a5f3fc !important; color: #0e7490 !important; }
+.purple-pill{ background: #faf5ff !important; border-color: #e9d5ff !important; color: #7e22ce !important; }
+.emerald-pill{ background: #ecfdf5 !important; border-color: #a7f3d0 !important; color: #047857 !important; }
+
+.count-green { background: #dcfce7 !important; color: #15803d !important; }
+.count-amber { background: #fef3c7 !important; color: #b45309 !important; }
+.count-blue  { background: #dbeafe !important; color: #1d4ed8 !important; }
+.count-cyan  { background: #cffafe !important; color: #0e7490 !important; }
+.count-purple{ background: #f3e8ff !important; color: #7e22ce !important; }
+.count-emerald{ background: #d1fae5 !important; color: #047857 !important; }
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-green { background: #16a34a !important; }
+.dot-amber { background: #d97706 !important; }
+.dot-blue  { background: #2563eb !important; }
+

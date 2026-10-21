@@ -16,76 +16,100 @@ use Carbon\Carbon;
 
 class PatientController extends Controller
 {
-    public function patient_list()
+    public function patient_list(Request $request)
     {
-        $data['title'] = 'Patient List';
+        $data['title'] = 'Patient Bookings & Appointments';
 
         // Get today's, tomorrow's, and yesterday's dates
         $today = Carbon::today();
         $tomorrow = Carbon::tomorrow();
         $yesterday = Carbon::yesterday();
 
-        // Fetch orders for each date with full patient details
-        $data['today_orders'] = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-        ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-        ->select(
-            'orders.*',
-            'patients.first_name',
-            'patients.last_name',
-            'patients.dob',
-            'patients.sex',
-            'patients.age',
-            'patients.mobile_no',
-            'patients.alternate_mobile_no',
-            'patients.customer_email',
-            'patients.address',
-            'patients.patient_problem',
-            'patients.status as patient_status',
-            'time_slots.from_time',
-            'time_slots.to_time'
-        )
-        ->whereDate('booking_date', $today)->get();
+        $user = auth()->user();
+        $clinic = $user && $user->clinic ? $user->clinic : null;
+        $clinicId = $clinic ? $clinic->id : null;
 
-        $data['tomorrow_orders'] = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-        ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-        ->select(
-            'orders.*',
-            'patients.first_name',
-            'patients.last_name',
-            'patients.dob',
-            'patients.sex',
-            'patients.age',
-            'patients.mobile_no',
-            'patients.alternate_mobile_no',
-            'patients.customer_email',
-            'patients.address',
-            'patients.patient_problem',
-            'patients.status as patient_status',
-            'time_slots.from_time',
-            'time_slots.to_time'
-        )
-        ->whereDate('booking_date', $tomorrow)->get();
+        // Base Query
+        $baseQuery = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
+            ->leftJoin('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+            ->select(
+                'orders.*',
+                'patients.first_name',
+                'patients.last_name',
+                'patients.dob',
+                'patients.sex',
+                'patients.age',
+                'patients.mobile_no',
+                'patients.alternate_mobile_no',
+                'patients.customer_email',
+                'patients.address',
+                'patients.patient_problem',
+                'patients.status as patient_status',
+                'time_slots.from_time',
+                'time_slots.to_time'
+            );
 
-        $data['yesterday_orders'] = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-        ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-        ->select(
-            'orders.*',
-            'patients.first_name',
-            'patients.last_name',
-            'patients.dob',
-            'patients.sex',
-            'patients.age',
-            'patients.mobile_no',
-            'patients.alternate_mobile_no',
-            'patients.customer_email',
-            'patients.address',
-            'patients.patient_problem',
-            'patients.status as patient_status',
-            'time_slots.from_time',
-            'time_slots.to_time'
-        )
-        ->whereDate('booking_date', $yesterday)->get();
+        if ($clinicId) {
+            $baseQuery->where('orders.clinic_id', $clinicId);
+        }
 
+        // Metrics for Stat Cards & Pill Counts
+        $data['totalInquiries'] = (clone $baseQuery)->count();
+        $data['todayBookings'] = (clone $baseQuery)->whereDate('orders.booking_date', $today)->count();
+        $data['tomorrowBookings'] = (clone $baseQuery)->whereDate('orders.booking_date', $tomorrow)->count();
+        $data['weekBookings'] = (clone $baseQuery)->whereBetween('orders.booking_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])->count();
+        $data['newLeads'] = (clone $baseQuery)->where('orders.payment_status', 'pending')->count();
+        $data['testRidesScheduled'] = (clone $baseQuery)->whereDate('orders.booking_date', '>=', $today)->count();
+        $data['bookedDelivered'] = (clone $baseQuery)->whereIn('orders.payment_status', ['paid', 'success', 'captured'])->count();
+
+        // Apply Filters
+        $filterQuery = clone $baseQuery;
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $filterQuery->where(function ($q) use ($search) {
+                $q->where('patients.first_name', 'like', "%{$search}%")
+                  ->orWhere('patients.last_name', 'like', "%{$search}%")
+                  ->orWhere('patients.mobile_no', 'like', "%{$search}%")
+                  ->orWhere('orders.order_id', 'like', "%{$search}%")
+                  ->orWhere('patients.patient_problem', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('timeframe')) {
+            if ($request->timeframe === 'today') {
+                $filterQuery->whereDate('orders.booking_date', $today);
+            } elseif ($request->timeframe === 'tomorrow') {
+                $filterQuery->whereDate('orders.booking_date', $tomorrow);
+            } elseif ($request->timeframe === 'week') {
+                $filterQuery->whereBetween('orders.booking_date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
+            } elseif ($request->timeframe === 'month') {
+                $filterQuery->whereMonth('orders.booking_date', Carbon::now()->month);
+            }
+        }
+
+        if ($request->filled('status')) {
+            if ($request->status === 'confirmed' || $request->status === 'paid') {
+                $filterQuery->whereIn('orders.payment_status', ['paid', 'success', 'captured']);
+            } elseif ($request->status === 'pending') {
+                $filterQuery->where('orders.payment_status', 'pending');
+            } elseif ($request->status === 'cancelled') {
+                $filterQuery->where('orders.payment_status', 'cancelled');
+            }
+        }
+
+        if ($request->filled('specific_date')) {
+            $filterQuery->whereDate('orders.booking_date', $request->specific_date);
+        }
+
+        // Fetch Main Filtered Orders
+        $data['orders'] = $filterQuery->latest('orders.id')->get();
+
+        // Backward compatibility for tab views
+        $data['today_orders'] = (clone $baseQuery)->whereDate('orders.booking_date', $today)->get();
+        $data['tomorrow_orders'] = (clone $baseQuery)->whereDate('orders.booking_date', $tomorrow)->get();
+        $data['yesterday_orders'] = (clone $baseQuery)->whereDate('orders.booking_date', $yesterday)->get();
+        $data['clinic'] = $clinic;
 
         return view('admin.pages.patient.patient_list', $data);
     }
