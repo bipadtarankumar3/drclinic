@@ -46,35 +46,94 @@ class SaaSAdminController extends Controller
 
         $totalDoctors = User::where('user_type', 'doctor')->count();
         $totalPlatformRevenue = ClinicSubscription::where('status', 'active')->sum('amount');
+        if ($totalPlatformRevenue == 0) {
+            $totalPlatformRevenue = ClinicSubscription::sum('amount');
+        }
         $totalPatientAppointments = Patient::count();
+        $totalGrossConsultation = Order::where('payment_status', 'success')->sum('total_amount');
+        $successfulAppointmentsCount = Order::where('payment_status', 'success')->count();
+        $recentBookingsCount = Order::where('created_at', '>=', now()->subDays(30))->count();
 
         // Chart 1: Monthly Subscription Revenue Trend (Last 6 Months)
-        $revenueTrend = ClinicSubscription::where('status', 'active')
-            ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
+        $rawRevenue = ClinicSubscription::whereNotNull('created_at')
             ->selectRaw('DATE_FORMAT(created_at, "%b %Y") as month_name, SUM(amount) as total')
             ->groupBy('month_name')
-            ->orderByRaw('MIN(created_at) ASC')
             ->pluck('total', 'month_name')
             ->toArray();
 
-        // Chart 2: Doctor Signups Trend (Last 30 Days or selected range)
-        $signupTrend = User::where('user_type', 'doctor')
-            ->where('created_at', '>=', $startDate)
-            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-            ->groupBy('date')
-            ->orderBy('date', 'ASC')
-            ->pluck('count', 'date')
+        // Fill last 6 months sequence for continuous display
+        $revenueTrend = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $m = now()->subMonths($i)->format('M Y');
+            $revenueTrend[$m] = isset($rawRevenue[$m]) ? (float)$rawRevenue[$m] : 0;
+        }
+        if (array_sum($revenueTrend) == 0 && $totalPlatformRevenue > 0) {
+            $revenueTrend[now()->format('M Y')] = (float)$totalPlatformRevenue;
+        }
+
+        // Chart 2: Monthly Patient Appointments Volume Trend (Last 8 Months)
+        $rawBookings = Order::whereNotNull('created_at')
+            ->where('created_at', '>=', now()->subMonths(7)->startOfMonth())
+            ->selectRaw('DATE_FORMAT(created_at, "%b %Y") as month_name, COUNT(*) as count')
+            ->groupBy('month_name')
+            ->orderByRaw('MIN(created_at) ASC')
+            ->pluck('count', 'month_name')
             ->toArray();
+
+        $appointmentsTrend = [];
+        for ($i = 7; $i >= 0; $i--) {
+            $m = now()->subMonths($i)->format('M Y');
+            $appointmentsTrend[$m] = isset($rawBookings[$m]) ? (int)$rawBookings[$m] : 0;
+        }
 
         // Chart 3: Plan Distribution
         $planDistribution = SubscriptionPlan::withCount(['subscriptions' => function ($q) {
             $q->where('status', 'active');
         }])->get();
 
-        // Recent Clinics
-        $recentClinics = Clinic::with('user', 'activeSubscription.plan')->latest()->take(6)->get();
+        // Chart 4: Clinic Status Breakdown
+        $statusBreakdown = [
+            'Active' => $activeClinics,
+            '7-Day Trial' => $trialingClinics,
+            'Expired' => $expiredClinics,
+        ];
 
-        // Recent Activity Logs
+        // Chart 5: Patient Payment Mode Split (Razorpay vs Counter/Cash)
+        $paymentModes = Order::selectRaw('COALESCE(NULLIF(transaction_mode, ""), "Razorpay Online") as mode, COUNT(*) as count')
+            ->groupBy('mode')
+            ->pluck('count', 'mode')
+            ->toArray();
+
+        // Table 1: Registered Doctor Clinics Directory
+        $recentClinics = Clinic::with('user', 'activeSubscription.plan')
+            ->withCount(['patients', 'orders'])
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Table 2: Recent SaaS Subscription Billing Invoices
+        $recentSubscriptions = ClinicSubscription::with('clinic.user', 'plan')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Table 3: Top Performing Doctor Clinics (Ranked by order volume & gross bookings)
+        $topClinics = Clinic::with('user', 'activeSubscription.plan')
+            ->withCount(['patients', 'orders'])
+            ->withSum(['orders' => function ($q) {
+                $q->where('payment_status', 'success');
+            }], 'total_amount')
+            ->orderBy('orders_count', 'desc')
+            ->take(5)
+            ->get();
+
+        // Table 4: Recent Patient Appointments Across Platform
+        $recentAppointments = Order::with('patient', 'clinic')
+            ->latest()
+            ->take(8)
+            ->get();
+
+        // Table 5: Recent Activity Logs
         $recentLogs = ActivityLog::with('user', 'clinic')->latest()->take(10)->get();
 
         return view('admin.saas.dashboard', compact(
@@ -85,10 +144,18 @@ class SaaSAdminController extends Controller
             'totalDoctors',
             'totalPlatformRevenue',
             'totalPatientAppointments',
+            'totalGrossConsultation',
+            'successfulAppointmentsCount',
+            'recentBookingsCount',
             'revenueTrend',
-            'signupTrend',
+            'appointmentsTrend',
             'planDistribution',
+            'statusBreakdown',
+            'paymentModes',
             'recentClinics',
+            'recentSubscriptions',
+            'topClinics',
+            'recentAppointments',
             'recentLogs',
             'range'
         ));
