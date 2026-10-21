@@ -101,6 +101,8 @@ Route::group(['prefix' => 'admin/saas', 'as' => 'admin.saas.', 'middleware' => [
 
     // Clinics Management
     Route::get('/clinics', [SaaSAdminController::class, 'clinics'])->name('clinics');
+    Route::get('/clinics/create', [SaaSAdminController::class, 'createClinic'])->name('clinic.create');
+    Route::post('/clinics', [SaaSAdminController::class, 'storeClinic'])->name('clinic.store');
     Route::get('/clinics/{id}/edit', [SaaSAdminController::class, 'editClinic'])->name('clinic.edit');
     Route::put('/clinics/{id}', [SaaSAdminController::class, 'updateClinic'])->name('clinic.update');
     Route::get('/clinics/{id}/impersonate', [SaaSAdminController::class, 'impersonate'])->name('impersonate');

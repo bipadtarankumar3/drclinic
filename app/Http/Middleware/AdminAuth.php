@@ -21,7 +21,7 @@ class AdminAuth
         }
 
         $user = Auth::user();
-        $isAllowed = in_array($user->user_type, ['admin', 'super_admin', 'doctor', 'clinic']) 
+        $isAllowed = in_array($user->user_type, ['admin', 'super_admin', 'doctor', 'clinic', 'user']) 
                      || $user->clinic 
                      || session()->has('impersonating_admin_id');
 

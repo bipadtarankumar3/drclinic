@@ -11,9 +11,10 @@ use App\Models\ClinicSubscription;
 use App\Models\Patient;
 use App\Models\Order;
 use App\Models\ActivityLog;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class SaaSAdminController extends Controller
@@ -183,8 +184,147 @@ class SaaSAdminController extends Controller
         }
 
         $clinics = $query->latest()->paginate(15);
+        $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+        $availableUsers = User::whereDoesntHave('clinic')
+            ->whereNotIn('user_type', ['admin', 'super_admin'])
+            ->orderBy('name', 'asc')
+            ->get();
 
-        return view('admin.saas.clinics', compact('clinics'));
+        return view('admin.saas.clinics', compact('clinics', 'plans', 'availableUsers'));
+    }
+
+    /**
+     * Create Clinic Form Page
+     */
+    public function createClinic()
+    {
+        $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
+        $availableUsers = User::whereDoesntHave('clinic')
+            ->whereNotIn('user_type', ['admin', 'super_admin'])
+            ->orderBy('name', 'asc')
+            ->get();
+
+        return view('admin.saas.clinic_create', compact('plans', 'availableUsers'));
+    }
+
+    /**
+     * Store Clinic and User with type = user/doctor
+     */
+    public function storeClinic(Request $request)
+    {
+        $userMode = $request->get('user_mode', 'new'); // 'new' or 'existing'
+
+        $rules = [
+            'clinic_name' => 'required|string|max:255',
+            'subdomain' => 'required|string|max:100|alpha_dash|unique:clinics,subdomain|unique:clinics,slug',
+            'specialization' => 'nullable|string|max:255',
+            'consultation_fee' => 'nullable|numeric|min:0',
+            'clinic_phone' => 'nullable|string|max:20',
+            'clinic_email' => 'nullable|email|max:255',
+            'address' => 'nullable|string|max:500',
+            'custom_domain' => 'nullable|string|max:255',
+            'plan_id' => 'nullable|exists:subscription_plans,id',
+            'status' => 'required|in:active,trialing,suspended,expired',
+            'trial_days' => 'nullable|integer|min:1|max:365',
+        ];
+
+        if ($userMode === 'new') {
+            $rules['user_name'] = 'required|string|max:255';
+            $rules['user_email'] = 'required|email|max:255|unique:users,email';
+            $rules['user_password'] = 'required|string|min:6';
+            $rules['user_phone'] = 'nullable|string|max:20';
+            $rules['user_type'] = 'required|in:user,doctor';
+        } else {
+            $rules['user_id'] = 'required|exists:users,id';
+        }
+
+        $request->validate($rules);
+
+        DB::beginTransaction();
+        try {
+            // 1. Resolve or Create User
+            if ($userMode === 'new') {
+                $user = User::create([
+                    'name' => $request->user_name,
+                    'email' => $request->user_email,
+                    'password' => Hash::make($request->user_password),
+                    'phone' => $request->user_phone,
+                    'user_type' => $request->user_type ?? 'user',
+                    'status' => 'active',
+                    'otp_verified' => 'yes',
+                ]);
+            } else {
+                $user = User::findOrFail($request->user_id);
+                if ($request->filled('user_type')) {
+                    $user->user_type = $request->user_type;
+                }
+                $user->save();
+            }
+
+            // 2. Resolve Trial Expiry
+            $trialEndsAt = null;
+            if ($request->status === 'trialing') {
+                $trialDays = (int)($request->trial_days ?? 7);
+                $trialEndsAt = now()->addDays($trialDays);
+            } elseif ($request->status === 'active') {
+                $trialEndsAt = now()->addYear();
+            }
+
+            // 3. Create Clinic
+            $subdomainClean = Str::slug($request->subdomain);
+            $clinic = Clinic::create([
+                'user_id' => $user->id,
+                'name' => $request->clinic_name,
+                'slug' => $subdomainClean,
+                'subdomain' => $subdomainClean,
+                'custom_domain' => $request->custom_domain ?: null,
+                'phone' => $request->clinic_phone ?: $user->phone,
+                'email' => $request->clinic_email ?: $user->email,
+                'address' => $request->address,
+                'specialization' => $request->specialization ?: 'General Healthcare',
+                'consultation_fee' => $request->consultation_fee ?: 500.00,
+                'status' => $request->status,
+                'trial_ends_at' => $trialEndsAt,
+                'allow_cash_booking' => true,
+                'razorpay_enabled' => false,
+            ]);
+
+            // 4. Create Plan Subscription if selected
+            if ($request->filled('plan_id')) {
+                $plan = SubscriptionPlan::find($request->plan_id);
+                if ($plan) {
+                    ClinicSubscription::create([
+                        'clinic_id' => $clinic->id,
+                        'plan_id' => $plan->id,
+                        'status' => $request->status === 'active' ? 'active' : 'trialing',
+                        'starts_at' => now(),
+                        'ends_at' => $request->status === 'active' ? now()->addDays($plan->duration_days ?: 30) : now()->addDays(7),
+                        'amount' => $plan->price,
+                        'razorpay_payment_id' => 'ADMIN_MANUAL_' . strtoupper(Str::random(8)),
+                        'razorpay_order_id' => 'ADMIN_ORDER_' . strtoupper(Str::random(8)),
+                    ]);
+                }
+            }
+
+            // 5. Activity Log
+            ActivityLog::create([
+                'user_id' => Auth::id(),
+                'clinic_id' => $clinic->id,
+                'action' => 'Clinic Created by Admin',
+                'description' => "Admin created clinic '{$clinic->name}' and assigned user '{$user->name}' (type: {$user->user_type})",
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('admin.saas.clinics')
+                ->with('success', "Clinic '{$clinic->name}' created successfully and assigned to user '{$user->name}' (type: {$user->user_type})!");
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Error creating clinic: ' . $e->getMessage());
+        }
     }
 
     /**

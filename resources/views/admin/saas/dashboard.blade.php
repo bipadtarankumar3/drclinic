@@ -23,8 +23,12 @@
           </select>
         </form>
 
-        <a href="{{ route('admin.saas.clinics') }}" class="btn btn-primary btn-sm font-weight-bold shadow-sm d-inline-flex align-items-center gap-1" style="border-radius: 8px; padding: 7px 14px;">
-          <i class="mdi mdi-hospital-building font-16"></i> Manage Clinics
+        <a href="{{ route('admin.saas.clinic.create') }}" class="btn btn-primary btn-sm font-weight-bold shadow-sm d-inline-flex align-items-center gap-1" style="border-radius: 8px; padding: 7px 14px;">
+          <i class="mdi mdi-plus-circle font-16"></i> Add Clinic
+        </a>
+
+        <a href="{{ route('admin.saas.clinics') }}" class="btn btn-outline-primary btn-sm font-weight-bold shadow-sm d-inline-flex align-items-center gap-1" style="border-radius: 8px; padding: 7px 14px;">
+          <i class="mdi mdi-hospital-building font-16"></i> Clinics Directory
         </a>
 
         <a href="{{ route('admin.saas.plans') }}" class="btn btn-outline-secondary btn-sm font-weight-bold shadow-sm d-inline-flex align-items-center gap-1" style="border-radius: 8px; padding: 7px 14px;">
