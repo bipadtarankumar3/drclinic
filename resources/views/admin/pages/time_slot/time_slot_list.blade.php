@@ -1,21 +1,21 @@
 @extends('admin.layouts.main')
 
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
-        <h6 class="py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Time Slots</h6>
-
-        <div class="mb-2">
-            <div class="row">
-                <div class="col-md-10">
-                    <h5 class="mb-0">{{ $title }}</h5>
-                </div>
-                <div class="col-md-2">
-                    <a href="{{ URL::to('admin/time_slot/time_slot_add') }}">
-                        <button class="btn btn-primary btn-sm text-white mb-0 me-0" type="button">
-                            <i class="mdi mdi-account-plus"></i> Add Time Slot
-                        </button>
-                    </a>
-                </div>
+    <div class="container-fluid p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold text-dark mb-1 d-flex align-items-center">
+                    <span class="rounded-3 p-2 bg-primary bg-opacity-10 text-primary me-2 d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="mdi mdi-clock-time-four font-20"></i>
+                    </span>
+                    Clinic Consultation Time Slots
+                </h3>
+                <p class="text-muted mb-0 font-13">Configure morning, afternoon, and evening booking slots for patient appointments.</p>
+            </div>
+            <div>
+                <a href="{{ URL::to('admin/time_slot/time_slot_add') }}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2 shadow-sm text-white">
+                    <i class="mdi mdi-plus-circle me-1"></i> Add New Slot
+                </a>
             </div>
         </div>
 

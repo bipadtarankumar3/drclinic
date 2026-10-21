@@ -1,8 +1,8 @@
 @extends('admin.layouts.main')
 
 @section('content')
-<div class="container-xxl flex-grow-1 container-p-y">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="container-fluid p-3 p-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
             <h5 class="mb-0 fw-bold text-dark"><i class="mdi mdi-credit-card-outline me-1 text-primary"></i> {{ $title }}</h5>
             <small class="text-muted">Real-time logs of all online appointment payments, Razorpay transactions, and booking statuses.</small>

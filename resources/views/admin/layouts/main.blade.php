@@ -57,9 +57,10 @@
         
 
 
-        <!-- partial -->
-        
-        @yield('content')
+        <!-- main-panel begins -->
+        <div class="main-panel">
+          @yield('content')
+        </div>
         <!-- main-panel ends -->
 
       </div>

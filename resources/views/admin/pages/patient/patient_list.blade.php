@@ -30,10 +30,25 @@
 </style>
 
 
-    <div class="container-xxl flex-grow-1 container-p-y">
-        <h6 class="py-3 mb-4"><span class="text-muted fw-light">Admin /</span> patient</h6>
+    <div class="container-fluid p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold text-dark mb-1 d-flex align-items-center">
+                    <span class="rounded-3 p-2 bg-primary bg-opacity-10 text-primary me-2 d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="mdi mdi-calendar-check font-20"></i>
+                    </span>
+                    Patient Appointment Bookings
+                </h3>
+                <p class="text-muted mb-0 font-13">Daily patient schedules, attendance tracking, and consultation details.</p>
+            </div>
+            <div>
+                <a href="{{ url('admin/booking_history') }}" class="btn btn-outline-primary btn-sm font-weight-bold px-3 py-2 shadow-sm">
+                    <i class="mdi mdi-history me-1"></i> Full Booking History
+                </a>
+            </div>
+        </div>
 
-        <div class="card p-4">
+        <div class="card p-4 shadow-sm border-0 rounded-4">
 
             <ul class="nav nav-tabs text-center custom-nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item" role="presentation">

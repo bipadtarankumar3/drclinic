@@ -1,8 +1,23 @@
 @extends('admin.layouts.main')
 
 @section('content')
-    <div class="container-xxl flex-grow-1 container-p-y">
-        <h6 class="py-3 mb-4"><span class="text-muted fw-light">Admin /</span> Patient History</h6>
+    <div class="container-fluid p-3 p-md-4">
+        <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+            <div>
+                <h3 class="fw-bold text-dark mb-1 d-flex align-items-center">
+                    <span class="rounded-3 p-2 bg-primary bg-opacity-10 text-primary me-2 d-inline-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
+                        <i class="mdi mdi-folder-account font-20"></i>
+                    </span>
+                    Patient Master Records
+                </h3>
+                <p class="text-muted mb-0 font-13">View registered patient accounts, previous consultations, and patient history.</p>
+            </div>
+            <div>
+                <a href="{{ url('admin/patient') }}" class="btn btn-outline-primary btn-sm font-weight-bold px-3 py-2 shadow-sm">
+                    <i class="mdi mdi-calendar-today me-1"></i> Today's Appointments
+                </a>
+            </div>
+        </div>
 
         <form action="{{ url('admin/history_of_customer') }}" method="GET">
             <div class="card my-4">

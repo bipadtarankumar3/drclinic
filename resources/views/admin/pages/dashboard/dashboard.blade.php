@@ -189,7 +189,6 @@
 @endsection
 
 @section('content')
-<div class="main-panel">
   <div class="content-wrapper p-3 p-md-4">
     
     <!-- Hero Welcome Banner -->
@@ -664,7 +663,6 @@
     </div>
 
   </div>
-</div>
 @endsection
 
 @section('js')
