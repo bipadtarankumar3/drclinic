@@ -83,7 +83,7 @@
     {{-- CASE 2: DOCTOR CLINIC (Visible to Doctors OR Admin VISITING a clinic)     --}}
     {{-- Order: 1. Dashboard, 2. Daily Patient Activity, 3. Clinic Setup & Plans   --}}
     {{-- ========================================================================= --}}
-    @if(Auth::check() && (Auth::user()->isDoctor() || Auth::user()->clinic || session('impersonating_admin_id')))
+    @if(Auth::check() && (session('impersonating_admin_id') || (!Auth::user()->isSuperAdmin() && (Auth::user()->isDoctor() || Auth::user()->clinic))))
     
     <li class="nav-item nav-category">
       <span>MAIN</span>
@@ -182,16 +182,6 @@
         <i class="mdi mdi-file-document-edit-outline nav-icon"></i>
         <span class="menu-title">Custom Pages</span>
         @if(request()->routeIs('doctor.pages.*'))
-        <i class="mdi mdi-chevron-right nav-chevron"></i>
-        @endif
-      </a>
-    </li>
-
-    <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.settings') }}">
-        <i class="mdi mdi-tune nav-icon"></i>
-        <span class="menu-title">Clinic & Razorpay</span>
-        @if(request()->routeIs('doctor.settings'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>

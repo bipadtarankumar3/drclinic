@@ -111,57 +111,100 @@
           </div>
           <i class="mdi mdi-chevron-down text-muted ms-1 d-none d-lg-inline font-16"></i>
         </a>
-        <div class="dropdown-menu dropdown-menu-end navbar-dropdown shadow-lg border-0 rounded-4 mt-2 p-2" aria-labelledby="UserDropdown" style="min-width: 260px; border-radius: 16px; border: 1px solid #f1f5f9 !important; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;">
-          <div class="dropdown-header text-start pb-3 border-bottom mb-2">
-            <p class="mb-0 font-weight-bold text-dark font-14">{{ Auth::user()->name }}</p>
-            <p class="text-muted font-12 mb-2 text-truncate">{{ Auth::user()->email }}</p>
-            <span class="badge border border-danger text-danger bg-danger bg-opacity-10 rounded-pill font-11 px-2 py-1 text-uppercase font-weight-bold">
-              {{ Auth::check() && Auth::user()->clinic ? Auth::user()->clinic->name : ($isSuperAdmin ? 'PLATFORM ADMIN' : 'DR CLINIC') }}
-            </span>
+        <div class="dropdown-menu dropdown-menu-end header-user-dropdown-menu shadow-lg" aria-labelledby="UserDropdown">
+          {{-- Dropdown Header Info --}}
+          <div class="dropdown-header text-start">
+            <div class="font-weight-bold text-dark font-13">{{ Auth::user()->name }}</div>
+            <div class="text-muted font-11 text-truncate mb-2">{{ Auth::user()->email }}</div>
+            @if($isImpersonating)
+              <span class="user-role-badge badge-visiting">VISITING: {{ $clinic->name ?? 'Clinic' }}</span>
+            @elseif($isSuperAdmin)
+              <span class="user-role-badge badge-super-admin">PLATFORM SUPER ADMIN</span>
+            @else
+              <span class="user-role-badge badge-clinic">{{ $clinic->name ?? 'DOCTOR CLINIC' }}</span>
+            @endif
           </div>
 
-          <!-- Owner Profile & Details -->
-          <a class="dropdown-item py-2 px-3 rounded-3 d-flex align-items-center" href="{{ Auth::check() && Auth::user()->clinic ? route('doctor.settings') : URL::To('admin/profile') }}" style="font-size: 13px; font-weight: 500; color: #334155;">
-            <i class="mdi mdi-account-circle-outline me-2 font-17 text-muted"></i>
-            <span>Owner Profile & Details</span>
-          </a>
+          {{-- Case A: Super Admin (when NOT visiting) --}}
+          @if($isSuperAdmin && !$isImpersonating)
+            <a class="dropdown-item" href="{{ route('admin.saas.dashboard') }}">
+              <i class="mdi mdi-chart-box-outline"></i>
+              <span>Platform Analytics</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('admin.saas.clinics') }}">
+              <i class="mdi mdi-hospital-building"></i>
+              <span>Doctor Clinics</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('admin.saas.plans') }}">
+              <i class="mdi mdi-package-variant-closed"></i>
+              <span>Subscription Plans</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('admin.saas.logs') }}">
+              <i class="mdi mdi-history"></i>
+              <span>Activity Audit Logs</span>
+            </a>
+            <a class="dropdown-item" href="{{ URL::To('admin/setting') }}">
+              <i class="mdi mdi-cog-outline"></i>
+              <span>Platform Settings</span>
+            </a>
 
-          <!-- Hide Side Panel Toggle -->
-          <a class="dropdown-item py-2 px-3 rounded-3 d-flex align-items-center justify-content-between" href="javascript:void(0)" onclick="$('[data-bs-toggle=\'minimize\']').first().click();" style="font-size: 13px; font-weight: 500; color: #334155;">
-            <span class="d-flex align-items-center">
-              <i class="mdi mdi-menu me-2 font-17 text-muted"></i>
-              <span>Hide Side Panel</span>
-            </span>
-            <span class="badge bg-light text-muted font-10 px-2 py-1 border" style="font-size: 10px; font-weight: 600;">Toggle</span>
-          </a>
+          {{-- Case B: Super Admin VISITING a clinic --}}
+          @elseif($isImpersonating)
+            <a class="dropdown-item" href="{{ route('doctor.dashboard') }}">
+              <i class="mdi mdi-view-dashboard-outline"></i>
+              <span>Doctor Dashboard</span>
+            </a>
+            <a class="dropdown-item" href="{{ URL::To('admin/patient') }}">
+              <i class="mdi mdi-calendar-check-outline"></i>
+              <span>Patient Bookings</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('doctor.settings') }}">
+              <i class="mdi mdi-tune"></i>
+              <span>Clinic Settings</span>
+            </a>
+            @if($clinic)
+            <a class="dropdown-item" target="_blank" href="{{ $storefrontUrl }}">
+              <i class="mdi mdi-open-in-new"></i>
+              <span>Public Storefront</span>
+            </a>
+            @endif
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item text-danger dropdown-exit-btn" href="{{ route('admin.saas.stop_impersonate') }}">
+              <i class="mdi mdi-arrow-left-bold text-danger"></i>
+              <span class="font-weight-bold">Exit to Super Admin</span>
+            </a>
 
-          <!-- Help & Support Hub -->
-          <a class="dropdown-item py-2 px-3 rounded-3 d-flex align-items-center" href="{{ URL::To('admin/contact') }}" style="font-size: 13px; font-weight: 500; color: #334155;">
-            <i class="mdi mdi-headphones me-2 font-17 text-muted"></i>
-            <span>Help & Support Hub</span>
-          </a>
-
-          <!-- Public Storefront -->
-          @if($clinic)
-          <a class="dropdown-item py-2 px-3 rounded-3 d-flex align-items-center" target="_blank" href="{{ $storefrontUrl }}" style="font-size: 13px; font-weight: 500; color: #334155;">
-            <i class="mdi mdi-open-in-new me-2 font-17 text-muted"></i>
-            <span>Public Storefront</span>
-          </a>
+          {{-- Case C: Doctor / Clinic Owner (Normal clinic login) --}}
+          @else
+            <a class="dropdown-item" href="{{ route('doctor.dashboard') }}">
+              <i class="mdi mdi-view-dashboard-outline"></i>
+              <span>Doctor Dashboard</span>
+            </a>
+            <a class="dropdown-item" href="{{ URL::To('admin/patient') }}">
+              <i class="mdi mdi-calendar-check-outline"></i>
+              <span>Patient Bookings</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('doctor.subscription.index') }}">
+              <i class="mdi mdi-crown-outline"></i>
+              <span>Plan & Billing</span>
+            </a>
+            <a class="dropdown-item" href="{{ route('doctor.settings') }}">
+              <i class="mdi mdi-tune"></i>
+              <span>Clinic Settings</span>
+            </a>
+            @if($clinic)
+            <a class="dropdown-item" target="_blank" href="{{ $storefrontUrl }}">
+              <i class="mdi mdi-open-in-new"></i>
+              <span>Public Storefront</span>
+            </a>
+            @endif
           @endif
 
-          <!-- Super Admin Console -->
-          @if($isSuperAdmin || $isImpersonating)
-          <a class="dropdown-item py-2 px-3 rounded-3 d-flex align-items-center text-danger font-weight-bold" href="{{ $isImpersonating ? route('admin.saas.stop_impersonate') : route('admin.saas.dashboard') }}" style="font-size: 13px; color: #ea580c !important;">
-            <i class="mdi mdi-lightning-bolt me-2 font-17 text-warning"></i>
-            <span>{{ $isImpersonating ? 'Exit to Super Admin' : 'Super Admin Console' }}</span>
-          </a>
-          @endif
-
-          <div class="dropdown-divider my-2"></div>
+          <div class="dropdown-divider"></div>
 
           <!-- Sign Out -->
-          <a class="dropdown-item py-2 px-3 rounded-3 text-danger font-weight-bold d-flex align-items-center" href="{{ URL::To('admin/logout') }}" style="font-size: 13px;">
-            <i class="mdi mdi-logout-variant text-danger me-2 font-17"></i>
+          <a class="dropdown-item text-danger" href="{{ URL::To('admin/logout') }}">
+            <i class="mdi mdi-logout-variant text-danger"></i>
             <span>Sign Out</span>
           </a>
         </div>
