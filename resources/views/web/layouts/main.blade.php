@@ -26,7 +26,10 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
 
 <style>
-  body {
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
     font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
     background-color: #f8fafc;
     color: #1e293b;
@@ -34,6 +37,38 @@
   }
   html {
     scroll-behavior: smooth;
+  }
+  .home-area {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #f8fafc;
+  }
+  .vital-footer {
+    margin-top: auto !important;
+  }
+  .vital-float-wa {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #25D366;
+    color: #ffffff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 6px 22px rgba(37, 211, 102, 0.45);
+    z-index: 9999;
+    transition: all 0.25s ease;
+    text-decoration: none;
+  }
+  .vital-float-wa:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 28px rgba(37, 211, 102, 0.65);
+    color: #ffffff !important;
   }
 </style>
 
@@ -53,20 +88,12 @@
       @include('web.layouts.footer')
 
       @if(isset($currentClinic) && $currentClinic->phone)
-      <div class="floating_btn">
-        <a target="_blank" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $currentClinic->phone) }}">
-          <div class="contact_icon" style="background: #25D366; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px; box-shadow: 0 4px 14px rgba(37,211,102,0.4);">
-            <i class="fa-brands fa-whatsapp"></i>
-          </div>
-        </a>
-      </div>
-
-      <a class="phone-icon" href="tel:{{ $currentClinic->phone }}" style="background: #0d9488; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px; box-shadow: 0 4px 14px rgba(13,148,136,0.4);"><i class="fa-solid fa-phone"></i></a>
+      <a target="_blank" href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $currentClinic->phone) }}" class="vital-float-wa" title="Chat on WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+      </a>
       @endif
 
     </div>
-
-</div>
 
 
     <!-- start java script -->

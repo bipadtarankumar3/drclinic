@@ -10,7 +10,7 @@
       <div class="col-lg-4 col-md-6">
         <div class="d-flex align-items-center mb-3" style="gap: 12px;">
           @if($clinic && $clinic->logo)
-            <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
+            <img src="{{ URL::to($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
           @else
             <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
               <i class="fa-solid fa-hospital"></i>
@@ -76,8 +76,14 @@
             {{ $clinic->email ?? 'doctor@drclinic.com' }}
           </a>
         </div>
-        <div class="p-3 rounded-3" style="background: rgba(13, 148, 136, 0.1); border: 1px solid rgba(13, 148, 136, 0.2); font-size: 12.5px; color: #5eead4;">
-          <i class="fa-solid fa-headset mr-1"></i> 24/7 Dedicated Patient Helpline Available
+        <div class="p-3 rounded-3 mt-3 d-flex align-items-center" style="background: rgba(13, 148, 136, 0.12); border: 1px solid rgba(13, 148, 136, 0.3); gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">
+            <i class="fa-solid fa-headset"></i>
+          </div>
+          <div>
+            <div style="color: #ffffff; font-size: 13.5px; font-weight: 700;">24/7 Patient Helpline</div>
+            <div style="color: #94a3b8; font-size: 12px;">Immediate Emergency Support</div>
+          </div>
         </div>
       </div>
     </div>

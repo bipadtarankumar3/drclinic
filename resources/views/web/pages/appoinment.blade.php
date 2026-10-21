@@ -149,12 +149,16 @@
   /* Right Doctor Visual */
   .vital-hero-img-wrap {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     max-width: 100%;
+    min-height: 480px;
+    padding: 20px 0;
   }
   .vital-hero-backdrop {
-    width: 420px;
-    height: 420px;
+    width: 440px;
+    height: 440px;
     border-radius: 50%;
     background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
     position: absolute;
@@ -162,16 +166,20 @@
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
-    opacity: 0.92;
+    opacity: 0.95;
+    box-shadow: 0 10px 30px rgba(13, 148, 136, 0.2);
   }
   .vital-doctor-img {
     position: relative;
     z-index: 2;
     max-width: 380px;
+    height: 460px;
     width: 100%;
     border-radius: 28px;
-    box-shadow: 0 20px 40px rgba(13, 148, 136, 0.2);
+    box-shadow: 0 20px 40px rgba(13, 148, 136, 0.25);
     object-fit: cover;
+    object-position: top center;
+    display: block;
   }
   .vital-emergency-card {
     position: absolute;
@@ -508,7 +516,7 @@
       <div class="col-lg-6 col-md-12 text-center position-relative py-4">
         <div class="vital-hero-img-wrap">
           <div class="vital-hero-backdrop"></div>
-          <img src="{{ asset('public/assets/web/modern/hero-doctor.jpg') }}" alt="{{ $currentClinic->name ?? 'Doctor' }}" class="vital-doctor-img">
+          <img src="{{ URL::to('public/assets/web/modern/hero-doctor.jpg') }}" alt="{{ $currentClinic->name ?? 'Doctor' }}" class="vital-doctor-img">
           
           <div class="vital-emergency-card">
             <div class="emerg-icon">
@@ -608,7 +616,7 @@
               </div>
             </div>
             <div class="feature-img-box mb-3">
-              <img src="{{ asset('public/assets/web/modern/family-checkup.jpg') }}" alt="Family Health Checkup" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}" alt="Family Health Checkup" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
           <a href="#booking-section" class="btn-outline-teal">View Packages</a>
@@ -638,7 +646,7 @@
             <h5 class="feature-card-title mb-1">Take Care of Yourself Today</h5>
             <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.5;">Early diagnosis, better treatment, healthier life.</p>
             <div class="feature-img-box mb-3">
-              <img src="{{ asset('public/assets/web/modern/patient-care.jpg') }}" alt="Take Care of Yourself" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/patient-care.jpg') }}" alt="Take Care of Yourself" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
           <a href="#booking-section" class="btn-teal-solid">Book Now</a>
@@ -653,7 +661,7 @@
             <div class="emerg-highlight mb-1" style="color: #f59e0b; font-size: 24px; font-weight: 800;">24/7</div>
             <p class="text-muted mb-2" style="font-size: 13px;">Emergency Care You Can Trust.</p>
             <div class="feature-img-box mb-3">
-              <img src="{{ asset('public/assets/web/modern/ambulance.jpg') }}" alt="Emergency Ambulance" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/ambulance.jpg') }}" alt="Emergency Ambulance" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
           <a href="tel:{{ $currentClinic->phone ?? '+919830012345' }}" class="btn-outline-teal">Get Help Now</a>

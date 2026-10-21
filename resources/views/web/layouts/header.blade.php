@@ -212,7 +212,7 @@
     <div class="vital-nav-main">
       <a href="{{ $clinicUrl }}" class="vital-brand">
         @if($clinic && $clinic->logo)
-          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
+          <img src="{{ URL::to($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
         @else
           <div class="vital-logo-icon">
             <i class="fa-solid fa-plus-large fa-hospital"></i>
