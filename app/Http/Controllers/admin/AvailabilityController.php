@@ -92,106 +92,142 @@ class AvailabilityController extends Controller
 
     public function getUnavailableDates()
     {
-        $unavailableDates = Availability::all();
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $query = Availability::query();
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $unavailableDates = $query->get();
     
         if ($unavailableDates->isEmpty()) {
             return response()->json([]);
         }
     
         return response()->json($unavailableDates->map(function ($date) {
-            // Format time range for title
-            $startTimeFormatted = date('g:i A', strtotime($date->start_time));
-            $endTimeFormatted = date('g:i A', strtotime($date->end_time));
-            $timeRange = "{$startTimeFormatted} to {$endTimeFormatted}";
+            $title = 'Blocked';
+            if (!empty($date->start_time) && !empty($date->end_time)) {
+                $startTimeFormatted = date('g:i A', strtotime($date->start_time));
+                $endTimeFormatted = date('g:i A', strtotime($date->end_time));
+                $title = "{$startTimeFormatted} - {$endTimeFormatted}";
+            } elseif (!empty($date->remarks)) {
+                $title = $date->remarks;
+            } else {
+                $title = 'Whole Day Closed';
+            }
     
             return [
-                'title' => "{$timeRange}",
-                'start' => $date->from_date . 'T' . $date->start_time,
-                'end' => $date->from_date . 'T' . $date->end_time,
-                'backgroundColor' => 'red',
-                'borderColor' => '#FF0000',
+                'id' => $date->id,
+                'title' => $title,
+                'start' => !empty($date->start_time) ? ($date->from_date . 'T' . $date->start_time) : $date->from_date,
+                'end' => !empty($date->end_time) ? ($date->from_date . 'T' . $date->end_time) : $date->from_date,
+                'allDay' => empty($date->start_time),
+                'backgroundColor' => '#ef4444',
+                'borderColor' => '#dc2626',
+                'textColor' => '#ffffff',
             ];
         }));
     }
     
 
     public function get_big_calander_unavailable_dates()
-{
-    $unavailableDates = Availability::all();
-
-    // Check if there are no unavailable dates
-    if ($unavailableDates->isEmpty()) {
-        return response()->json([]);
-    }
-
-    return response()->json($unavailableDates->map(function ($date) {
-        return [
-            'title' => 'Unavailable',
-            'start' => $date->from_date,
-            'end' => \Carbon\Carbon::parse($date->from_date)->addDay()->toDateString(), // dayGridMonth expects exclusive 'end'
-            'allDay' => true, // key change for big calendar view
-            'backgroundColor' => 'red',
-            'borderColor' => '#FF0000',
-            'display' => 'background'
-        ];
-    }));
-}
-
-
-
-public function get_time_slots(Request $request)
-{
-    $date = $request->input('date');
-    $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-
-    // Adjust for database format where 1 = Monday, 2 = Tuesday
-    $dbDayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek;
-
-    $user = auth()->user();
-    $clinic = $user ? $user->getActiveClinic() : null;
-
-    // Fetch available time slots for the selected day
-    $query = TimeSlot::select('id', 'from_time', 'to_time')
-        ->where('day_of_week', $dbDayOfWeek);
-
-    if ($clinic) {
-        $query->where('clinic_id', $clinic->id);
-    }
-
-    $timeSlots = $query->get();
-
-    $select = "<option value=''>--select--</option>";
-
-    foreach ($timeSlots as $slot) {
-        $fromTime = Carbon::parse($slot->from_time)->format('h:i A');
-        $toTime = Carbon::parse($slot->to_time)->format('h:i A');
-        
-        $select .= '<option value="' . $slot->id . '">' . $fromTime . ' - ' . $toTime . '</option>'; 
-    }
-
-    echo $select;
-}
-
-    
-    public function markUnavailable(Request $request)
     {
-        $start_time_end_time =  $request->start_time_end_time;
         $user = auth()->user();
         $clinic = $user ? $user->getActiveClinic() : null;
-    
-        foreach ($start_time_end_time as $index => $data) {
-            $timeSlot = TimeSlot::select('id', 'from_time', 'to_time')->where('id',  $data)->first();
+        $query = Availability::query();
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $unavailableDates = $query->get();
+
+        if ($unavailableDates->isEmpty()) {
+            return response()->json([]);
+        }
+
+        return response()->json($unavailableDates->map(function ($date) {
+            return [
+                'id' => $date->id,
+                'title' => $date->remarks ?? 'Unavailable',
+                'start' => $date->from_date,
+                'end' => \Carbon\Carbon::parse($date->from_date)->addDay()->toDateString(),
+                'allDay' => true,
+                'backgroundColor' => '#ef4444',
+                'borderColor' => '#dc2626',
+                'textColor' => '#ffffff',
+            ];
+        }));
+    }
+
+    public function get_time_slots(Request $request)
+    {
+        $date = $request->input('date');
+        $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+
+        // Adjust for database format where 1 = Monday, 2 = Tuesday, 7 = Sunday
+        $dbDayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek;
+
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
+        // Fetch available time slots for the selected day
+        $query = TimeSlot::select('id', 'from_time', 'to_time')
+            ->where('day_of_week', $dbDayOfWeek);
+
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+
+        $timeSlots = $query->get();
+
+        $select = "";
+        foreach ($timeSlots as $slot) {
+            $fromTime = Carbon::parse($slot->from_time)->format('h:i A');
+            $toTime = Carbon::parse($slot->to_time)->format('h:i A');
+            
+            $select .= '<option value="' . $slot->id . '">' . $fromTime . ' - ' . $toTime . '</option>'; 
+        }
+
+        return response($select);
+    }
+
+    public function markUnavailable(Request $request)
+    {
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $start_time_end_time = $request->start_time_end_time;
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $remarks = $request->remarks ?: 'Doctor Unavailable';
+
+        if (!empty($start_time_end_time) && is_array($start_time_end_time)) {
+            foreach ($start_time_end_time as $data) {
+                if (empty($data)) continue;
+                $timeSlot = TimeSlot::select('id', 'from_time', 'to_time')->where('id', $data)->first();
+                Availability::create([
+                    'clinic_id' => $clinic ? $clinic->id : null,
+                    'from_date' => $request->date,
+                    'to_date' => $request->date,
+                    'time_slot_id' => $data,
+                    'start_time' => $timeSlot ? $timeSlot->from_time : null,
+                    'end_time' => $timeSlot ? $timeSlot->to_time : null,
+                    'remarks' => $remarks,
+                ]);
+            }
+        } else {
+            // Whole Day blocked
             Availability::create([
                 'clinic_id' => $clinic ? $clinic->id : null,
                 'from_date' => $request->date,
-                'time_slot_id' => $data,
-                'start_time' => $timeSlot ? $timeSlot->from_time : null,
-                'end_time' => $timeSlot ? $timeSlot->to_time : null,
+                'to_date' => $request->date,
+                'time_slot_id' => null,
+                'start_time' => null,
+                'end_time' => null,
+                'remarks' => $remarks ?: 'Whole Day Leave',
             ]);
         }
-    
-        return response()->json(['message' => 'Date marked as unavailable']);
-    }
-    
 
+        return response()->json(['message' => 'Unavailability recorded successfully.']);
+    }
 }

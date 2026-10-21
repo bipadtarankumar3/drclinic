@@ -76,8 +76,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'middleware' => ['App\Http\
         Route::get('/', [AvailabilityController::class, 'availability_list']);
         Route::get('availability_calander_list', [AvailabilityController::class, 'availability_calander_list']);
         Route::post('/availability_submit/{id?}', [AvailabilityController::class, 'store'])->name('availability.store'); // Insert/Update
-        Route::get('/edit/{id}', [AvailabilityController::class, 'edit'])->name('admin.availability.edit');
-        Route::get('/delete/{id}', [AvailabilityController::class, 'destroy'])->name('admin.availability.delete');
+        Route::get('/edit/{id}', [AvailabilityController::class, 'edit'])->name('edit');
+        Route::get('/delete/{id}', [AvailabilityController::class, 'destroy'])->name('delete');
         Route::get('get_unavailable_dates', [AvailabilityController::class, 'getUnavailableDates']);
         Route::get('get_big_calander_unavailable_dates', [AvailabilityController::class, 'get_big_calander_unavailable_dates']);
         Route::get('get_time_slots', [AvailabilityController::class, 'get_time_slots']);
