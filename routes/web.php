@@ -98,6 +98,7 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']]
     Route::post('/settings/domain', [DoctorSettingsController::class, 'updateDomain'])->name('settings.domain');
 
     // Custom Pages Builder
+    Route::post('/pages/seed-defaults', [DoctorPageController::class, 'seedDefaults'])->name('pages.seed_defaults');
     Route::resource('pages', DoctorPageController::class);
 
     // Subscription & Billing

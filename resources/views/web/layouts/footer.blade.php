@@ -36,11 +36,15 @@
         <h6 class="text-white font-weight-bold mb-3" style="text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">Navigation</h6>
         <ul class="list-unstyled" style="font-size: 14px; line-height: 2;">
           <li><a href="{{ $clinicUrl }}" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Home</a></li>
-          <li><a href="#about-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">About Us</a></li>
-          <li><a href="#services-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Our Services</a></li>
-          <li><a href="#doctors-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Doctors</a></li>
-          <li><a href="#packages-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Health Packages</a></li>
-          <li><a href="#booking-section" style="color: #0d9488; font-weight: 600; text-decoration: none; transition: color 0.2s;">Book Appointment</a></li>
+          @if($clinic && $clinic->pages && $clinic->pages->where('is_published', true)->count() > 0)
+            @foreach($clinic->pages->where('is_published', true)->take(4) as $fp)
+              <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $fp->slug) }}" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">{{ $fp->title }}</a></li>
+            @endforeach
+          @else
+            <li><a href="{{ $clinicUrl }}#about-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">About Us</a></li>
+            <li><a href="{{ $clinicUrl }}#services-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Our Services</a></li>
+          @endif
+          <li><a href="{{ $clinicUrl }}#booking-section" style="color: #0d9488; font-weight: 600; text-decoration: none; transition: color 0.2s;">Book Appointment</a></li>
         </ul>
       </div>
 

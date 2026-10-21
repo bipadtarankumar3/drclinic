@@ -226,17 +226,52 @@
 
       <!-- Navigation Links -->
       <ul class="vital-nav-links">
-        <li><a href="{{ $clinicUrl }}" class="active">Home</a></li>
-        <li><a href="#about-section">About Us</a></li>
-        <li><a href="#services-section">Our Services</a></li>
-        <li><a href="#doctors-section">Doctors</a></li>
-        <li><a href="#packages-section">Health Packages</a></li>
-        @if($clinic && $clinic->pages && $clinic->pages->where('is_published', true)->count() > 0)
-          @foreach($clinic->pages->where('is_published', true)->take(2) as $cp)
-            <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $cp->slug) }}">{{ $cp->title }}</a></li>
+        <li><a href="{{ $clinicUrl }}" class="{{ !request()->is('*/page/*') && !request()->is('*/book_appointment*') ? 'active' : '' }}">Home</a></li>
+
+        @php
+          $publishedPages = ($clinic && $clinic->pages) ? $clinic->pages->where('is_published', true) : collect();
+          $aboutPage = $publishedPages->first(function($p) { return in_array($p->slug, ['about-us', 'about', 'about-doctor']); });
+          $servicesPage = $publishedPages->first(function($p) { return in_array($p->slug, ['our-services', 'services', 'treatments']); });
+          $doctorsPage = $publishedPages->first(function($p) { return in_array($p->slug, ['doctors', 'medical-team', 'specialists']); });
+          
+          $featuredSlugs = array_filter([$aboutPage?->slug, $servicesPage?->slug, $doctorsPage?->slug]);
+          $otherPages = $publishedPages->reject(function($p) use ($featuredSlugs) {
+              return in_array($p->slug, $featuredSlugs);
+          });
+        @endphp
+
+        <!-- About Us (Custom Page or Section) -->
+        @if($aboutPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $aboutPage->slug) }}" class="{{ request()->is('*/page/' . $aboutPage->slug) ? 'active' : '' }}">{{ $aboutPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#about-section">About Us</a></li>
+        @endif
+
+        <!-- Our Services (Custom Page or Section) -->
+        @if($servicesPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $servicesPage->slug) }}" class="{{ request()->is('*/page/' . $servicesPage->slug) ? 'active' : '' }}">{{ $servicesPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#services-section">Our Services</a></li>
+        @endif
+
+        <!-- Doctors (Custom Page or Section) -->
+        @if($doctorsPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $doctorsPage->slug) }}" class="{{ request()->is('*/page/' . $doctorsPage->slug) ? 'active' : '' }}">{{ $doctorsPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#doctors-section">Doctors</a></li>
+        @endif
+
+        <!-- Health Packages -->
+        <li><a href="{{ $clinicUrl }}#packages-section">Health Packages</a></li>
+
+        <!-- Other Dynamic Clinic Custom Pages -->
+        @if($otherPages->count() > 0)
+          @foreach($otherPages as $cp)
+            <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $cp->slug) }}" class="{{ request()->is('*/page/' . $cp->slug) ? 'active' : '' }}">{{ $cp->title }}</a></li>
           @endforeach
         @endif
-        <li><a href="#contact-section">Contact</a></li>
+
+        <li><a href="{{ $clinicUrl }}#contact-section">Contact</a></li>
       </ul>
 
       <!-- Action Buttons -->
