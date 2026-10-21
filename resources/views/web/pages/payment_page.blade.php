@@ -4,236 +4,385 @@
 <link rel="stylesheet" href="{{ URL::to('public/assets/web/css/appointment/appoint-style.css')}}">
 <link rel="stylesheet" href="{{ URL::to('public/assets/web/css/appointment/appoint-responsive.css')}}">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <style>
-    .term_and_condition_box {
-        max-height: 280px;
-        overflow-y: auto;
-        padding: 16px;
-        border: 1px solid #dee2e6;
-        border-radius: 6px;
-        background-color: #fcfcfc;
-        color: #333333;
-        font-size: 14px;
-        line-height: 1.8;
-    }
+  :root {
+    --vital-primary: #0d9488;
+    --vital-primary-dark: #0f766e;
+    --vital-primary-light: #ccfbf1;
+  }
 
-    .terms-notice-banner {
-        background-color: #fff4f4;
-        border: 1px solid #f5c2c7;
-        border-left: 5px solid #b22d32;
-        padding: 12px 16px;
-        border-radius: 6px;
-        color: #842029;
-        font-size: 14px;
-        margin-bottom: 15px;
-    }
+  .vital-page-header {
+    background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 30px 0;
+  }
+  .vital-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #ccfbf1;
+    color: #0f766e;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid #99f6e4;
+  }
+  .vital-pulse-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #0d9488;
+  }
 
-    .terms-modal-header {
-        background: linear-gradient(135deg, #183e66 0%, #b22d32 100%);
-        color: #ffffff;
-        padding: 16px 20px;
-        border-top-left-radius: calc(0.3rem - 1px);
-        border-top-right-radius: calc(0.3rem - 1px);
-    }
+  .vital-form-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    padding: 32px;
+  }
+  .vital-form-card .form-label {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 6px;
+  }
+  .vital-form-card .form-control {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    transition: all 0.2s;
+  }
+  .vital-form-card .form-control:focus {
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  }
 
-    .terms-acceptance-box {
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 6px;
-        padding: 12px 16px;
-        margin-top: 15px;
-    }
+  .vital-billing-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    padding: 28px;
+    position: sticky;
+    top: 90px;
+  }
 
-    .pay-button-container {
-        display: none;
-        text-align: right;
-    }
+  .term_and_condition_box {
+    max-height: 280px;
+    overflow-y: auto;
+    padding: 16px;
+    border: 1px solid #dee2e6;
+    border-radius: 10px;
+    background-color: #f8fafc;
+    color: #334155;
+    font-size: 13.5px;
+    line-height: 1.8;
+  }
 
-    .btn-disabled {
-        opacity: 0.5;
-        pointer-events: none;
-    }
+  .terms-notice-banner {
+    background-color: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-left: 5px solid #0d9488;
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: #0f766e;
+    font-size: 13.5px;
+    margin-bottom: 15px;
+  }
+
+  .terms-modal-header {
+    background: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
+    color: #ffffff;
+    padding: 16px 20px;
+    border-top-left-radius: calc(0.5rem - 1px);
+    border-top-right-radius: calc(0.5rem - 1px);
+  }
+
+  .terms-acceptance-box {
+    background-color: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 15px;
+  }
+
+  #pay-button {
+    background: #0d9488;
+    border: none;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 14px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+    transition: all 0.2s ease;
+  }
+  #pay-button:hover:not(:disabled) {
+    background: #0f766e;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.45);
+    color: #ffffff;
+  }
+  #pay-button:disabled {
+    background: #94a3b8;
+    opacity: 0.6;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 </style>
 @endsection
 
 @section('banner')
-<div class="banner-2">
-    <div class="banner-2-img">
-        <img src="{{ URL::to('public/assets/web/appointment/Banner.png')}}" alt="">
+<!-- ========================================================
+     MODERN PAGE HEADER (Replaces Old Stretched Banner)
+     ======================================================== -->
+<section class="vital-page-header">
+  <div class="container" style="max-width: 1240px;">
+    <div class="row align-items-center">
+      <div class="col-md-7">
+        <div class="vital-hero-badge mb-2">
+          <span class="vital-pulse-dot"></span>
+          <span>Step 2 of 2: Patient Registration</span>
+        </div>
+        <h1 class="font-weight-bold mb-1" style="font-size: 32px; color: #0f172a; letter-spacing: -0.5px;">
+          Patient Details & Confirmation
+        </h1>
+        <p class="text-muted mb-0" style="font-size: 14.5px;">
+          Complete patient information to confirm your consultation at <strong>{{ $currentClinic->name ?? 'our clinic' }}</strong>.
+        </p>
+      </div>
+
+      <!-- Selected Slot Summary Pill -->
+      <div class="col-md-5 text-md-end mt-3 mt-md-0">
+        <div class="d-inline-flex flex-column text-start p-3 rounded-4" style="background: #ffffff; border: 1.5px solid #99f6e4; box-shadow: 0 4px 14px rgba(13,148,136,0.08); min-width: 260px;">
+          <div class="d-flex align-items-center mb-1" style="gap: 8px;">
+            <i class="fa-regular fa-calendar-check" style="color: #0d9488; font-size: 16px;"></i>
+            <strong style="color: #0f172a; font-size: 14.5px;">
+              {{ isset($decoded_date) ? \Carbon\Carbon::parse($decoded_date)->format('D, d M Y') : 'Selected Date' }}
+            </strong>
+          </div>
+          <div class="d-flex align-items-center" style="gap: 8px; font-size: 13px; color: #64748b;">
+            <i class="fa-regular fa-clock" style="color: #0d9488;"></i>
+            <span>
+              @if(isset($selected_slot))
+                {{ \Carbon\Carbon::parse($selected_slot->from_time)->format('h:i A') }} - {{ \Carbon\Carbon::parse($selected_slot->to_time)->format('h:i A') }}
+              @else
+                Confirmed Slot
+              @endif
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="ban-2-text">
-        <h1>Patient Details</h1>
-    </div>
-</div>
+  </div>
+</section>
 @endsection
 
 @section('content')
-<div class="container">
-    <div id="step-1">
-        <div class="row my-4">
-            <div class="col-md-12">
-                <div id="step-2">
-                    
-                    <div class="container mt-4">
-                        <form id="payment-form" class="payment-form">
-                            @csrf
-                            <input type="hidden" name="booking_date" id="booking_date" @if (isset($booking_date)) value="{{ base64_decode($booking_date) }}" @endif>
+<div class="container py-4 my-2" style="max-width: 1240px;">
+  <form id="payment-form" class="payment-form">
+    @csrf
+    <input type="hidden" name="booking_date" id="booking_date" @if (isset($booking_date)) value="{{ base64_decode($booking_date) }}" @endif>
+    <input type="hidden" name="time_slot_id" id="time_slot_id" @if (isset($time_slot_id)) value="{{ base64_decode($time_slot_id) }}" @endif>
 
-                            <input type="hidden" name="time_slot_id" id="time_slot_id" @if (isset($time_slot_id)) value="{{ base64_decode($time_slot_id) }}" @endif>
-
-                            
-                            <div class="row">
-                                <!-- Patient Details -->
-                                <div class="col-md-8">
-                                    <div class="card shadow-lg p-4">
-                                        <h2>Patient Details</h2>
-                                        <hr>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label class="form-label">First Name <span style="color: red">*</span></label>
-                                                <input type="text" name="first_name" placeholder="First Name" required class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Last Name <span style="color: red">*</span></label>
-                                                <input type="text" name="last_name" placeholder="Last Name" required class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Sex (Gender)</label>
-                                                <select name="sex" class="form-control">
-                                                    <option value="Male">Male</option>
-                                                    <option value="Female">Female</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Age</label>
-                                                <input type="number" name="age" placeholder="Age" min="1" max="120" class="form-control">
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-6">
-                                                <label class="form-label">Permanent Mobile No.  <span style="color: red">*</span></label>
-                                                <input type="text" name="mobile_no" placeholder="Mobile Number" required class="form-control">
-                                                <small id="mobile-error" class="text-danger"></small>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label class="form-label">Alternate Mobile/Whatsapp No.</label>
-                                                <input type="text" name="alternate_mobile_no" placeholder="Alternate Mobile Number" class="form-control">
-                                                <small id="alt-mobile-error" class="text-danger"></small>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-12">
-                                                <label class="form-label">Permanent Address  <span style="color: red">*</span></label>
-                                                <textarea name="address" placeholder="Address" required class="form-control"></textarea>
-                                            </div>
-                                        </div>
-                                        <div class="row mt-3">
-                                            <div class="col-md-12">
-                                                <label class="form-label">Patient Problem </label>
-                                                <textarea name="patient_problem" placeholder="Patient Problem" required class="form-control"></textarea>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="col-md-4">
-                                    <div class="card shadow-lg p-4">
-                                        <h2>Billing Details</h2>
-                                        <hr>
-                                        <div class="billing-info d-flex justify-content-between">
-                                            <p><strong>Payment Amount:</strong></p> 
-                                            <p>₹ {{ number_format(isset($setting) ? $setting->pay_amount : 0, 2) }}</p>
-                                        </div>
-                                        <div class="billing-info d-flex justify-content-between">
-                                            <p><strong>Platform Charge:</strong></p> 
-                                            <p style="color: green">+ ₹  {{ number_format(isset($setting) ? $setting->pay_additional_amount : 0, 2) }}</p>
-                                        </div>
-                                        <hr>
-                                        <div class="billing-info d-flex justify-content-between">
-                                            <p><strong>Total Payment Amount:</strong></p> 
-                                            <p>₹ {{ number_format(isset($setting) ? $setting->pay_amount + $setting->pay_additional_amount : 0, 2) }}</p>
-                                        </div>
-                                        <input type="hidden" name="actual_amount" value="{{ isset($setting) ? $setting->pay_amount : 0 }}" readonly>
-                                        <input type="hidden" name="amount" value="{{ isset($setting) ? $setting->pay_amount + $setting->pay_additional_amount : 0 }}" readonly>
-                                        
-                                        <div class="terms-container mt-3">
-                                            <input type="checkbox" id="terms"> 
-                                            <label for="terms">I accept the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Terms & Conditions</a></label>
-                                            <div id="terms-error" class="text-danger d-none"><small>Please accept the Terms & Conditions to proceed.</small></div>
-                                        </div>
-                                        
-                                        <div class="mt-3">
-                                            <button id="pay-button" class="btn btn-warning w-100" disabled onclick="payWithRazorpay(event)" type="button">Pay Now</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-                        </form>
-                    </div>
-                    
-                    <!-- Terms & Conditions Modal -->
-                    <div class="modal fade" id="termsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content shadow-lg border-0">
-                                <div class="modal-header terms-modal-header d-flex align-items-center">
-                                    <h5 class="modal-title fw-bold text-white mb-0" id="termsModalLabel">
-                                        <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> Terms & Conditions
-                                    </h5>
-                                </div>
-                                <div class="modal-body p-4">
-                                    <div class="terms-notice-banner d-flex align-items-center">
-                                        <i class="fa-solid fa-circle-exclamation text-danger fs-4 me-3"></i>
-                                        <div>
-                                            <strong>Important Notice:</strong> You must read, understand, and accept all clinic guidelines and terms before you can fill up the patient details and book an appointment.
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="term_and_condition_box">
-                                        {!! nl2br(e(isset($setting) && !empty($setting->payment_terms_and_condition) ? $setting->payment_terms_and_condition : "1. Consultation fees are non-refundable once the appointment booking is confirmed.\n2. Patients are requested to arrive at the clinic 15 minutes before the allocated time slot.\n3. Please bring previous prescriptions, lab reports, MRI/CT scans, and relevant medical history documents.\n4. Providing accurate patient contact and identification details is mandatory for medical record compliance.")) !!}
-                                    </div>
-
-                                    <div class="terms-acceptance-box">
-                                        <div class="form-check d-flex align-items-center">
-                                            <input class="form-check-input me-2" type="checkbox" id="modalTermsCheckbox" style="transform: scale(1.25); cursor: pointer;">
-                                            <label class="form-check-label fw-bold text-dark" for="modalTermsCheckbox" style="cursor: pointer; user-select: none;">
-                                                I have read, understood, and solemnly agree to all the Terms & Conditions and Clinic Policies stated above.
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer bg-light px-4 py-3 d-flex justify-content-between">
-                                    <a href="{{ url('/') }}" class="btn btn-outline-secondary">
-                                        <i class="fa-solid fa-arrow-left me-1"></i> Decline & Go Back
-                                    </a>
-                                    <button type="button" class="btn btn-danger px-4" id="modalAcceptBtn" disabled style="background-color: #b22d32; border-color: #b22d32;">
-                                        <i class="fa-solid fa-check me-1"></i> Accept & Proceed to Form
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="row g-4">
+      <!-- Left Column: Patient Details Form -->
+      <div class="col-lg-8 col-md-12">
+        <div class="vital-form-card">
+          <div class="d-flex align-items-center mb-3" style="gap: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: flex; align-items: center; justify-content: center; font-size: 17px;">
+              <i class="fa-solid fa-user-pen"></i>
             </div>
+            <div>
+              <h4 class="font-weight-bold mb-0" style="color: #0f172a; font-size: 20px;">Patient Information</h4>
+              <small class="text-muted">Enter details accurately as per Government ID / Medical Records</small>
+            </div>
+          </div>
+          <hr class="mb-4" style="opacity: 0.1;">
+
+          <!-- First & Last Name -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">First Name <span class="text-danger">*</span></label>
+              <input type="text" name="first_name" placeholder="First Name" required class="form-control">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Last Name <span class="text-danger">*</span></label>
+              <input type="text" name="last_name" placeholder="Last Name" required class="form-control">
+            </div>
+          </div>
+
+          <!-- Sex & Age -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label class="form-label">Sex (Gender) <span class="text-danger">*</span></label>
+              <select name="sex" class="form-control">
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Age (Years)</label>
+              <input type="number" name="age" placeholder="Age" min="1" max="120" class="form-control">
+            </div>
+          </div>
+
+          <!-- Mobile & Alternate Phone -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-6">
+              <label class="form-label">Permanent Mobile No. <span class="text-danger">*</span></label>
+              <input type="text" name="mobile_no" placeholder="10-digit Mobile Number" required class="form-control">
+              <small id="mobile-error" class="text-danger"></small>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Alternate Mobile / WhatsApp No.</label>
+              <input type="text" name="alternate_mobile_no" placeholder="Optional Alternate Number" class="form-control">
+              <small id="alt-mobile-error" class="text-danger"></small>
+            </div>
+          </div>
+
+          <!-- Permanent Address -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-12">
+              <label class="form-label">Permanent Address <span class="text-danger">*</span></label>
+              <textarea name="address" rows="2" placeholder="Full residential address with city & pin code" required class="form-control"></textarea>
+            </div>
+          </div>
+
+          <!-- Patient Problem -->
+          <div class="row g-3 mt-2">
+            <div class="col-md-12">
+              <label class="form-label">Chief Complaint / Symptoms</label>
+              <textarea name="patient_problem" rows="3" placeholder="Briefly describe health concerns, symptoms, or reason for visit" class="form-control"></textarea>
+            </div>
+          </div>
         </div>
+      </div>
+
+      <!-- Right Column: Billing Summary & Confirmation -->
+      <div class="col-lg-4 col-md-12">
+        <div class="vital-billing-card">
+          <div class="d-flex align-items-center mb-3" style="gap: 10px;">
+            <div style="width: 36px; height: 36px; border-radius: 10px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: flex; align-items: center; justify-content: center; font-size: 17px;">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+            <div>
+              <h4 class="font-weight-bold mb-0" style="color: #0f172a; font-size: 20px;">Billing Summary</h4>
+              <small class="text-muted">Transparent clinic pricing</small>
+            </div>
+          </div>
+          <hr class="mb-3" style="opacity: 0.1;">
+
+          @php
+            $payAmount = (isset($currentClinic) && $currentClinic->consultation_fee) ? (float)$currentClinic->consultation_fee : (float)(isset($setting) ? $setting->pay_amount : 500);
+            $additionalAmount = (float)(isset($setting) ? $setting->pay_additional_amount : 0);
+            $totalAmount = $payAmount + $additionalAmount;
+          @endphp
+
+          <div class="d-flex justify-content-between mb-2" style="font-size: 14.5px;">
+            <span class="text-muted">Doctor Consultation:</span>
+            <strong style="color: #0f172a;">₹ {{ number_format($payAmount, 2) }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between mb-3" style="font-size: 14.5px;">
+            <span class="text-muted">Platform & Processing:</span>
+            <strong style="color: #10b981;">+ ₹ {{ number_format($additionalAmount, 2) }}</strong>
+          </div>
+
+          <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <span class="text-muted" style="font-size: 12px; font-weight: 700; text-transform: uppercase;">Total Payable</span>
+                <div style="color: #0d9488; font-size: 24px; font-weight: 800;">₹ {{ number_format($totalAmount, 2) }}</div>
+              </div>
+              <span class="badge" style="background: #ccfbf1; color: #0f766e; font-size: 11px; padding: 5px 10px; border-radius: 12px;">Instant Confirmation</span>
+            </div>
+          </div>
+
+          <input type="hidden" name="actual_amount" value="{{ $payAmount }}" readonly>
+          <input type="hidden" name="amount" value="{{ $totalAmount }}" readonly>
+
+          <!-- Terms & Conditions Checkbox -->
+          <div class="p-3 rounded-3 mb-3" style="background: #f0fdfa; border: 1px solid #ccfbf1;">
+            <div class="form-check d-flex align-items-center" style="gap: 8px;">
+              <input class="form-check-input" type="checkbox" id="terms" style="transform: scale(1.15); cursor: pointer; accent-color: #0d9488;">
+              <label class="form-check-label mb-0" for="terms" style="font-size: 13px; color: #334155; cursor: pointer;">
+                I agree to the <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal" style="color: #0d9488; font-weight: 700; text-decoration: underline;">Terms & Clinic Policies</a>
+              </label>
+            </div>
+            <div id="terms-error" class="text-danger d-none mt-2" style="font-size: 12px;">
+              <i class="fa-solid fa-circle-exclamation mr-1"></i> Please accept terms to proceed.
+            </div>
+          </div>
+
+          <!-- Pay Button -->
+          <div class="mb-3">
+            <button id="pay-button" class="btn w-100" disabled onclick="payWithRazorpay(event)" type="button">
+              <i class="fa-solid fa-lock mr-2" style="margin-right: 8px;"></i> Pay Now & Confirm Booking
+            </button>
+          </div>
+
+          <div class="text-center" style="font-size: 12px; color: #94a3b8;">
+            <i class="fa-solid fa-shield-halved mr-1 text-success" style="margin-right: 4px;"></i> 256-Bit SSL Encrypted &bull; Razorpay Verified
+          </div>
+        </div>
+      </div>
     </div>
+  </form>
+
+  <!-- Terms & Conditions Modal -->
+  <div class="modal fade" id="termsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0" style="border-radius: 16px; overflow: hidden;">
+        <div class="modal-header terms-modal-header d-flex align-items-center">
+          <h5 class="modal-title fw-bold text-white mb-0" id="termsModalLabel">
+            <i class="fa-solid fa-file-shield text-warning me-2" style="margin-right: 8px;"></i> Clinic Terms & Consultation Guidelines
+          </h5>
+        </div>
+        <div class="modal-body p-4">
+          <div class="terms-notice-banner d-flex align-items-center">
+            <i class="fa-solid fa-circle-info fs-4 me-3" style="margin-right: 12px; color: #0d9488;"></i>
+            <div>
+              <strong>Important Notice:</strong> Please read and accept clinic booking guidelines and policies before finalizing your appointment.
+            </div>
+          </div>
+
+          <div class="term_and_condition_box">
+            {!! nl2br(e(isset($setting) && !empty($setting->payment_terms_and_condition) ? $setting->payment_terms_and_condition : "1. Consultation fees must be paid in full to confirm the online appointment slot.\n2. Please arrive at the clinic 15 minutes prior to the booked time slot with any relevant previous prescriptions or lab test reports.\n3. Rescheduling is permitted up to 24 hours prior to the appointment date.\n4. Fees are non-refundable once the appointment booking is confirmed.\n5. In case of unexpected doctor emergency duty, our clinic team will reschedule you to your next preferred date.")) !!}
+          </div>
+
+          <div class="terms-acceptance-box">
+            <div class="form-check d-flex align-items-center" style="gap: 10px;">
+              <input class="form-check-input me-2" type="checkbox" id="modalTermsCheckbox" style="transform: scale(1.25); cursor: pointer; accent-color: #0d9488;">
+              <label class="form-check-label fw-bold text-dark mb-0" for="modalTermsCheckbox" style="cursor: pointer; user-select: none; font-size: 13.5px;">
+                I have read, understood, and accept all the Terms & Conditions and Clinic Policies stated above.
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer bg-light px-4 py-3 d-flex justify-content-between">
+          <a href="{{ isset($currentClinic) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug)) : url('/') }}" class="btn btn-outline-secondary" style="border-radius: 8px;">
+            <i class="fa-solid fa-arrow-left me-1" style="margin-right: 6px;"></i> Decline & Go Back
+          </a>
+          <button type="button" class="btn text-white px-4" id="modalAcceptBtn" disabled style="background-color: #0d9488; border-color: #0d9488; border-radius: 8px; font-weight: 700;">
+            <i class="fa-solid fa-check me-1" style="margin-right: 6px;"></i> Accept & Proceed to Form
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection
 
 @section('js')
-
 <script>
 $(document).ready(function () {
-    // Show Terms & Conditions modal immediately on page load
     const termsModalEl = document.getElementById('termsModal');
     let termsModal = null;
     if (termsModalEl) {
@@ -250,14 +399,12 @@ $(document).ready(function () {
     const payButton = document.getElementById("pay-button");
     const termsError = document.getElementById("terms-error");
 
-    // Modal checkbox toggle enables/disables accept button
     if (modalTermsCheckbox && modalAcceptBtn) {
         modalTermsCheckbox.addEventListener("change", function () {
             modalAcceptBtn.disabled = !this.checked;
         });
     }
 
-    // Modal Accept Button click - accepts terms, enables form, checks billing checkbox
     if (modalAcceptBtn) {
         modalAcceptBtn.addEventListener("click", function () {
             if (modalTermsCheckbox && modalTermsCheckbox.checked) {
@@ -270,7 +417,6 @@ $(document).ready(function () {
         });
     }
 
-    // Billing card terms checkbox toggle
     if (termsCheckbox) {
         termsCheckbox.addEventListener("change", function () {
             if (this.checked) {
@@ -287,30 +433,28 @@ $(document).ready(function () {
         });
     }
 
-    // Allow only numbers in mobile fields
     $("input[name='mobile_no'], input[name='alternate_mobile_no']").on("input", function () {
-        this.value = this.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+        this.value = this.value.replace(/[^0-9]/g, '');
     });
 
-    // Mobile number validation
     function validateMobileNumber(mobile) {
-        let mobilePattern = /^[6-9]\d{9}$/; // 10-digit number starting with 6-9
+        let mobilePattern = /^[6-9]\d{9}$/;
         return mobilePattern.test(mobile.trim());
     }
 
-    $("input[name='mobile'], input[name='alternate_mobile']").on("change", function () {
-        let mobile = $("input[name='mobile']").val();
-        let alternateMobile = $("input[name='alternate_mobile']").val();
+    $("input[name='mobile_no'], input[name='alternate_mobile_no']").on("change", function () {
+        let mobile = $("input[name='mobile_no']").val();
+        let alternateMobile = $("input[name='alternate_mobile_no']").val();
 
         if (mobile && !validateMobileNumber(mobile)) {
-            $("input[name='mobile']").val("");
+            $("input[name='mobile_no']").val("");
             $("#mobile-error").text("Invalid Mobile Number! Must be 10 digits and start with 6-9.");
         } else {
             $("#mobile-error").text("");
         }
 
         if (alternateMobile && !validateMobileNumber(alternateMobile)) {
-            $("input[name='alternate_mobile']").val("");
+            $("input[name='alternate_mobile_no']").val("");
             $("#alt-mobile-error").text("Invalid Alternate Mobile Number! Must be 10 digits and start with 6-9.");
         } else {
             $("#alt-mobile-error").text("");
@@ -319,13 +463,10 @@ $(document).ready(function () {
 });
 
 function payWithRazorpay(e) {
-
     e.preventDefault();
-
-    $(".error-message").remove(); // Remove previous error messages
+    $(".error-message").remove();
 
     let isValid = true;
-
     let first_name = $("input[name='first_name']").val();
     let last_name = $("input[name='last_name']").val();
     let dob = null;
@@ -335,45 +476,37 @@ function payWithRazorpay(e) {
     let alternate_mobile_no = $("input[name='alternate_mobile_no']").val();
     let address = $("textarea[name='address']").val();
     let patient_problem = $("textarea[name='patient_problem']").val();
-    let actual_amount = $("input[name='actual_amount']").val(); // actual_amount from hidden input
-    let amount = $("input[name='amount']").val(); // Amount from hidden input
-    let email = "user@example.com"; // Use logged-in user email or input field
+    let actual_amount = $("input[name='actual_amount']").val();
+    let amount = $("input[name='amount']").val();
     let bookingDate = $("#booking_date").val();
     let timeSlotId = $("#time_slot_id").val();
-    
-    
-    // Validation
+
     if (!first_name) {
-        $("input[name='first_name']").after("<span class='error-message text-danger'>Name is required.</span>");
+        $("input[name='first_name']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>First name is required.</span>");
         isValid = false;
     }
     if (!last_name) {
-        $("input[name='last_name']").after("<span class='error-message text-danger'>Name is required.</span>");
+        $("input[name='last_name']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Last name is required.</span>");
         isValid = false;
     }
 
     if (!mobile_no) {
-        $("input[name='mobile_no']").after("<span class='error-message text-danger'>Mobile number is required.</span>");
+        $("input[name='mobile_no']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Mobile number is required.</span>");
         isValid = false;
     } else if (!/^\d{10}$/.test(mobile_no)) {
-        $("input[name='mobile_no']").after("<span class='error-message text-danger'>Enter a valid 10-digit mobile number.</span>");
+        $("input[name='mobile_no']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Enter a valid 10-digit mobile number.</span>");
         isValid = false;
     }
 
     if (!amount) {
-        $("input[name='amount']").after("<span class='error-message text-danger'>Amount is required.</span>");
+        $("input[name='amount']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Amount is required.</span>");
         isValid = false;
     }
 
     if (!address) {
-        $("textarea[name='address']").after("<span class='error-message text-danger'>Address is required.</span>");
+        $("textarea[name='address']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Address is required.</span>");
         isValid = false;
     }
-
-    // if (!patient_problem) {
-    //     $("textarea[name='patient_problem']").after("<span class='error-message text-danger'>Patient problem is required.</span>");
-    //     isValid = false;
-    // }
 
     if (!isValid) {
         return;
@@ -381,7 +514,7 @@ function payWithRazorpay(e) {
 
     let payBtn = $("#pay-button");
     let originalBtnText = payBtn.html();
-    payBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Processing...');
+    payBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2" role="status" style="margin-right:8px;"></span>Processing Payment...');
 
     $.ajax({
         url: "{{ url('generate-order') }}",
@@ -402,7 +535,7 @@ function payWithRazorpay(e) {
                     "image": "{{ (isset($currentClinic) && $currentClinic->logo) ? asset($currentClinic->logo) : URL::to('public/assets/web/logo/favicon-32x32.png') }}",
                     "order_id": response.order_id,
                     "handler": function(paymentResponse) {
-                        payBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Finalizing Booking...');
+                        payBtn.html('<span class="spinner-border spinner-border-sm me-2" role="status" style="margin-right:8px;"></span>Finalizing Booking...');
                         $.ajax({
                             url: "{{ url('payment-success') }}",
                             type: "POST",
@@ -452,7 +585,7 @@ function payWithRazorpay(e) {
                         "contact": mobile_no
                     },
                     "theme": {
-                        "color": "#b22d32"
+                        "color": "#0d9488"
                     },
                     "modal": {
                         "ondismiss": function() {
@@ -484,8 +617,8 @@ function payWithRazorpay(e) {
                                         title: 'Payment Cancelled',
                                         text: 'Your payment was not completed. Would you like to view/download the transaction receipt or try again?',
                                         showCancelButton: true,
-                                        confirmButtonColor: '#b22d32',
-                                        confirmButtonText: '<i class="fa-solid fa-receipt me-1"></i> View/Download Receipt',
+                                        confirmButtonColor: '#0d9488',
+                                        confirmButtonText: '<i class="fa-solid fa-receipt me-1"></i> View Receipt',
                                         cancelButtonText: 'Try Again'
                                     }).then((result) => {
                                         if (result.isConfirmed) {
@@ -524,5 +657,4 @@ function payWithRazorpay(e) {
     });
 }
 </script>
-
 @endsection

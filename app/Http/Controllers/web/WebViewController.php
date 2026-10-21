@@ -174,13 +174,22 @@ class WebViewController extends Controller
         }
 
         // Pass decoded values to the view
+        $clinic = $this->getClinic();
+        view()->share('currentClinic', $clinic);
+        $setting = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
+        $selectedSlot = TimeSlot::find($decodedTimeSlotId);
+
         $data = [
-            'title' => 'Book Appointment',
+            'title' => 'Patient Registration & Booking',
+            'clinic' => $clinic,
+            'currentClinic' => $clinic,
             'availabilities' => Availability::get(),
-            'setting' => Setting::first(),
+            'setting' => $setting,
             'TimeSlot' => TimeSlot::all(),
             'booking_date' => $request->booking_date,
-            'time_slot_id' => $request->time_slot_id
+            'time_slot_id' => $request->time_slot_id,
+            'decoded_date' => $decodedDate,
+            'selected_slot' => $selectedSlot,
         ];
     
         return view('web.pages.payment_page', $data);
