@@ -17,7 +17,91 @@ class Clinic extends Model
         'allow_cash_booking' => 'boolean',
         'consultation_fee' => 'decimal:2',
         'trial_ends_at' => 'datetime',
+        'extra_features' => 'array',
+        'custom_quotas' => 'array',
     ];
+
+    /**
+     * Check if clinic is entitled to a specific feature (from Plan OR VIP Extra Grant)
+     */
+    public function hasFeature(string $featureKey): bool
+    {
+        // 1. Check VIP extra grants
+        if (!empty($this->extra_features) && in_array($featureKey, (array)$this->extra_features)) {
+            return true;
+        }
+
+        // 2. Check active plan features
+        if ($this->activeSubscription && $this->activeSubscription->plan) {
+            $planFeatures = (array)($this->activeSubscription->plan->features ?? []);
+            if (in_array($featureKey, $planFeatures)) {
+                return true;
+            }
+        } elseif ($this->status === 'trialing' || ($this->status === 'active' && !$this->activeSubscription)) {
+            $defaultPlan = SubscriptionPlan::where('slug', 'starter')->orWhere('id', 1)->first();
+            if ($defaultPlan && is_array($defaultPlan->features) && in_array($featureKey, $defaultPlan->features)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if feature is granted specifically as VIP override
+     */
+    public function hasExtraFeature(string $featureKey): bool
+    {
+        return !empty($this->extra_features) && in_array($featureKey, (array)$this->extra_features);
+    }
+
+    /**
+     * Get all entitled feature keys (merging plan + VIP grants)
+     */
+    public function getAllEntitledFeatures(): array
+    {
+        $features = [];
+        if ($this->activeSubscription && $this->activeSubscription->plan) {
+            $features = array_merge($features, (array)($this->activeSubscription->plan->features ?? []));
+        } elseif ($this->status === 'trialing' || ($this->status === 'active' && !$this->activeSubscription)) {
+            $defaultPlan = SubscriptionPlan::where('slug', 'starter')->orWhere('id', 1)->first();
+            if ($defaultPlan && is_array($defaultPlan->features)) {
+                $features = array_merge($features, $defaultPlan->features);
+            }
+        }
+        if (!empty($this->extra_features)) {
+            $features = array_merge($features, (array)$this->extra_features);
+        }
+        return array_values(array_unique($features));
+    }
+
+    /**
+     * Get current assigned plan or default Starter plan
+     */
+    public function getCurrentPlan()
+    {
+        if ($this->activeSubscription && $this->activeSubscription->plan) {
+            return $this->activeSubscription->plan;
+        }
+        return SubscriptionPlan::where('slug', 'starter')->orWhere('id', 1)->first();
+    }
+
+    /**
+     * Get effective quota accounting for VIP custom overrides
+     */
+    public function getEffectiveQuota(string $key, int $default = 0): int
+    {
+        if (!empty($this->custom_quotas) && isset($this->custom_quotas[$key])) {
+            return (int) $this->custom_quotas[$key];
+        }
+
+        $plan = $this->getCurrentPlan();
+        if ($plan && isset($plan->{$key})) {
+            return (int) $plan->{$key};
+        }
+
+        return $default;
+    }
 
     public function user()
     {

@@ -111,8 +111,15 @@ Route::group(['prefix' => 'admin/saas', 'as' => 'admin.saas.', 'middleware' => [
 
     // Plans Management
     Route::get('/plans', [SaaSAdminController::class, 'plans'])->name('plans');
+    Route::get('/plans/create', [SaaSAdminController::class, 'createPlan'])->name('plan.create');
     Route::post('/plans', [SaaSAdminController::class, 'storePlan'])->name('plan.store');
+    Route::get('/plans/{id}/edit', [SaaSAdminController::class, 'editPlan'])->name('plan.edit');
     Route::put('/plans/{id}', [SaaSAdminController::class, 'updatePlan'])->name('plan.update');
+    Route::post('/plans/{id}/toggle-status', [SaaSAdminController::class, 'togglePlanStatus'])->name('plan.toggle_status');
+
+    // Clinic Special Feature Access & VIP Grants
+    Route::post('/clinics/{id}/extra-access', [SaaSAdminController::class, 'updateClinicExtraAccess'])->name('clinic.extra_access');
+    Route::post('/clinics/{id}/revoke-extra-access', [SaaSAdminController::class, 'revokeClinicExtraAccess'])->name('clinic.revoke_extra_access');
 
     // Audit Logs
     Route::get('/logs', [SaaSAdminController::class, 'logs'])->name('logs');

@@ -427,42 +427,146 @@ class SaaSAdminController extends Controller
     }
 
     /**
+     * Master List of Entitled SaaS Features
+     */
+    public static function getAvailableFeatures(): array
+    {
+        return [
+            'custom_domain' => [
+                'name' => 'Custom Domain Mapping',
+                'desc' => 'Allow clinic to bind apex domain or custom subdomains.',
+                'badge' => 'Domain',
+            ],
+            'custom_pages' => [
+                'name' => 'Custom Pages & Storefront',
+                'desc' => 'Public about, services, treatment pricing, and doctor bio pages.',
+                'badge' => 'Storefront',
+            ],
+            'razorpay_gateway' => [
+                'name' => 'Razorpay Payment Gateway',
+                'desc' => 'Collect online consultation fees directly via UPI, cards, and netbanking.',
+                'badge' => 'Payments',
+            ],
+            'sms_reminders' => [
+                'name' => 'Patient SMS & WhatsApp Reminders',
+                'desc' => 'Automated appointment confirmation and reminder alerts for patients.',
+                'badge' => 'Messaging',
+            ],
+            'advanced_analytics' => [
+                'name' => 'Advanced Analytics & Export',
+                'desc' => 'Patient retention metrics, revenue reports, and CSV data export.',
+                'badge' => 'Analytics',
+            ],
+            'tele_consultation' => [
+                'name' => 'Tele-Consultation & Video',
+                'desc' => 'Virtual appointment booking and encrypted video consultation.',
+                'badge' => 'Tele-Health',
+            ],
+            'staff_accounts' => [
+                'name' => 'Staff & Receptionist Accounts',
+                'desc' => 'Multi-login access for front desk and compounder staff.',
+                'badge' => 'Multi-User',
+            ],
+            'vip_support' => [
+                'name' => 'VIP Priority Support',
+                'desc' => '24/7 dedicated account manager and emergency escalation.',
+                'badge' => 'Support',
+            ],
+        ];
+    }
+
+    /**
      * Platform Subscription Plans Management
      */
     public function plans()
     {
         $plans = SubscriptionPlan::withCount('subscriptions')->orderBy('sort_order', 'asc')->get();
-        return view('admin.saas.plans', compact('plans'));
+
+        $allClinics = Clinic::with(['user', 'activeSubscription.plan'])->orderBy('name', 'asc')->get();
+
+        // Calculate active clinics using each plan
+        foreach ($plans as $plan) {
+            $plan->active_clinics_count = $allClinics->filter(function ($clinic) use ($plan) {
+                if ($clinic->activeSubscription && $clinic->activeSubscription->plan_id == $plan->id) {
+                    return true;
+                }
+                if (!$clinic->activeSubscription && ($plan->slug === 'starter' || $plan->id === 1)) {
+                    return true;
+                }
+                return false;
+            })->count();
+        }
+
+        $vipClinics = $allClinics->filter(function ($c) {
+            return !empty($c->extra_features) || !empty($c->custom_quotas);
+        });
+
+        $features = self::getAvailableFeatures();
+
+        return view('admin.saas.plans', compact('plans', 'allClinics', 'vipClinics', 'features'));
+    }
+
+    public function createPlan()
+    {
+        $features = self::getAvailableFeatures();
+        return view('admin.saas.plan_create', compact('features'));
     }
 
     public function storePlan(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'duration_days' => 'required|integer|min:1',
-            'billing_cycle' => 'required|in:monthly,yearly,lifetime',
+            'slug' => 'nullable|string|max:255|unique:subscription_plans,slug',
             'description' => 'nullable|string',
-            'features' => 'nullable|string', // newline separated
+            'price' => 'required|numeric|min:0',
+            'annual_price' => 'nullable|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'trial_days' => 'nullable|integer|min:0',
+            'max_staff' => 'nullable|integer|min:1',
+            'max_bookings' => 'nullable|integer|min:1',
+            'storage_quota_mb' => 'nullable|integer|min:100',
+            'features' => 'nullable|array',
+            'sort_order' => 'nullable|integer',
         ]);
 
-        $features = array_filter(array_map('trim', explode("\n", $request->features ?? '')));
+        $features = is_array($request->features) ? array_values($request->features) : [];
+        $slug = $request->filled('slug') ? \Illuminate\Support\Str::slug($request->slug) : \Illuminate\Support\Str::slug($request->name);
 
-        SubscriptionPlan::create([
+        $originalSlug = $slug;
+        $count = 1;
+        while (SubscriptionPlan::where('slug', $slug)->exists()) {
+            $slug = "{$originalSlug}-{$count}";
+            $count++;
+        }
+
+        $plan = SubscriptionPlan::create([
             'name' => $request->name,
-            'slug' => \Illuminate\Support\Str::slug($request->name),
-            'price' => $request->price,
-            'duration_days' => $request->duration_days,
-            'billing_cycle' => $request->billing_cycle,
+            'slug' => $slug,
             'description' => $request->description,
+            'price' => $request->price,
+            'annual_price' => $request->filled('annual_price') ? $request->annual_price : ($request->price * 10),
+            'currency' => $request->currency ?? 'INR',
+            'billing_cycle' => $request->billing_cycle ?? 'monthly',
+            'duration_days' => $request->duration_days ?? 30,
+            'trial_days' => $request->filled('trial_days') ? (int)$request->trial_days : 14,
+            'max_staff' => $request->filled('max_staff') ? (int)$request->max_staff : 3,
+            'max_bookings' => $request->filled('max_bookings') ? (int)$request->max_bookings : 50,
+            'storage_quota_mb' => $request->filled('storage_quota_mb') ? (int)$request->storage_quota_mb : 1024,
             'features' => $features,
-            'is_active' => $request->has('is_active'),
-            'sort_order' => $request->sort_order ?? 0,
+            'is_active' => $request->has('is_active') ? true : false,
+            'sort_order' => $request->filled('sort_order') ? (int)$request->sort_order : 0,
         ]);
 
-        ActivityLog::log('plan_created', "Super Admin created plan: {$request->name}");
+        ActivityLog::log('plan_created', "Super Admin created plan: {$plan->name}");
 
-        return back()->with('success', 'Subscription plan created.');
+        return redirect()->route('admin.saas.plans')->with('success', "Subscription plan '{$plan->name}' created successfully.");
+    }
+
+    public function editPlan($id)
+    {
+        $plan = SubscriptionPlan::findOrFail($id);
+        $features = self::getAvailableFeatures();
+        return view('admin.saas.plan_edit', compact('plan', 'features'));
     }
 
     public function updatePlan(Request $request, $id)
@@ -471,29 +575,96 @@ class SaaSAdminController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'duration_days' => 'required|integer|min:1',
-            'billing_cycle' => 'required|in:monthly,yearly,lifetime',
+            'slug' => 'nullable|string|max:255|unique:subscription_plans,slug,' . $plan->id,
             'description' => 'nullable|string',
-            'features' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
+            'annual_price' => 'nullable|numeric|min:0',
+            'currency' => 'nullable|string|max:10',
+            'trial_days' => 'nullable|integer|min:0',
+            'max_staff' => 'nullable|integer|min:1',
+            'max_bookings' => 'nullable|integer|min:1',
+            'storage_quota_mb' => 'nullable|integer|min:100',
+            'features' => 'nullable|array',
+            'sort_order' => 'nullable|integer',
         ]);
 
-        $features = array_filter(array_map('trim', explode("\n", $request->features ?? '')));
+        $features = is_array($request->features) ? array_values($request->features) : [];
+        $slug = $request->filled('slug') ? \Illuminate\Support\Str::slug($request->slug) : $plan->slug;
 
         $plan->update([
             'name' => $request->name,
-            'price' => $request->price,
-            'duration_days' => $request->duration_days,
-            'billing_cycle' => $request->billing_cycle,
+            'slug' => $slug,
             'description' => $request->description,
+            'price' => $request->price,
+            'annual_price' => $request->filled('annual_price') ? $request->annual_price : $plan->annual_price,
+            'currency' => $request->currency ?? $plan->currency ?? 'INR',
+            'trial_days' => $request->filled('trial_days') ? (int)$request->trial_days : $plan->trial_days,
+            'max_staff' => $request->filled('max_staff') ? (int)$request->max_staff : $plan->max_staff,
+            'max_bookings' => $request->filled('max_bookings') ? (int)$request->max_bookings : $plan->max_bookings,
+            'storage_quota_mb' => $request->filled('storage_quota_mb') ? (int)$request->storage_quota_mb : $plan->storage_quota_mb,
             'features' => $features,
-            'is_active' => $request->has('is_active'),
-            'sort_order' => $request->sort_order ?? 0,
+            'is_active' => $request->has('is_active') ? 1 : 0,
+            'sort_order' => $request->filled('sort_order') ? (int)$request->sort_order : $plan->sort_order,
         ]);
 
         ActivityLog::log('plan_updated', "Super Admin updated plan: {$plan->name}");
 
-        return back()->with('success', 'Plan updated.');
+        return redirect()->route('admin.saas.plans')->with('success', "Subscription plan '{$plan->name}' updated successfully.");
+    }
+
+    public function togglePlanStatus($id)
+    {
+        $plan = SubscriptionPlan::findOrFail($id);
+        $plan->is_active = !$plan->is_active;
+        $plan->save();
+
+        ActivityLog::log('plan_status_toggled', "Admin toggled plan status for {$plan->name} to " . ($plan->is_active ? 'active' : 'inactive'));
+
+        return back()->with('success', "Plan '{$plan->name}' is now " . ($plan->is_active ? 'Active' : 'Deactivated') . '.');
+    }
+
+    public function updateClinicExtraAccess(Request $request, $id)
+    {
+        $clinic = Clinic::findOrFail($id);
+
+        $request->validate([
+            'extra_features' => 'nullable|array',
+            'custom_staff' => 'nullable|integer|min:1',
+            'custom_bookings' => 'nullable|integer|min:1',
+            'custom_storage' => 'nullable|integer|min:100',
+        ]);
+
+        $clinic->extra_features = is_array($request->extra_features) ? array_values($request->extra_features) : [];
+
+        $customQuotas = [];
+        if ($request->filled('custom_staff')) {
+            $customQuotas['max_staff'] = (int) $request->custom_staff;
+        }
+        if ($request->filled('custom_bookings')) {
+            $customQuotas['max_bookings'] = (int) $request->custom_bookings;
+        }
+        if ($request->filled('custom_storage')) {
+            $customQuotas['storage_quota_mb'] = (int) $request->custom_storage;
+        }
+
+        $clinic->custom_quotas = !empty($customQuotas) ? $customQuotas : null;
+        $clinic->save();
+
+        ActivityLog::log('vip_access_updated', "Admin updated VIP extra features and quotas for {$clinic->name}", $clinic->id);
+
+        return back()->with('success', "VIP special access and overrides updated for '{$clinic->name}'!");
+    }
+
+    public function revokeClinicExtraAccess($id)
+    {
+        $clinic = Clinic::findOrFail($id);
+        $clinic->extra_features = null;
+        $clinic->custom_quotas = null;
+        $clinic->save();
+
+        ActivityLog::log('vip_access_revoked', "Admin revoked VIP extra features and custom quotas for {$clinic->name}", $clinic->id);
+
+        return back()->with('success', "VIP special access and quotas revoked for '{$clinic->name}'. Restored to default plan limits.");
     }
 
     /**

@@ -34,11 +34,11 @@
       <span class="category-action">+</span>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('admin.saas.plans*') ? 'active' : '' }}">
+    <li class="nav-item {{ request()->routeIs('admin.saas.plan*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('admin.saas.plans') }}">
         <i class="mdi mdi-package-variant-closed nav-icon"></i>
         <span class="menu-title">Subscription Plans</span>
-        @if(request()->routeIs('admin.saas.plans*'))
+        @if(request()->routeIs('admin.saas.plan*'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>
