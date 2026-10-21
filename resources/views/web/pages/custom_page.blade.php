@@ -12,7 +12,7 @@
      MODERN CUSTOM PAGE HERO HEADER
      ======================================================== -->
 <section class="vital-page-header py-4" style="background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%); border-bottom: 1px solid #e2e8f0;">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="padding-left: 36px; padding-right: 36px;">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-2">
       <ol class="breadcrumb mb-0" style="font-size: 13px; background: transparent; padding: 0;">

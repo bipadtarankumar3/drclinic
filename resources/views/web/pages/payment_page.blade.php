@@ -142,7 +142,7 @@
      MODERN PAGE HEADER (Replaces Old Stretched Banner)
      ======================================================== -->
 <section class="vital-page-header">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="padding-left: 36px; padding-right: 36px;">
     <div class="row align-items-center">
       <div class="col-md-7">
         <div class="vital-hero-badge mb-2">

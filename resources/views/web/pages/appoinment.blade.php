@@ -61,7 +61,7 @@
     font-size: 16.5px;
     color: #64748b;
     line-height: 1.6;
-    max-width: 520px;
+    max-width: 640px;
   }
   .vital-hero-cta {
     display: flex;
@@ -454,6 +454,7 @@
   }
 
   @media (max-width: 991px) {
+    .vital-hero-section .container-fluid { padding-left: 20px !important; padding-right: 20px !important; }
     .vital-hero-title { font-size: 38px; }
     .vital-hero-backdrop { width: 320px; height: 320px; }
     .vital-doctor-img { max-width: 300px; }
@@ -468,7 +469,7 @@
      HERO SECTION (Matching Reference Design)
      ======================================================== -->
 <section class="vital-hero-section">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="padding-left: 48px; padding-right: 48px;">
     <div class="row align-items-center">
       <!-- Left Column: Copy & CTAs -->
       <div class="col-lg-6 col-md-12 py-3 py-lg-5">
