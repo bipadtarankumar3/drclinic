@@ -139,17 +139,17 @@
 
 @section('banner')
 <!-- ========================================================
-     MODERN PAGE HEADER (Replaces Old Stretched Banner)
+     MODERN PAGE HEADER (100% Full Width & Responsive)
      ======================================================== -->
 <section class="vital-page-header">
-  <div class="container-fluid" style="padding-left: 36px; padding-right: 36px;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="row align-items-center">
       <div class="col-md-7">
         <div class="vital-hero-badge mb-2">
           <span class="vital-pulse-dot"></span>
           <span>Step 2 of 2: Patient Registration</span>
         </div>
-        <h1 class="font-weight-bold mb-1" style="font-size: 32px; color: #0f172a; letter-spacing: -0.5px;">
+        <h1 class="font-weight-bold mb-1" style="font-size: clamp(24px, 4vw, 32px); color: #0f172a; letter-spacing: -0.5px;">
           Patient Details & Confirmation
         </h1>
         <p class="text-muted mb-0" style="font-size: 14.5px;">
@@ -184,7 +184,7 @@
 @endsection
 
 @section('content')
-<div class="container py-4 my-2" style="max-width: 1240px;">
+<div class="container-fluid py-4 my-2" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
   <form id="payment-form" class="payment-form">
     @csrf
     <input type="hidden" name="booking_date" id="booking_date" @if (isset($booking_date)) value="{{ base64_decode($booking_date) }}" @endif>

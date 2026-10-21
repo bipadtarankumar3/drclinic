@@ -179,6 +179,60 @@
     color: #0f172a;
   }
 
+  .vital-menu-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    background: #ffffff;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #0f172a;
+    font-size: 17px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .vital-menu-toggle:hover {
+    background: #f1f5f9;
+    color: #0d9488;
+  }
+  .vital-mobile-menu {
+    display: none;
+    background: #ffffff;
+    border-top: 1px solid #e2e8f0;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.08);
+    padding: 18px 24px;
+  }
+  .vital-mobile-menu.open {
+    display: block;
+    animation: vitalMenuSlide 0.22s ease-out;
+  }
+  @keyframes vitalMenuSlide {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .vital-mobile-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 16px 0;
+  }
+  .vital-mobile-links li {
+    border-bottom: 1px solid #f1f5f9;
+  }
+  .vital-mobile-links a {
+    display: block;
+    padding: 11px 4px;
+    color: #1e293b;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14.5px;
+  }
+  .vital-mobile-links a:hover,
+  .vital-mobile-links a.active {
+    color: #0d9488;
+  }
+
   @media (max-width: 991px) {
     .vital-top-main,
     .vital-nav-main {
@@ -188,6 +242,25 @@
       display: none;
     }
     .vital-top-bar {
+      display: none;
+    }
+    .vital-menu-toggle {
+      display: flex;
+    }
+    .btn-vital-book {
+      padding: 8px 16px;
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .vital-brand-name {
+      font-size: 16.5px;
+    }
+    .vital-brand-sub {
+      font-size: 11px;
+    }
+    .btn-vital-book span {
       display: none;
     }
   }
@@ -228,7 +301,7 @@
         </div>
       </a>
 
-      <!-- Navigation Links -->
+      <!-- Desktop Navigation Links -->
       <ul class="vital-nav-links">
         <li><a href="{{ $clinicUrl }}" class="{{ !request()->is('*/page/*') && !request()->is('*/book_appointment*') ? 'active' : '' }}">Home</a></li>
 
@@ -281,12 +354,79 @@
       <!-- Action Buttons -->
       <div class="vital-nav-actions">
         <a href="#booking-section" class="btn-vital-book">
-          <i class="fa-regular fa-calendar-check"></i> Book Appointment
+          <i class="fa-regular fa-calendar-check"></i> <span>Book Appointment</span>
         </a>
         <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#contact-section' }}" class="vital-search-btn" title="Call Clinic">
           <i class="fa-solid fa-phone"></i>
         </a>
+        <!-- Mobile Toggle Button -->
+        <button type="button" class="vital-menu-toggle" id="vitalMenuBtn" onclick="toggleMobileNav()" aria-label="Toggle Navigation Menu">
+          <i class="fa-solid fa-bars" id="menuToggleIcon"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- 3. Mobile Navigation Collapsible Drawer -->
+    <div class="vital-mobile-menu" id="vitalMobileNav">
+      <ul class="vital-mobile-links">
+        <li><a href="{{ $clinicUrl }}" class="{{ !request()->is('*/page/*') && !request()->is('*/book_appointment*') ? 'active' : '' }}"><i class="fa-solid fa-house me-2 text-teal"></i> Home</a></li>
+
+        @if($aboutPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $aboutPage->slug) }}" class="{{ request()->is('*/page/' . $aboutPage->slug) ? 'active' : '' }}"><i class="fa-solid fa-circle-info me-2 text-teal"></i> {{ $aboutPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#about-section"><i class="fa-solid fa-circle-info me-2 text-teal"></i> About Us</a></li>
+        @endif
+
+        @if($servicesPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $servicesPage->slug) }}" class="{{ request()->is('*/page/' . $servicesPage->slug) ? 'active' : '' }}"><i class="fa-solid fa-stethoscope me-2 text-teal"></i> {{ $servicesPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#services-section"><i class="fa-solid fa-stethoscope me-2 text-teal"></i> Our Services</a></li>
+        @endif
+
+        @if($doctorsPage)
+          <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $doctorsPage->slug) }}" class="{{ request()->is('*/page/' . $doctorsPage->slug) ? 'active' : '' }}"><i class="fa-solid fa-user-doctor me-2 text-teal"></i> {{ $doctorsPage->title }}</a></li>
+        @else
+          <li><a href="{{ $clinicUrl }}#doctors-section"><i class="fa-solid fa-user-doctor me-2 text-teal"></i> Doctors</a></li>
+        @endif
+
+        <li><a href="{{ $clinicUrl }}#packages-section"><i class="fa-solid fa-box-open me-2 text-teal"></i> Health Packages</a></li>
+
+        @if($otherPages->count() > 0)
+          @foreach($otherPages as $cp)
+            <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $cp->slug) }}" class="{{ request()->is('*/page/' . $cp->slug) ? 'active' : '' }}"><i class="fa-solid fa-file-lines me-2 text-teal"></i> {{ $cp->title }}</a></li>
+          @endforeach
+        @endif
+
+        <li><a href="{{ $clinicUrl }}#contact-section"><i class="fa-solid fa-location-dot me-2 text-teal"></i> Contact</a></li>
+        <li><a href="{{ url('/admin/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li>
+      </ul>
+
+      <div class="d-flex flex-column gap-2 pt-2">
+        <a href="#booking-section" class="btn btn-vital-primary w-100 text-center py-2 text-white" style="background: #0d9488; border-radius: 30px; text-decoration: none;" onclick="toggleMobileNav()">
+          <i class="fa-regular fa-calendar-check me-2"></i> Book Appointment Now
+        </a>
+        @if($clinic->phone)
+        <a href="tel:{{ $clinic->phone }}" class="btn btn-outline-secondary w-100 text-center py-2" style="border-radius: 30px;">
+          <i class="fa-solid fa-phone me-2 text-teal"></i> Call {{ $clinic->phone }}
+        </a>
+        @endif
       </div>
     </div>
   </div>
 </header>
+
+<script>
+function toggleMobileNav() {
+  var menu = document.getElementById('vitalMobileNav');
+  var icon = document.getElementById('menuToggleIcon');
+  if (!menu) return;
+  menu.classList.toggle('open');
+  if (menu.classList.contains('open')) {
+    icon.classList.remove('fa-bars');
+    icon.classList.add('fa-xmark');
+  } else {
+    icon.classList.remove('fa-xmark');
+    icon.classList.add('fa-bars');
+  }
+}
+</script>

@@ -1,5 +1,73 @@
 @extends('admin.layouts.main')
 
+@section('style')
+<!-- Summernote Lite CSS -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.css" rel="stylesheet">
+<style>
+  .note-editor.note-frame {
+    border: 1.5px solid #cbd5e1 !important;
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    transition: border-color 0.2s;
+  }
+  .note-editor.note-frame.focus {
+    border-color: #0d9488 !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15) !important;
+  }
+  .note-toolbar {
+    background: #f8fafc !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding: 8px 10px !important;
+  }
+  .note-btn {
+    border: 1px solid #e2e8f0 !important;
+    background: #ffffff !important;
+    border-radius: 6px !important;
+    color: #334155 !important;
+    font-size: 13px !important;
+    padding: 5px 10px !important;
+  }
+  .note-btn:hover {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    border-color: #cbd5e1 !important;
+  }
+  .note-btn.active {
+    background: #e6fffa !important;
+    color: #0d9488 !important;
+    border-color: #99f6e4 !important;
+  }
+  .note-editable {
+    min-height: 380px !important;
+    font-size: 15px !important;
+    line-height: 1.8 !important;
+    color: #1e293b !important;
+    background: #ffffff !important;
+    padding: 20px 24px !important;
+  }
+  .template-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    color: #0f766e;
+    font-size: 12.5px;
+    font-weight: 600;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .template-chip:hover {
+    background: #ccfbf1;
+    color: #0d9488;
+    transform: translateY(-1px);
+  }
+</style>
+@endsection
+
 @section('content')
 <div class="content-wrapper">
   @php
@@ -22,7 +90,7 @@
     <div class="col-12">
       <div class="card border-0 shadow-sm rounded-4" style="border-radius: 16px;">
         <div class="card-body p-4 p-md-5">
-          <form action="{{ route('doctor.pages.store') }}" method="POST">
+          <form action="{{ route('doctor.pages.store') }}" method="POST" id="custom-page-form">
             @csrf
 
             <div class="row g-3">
@@ -39,20 +107,32 @@
                 </small>
               </div>
 
-              <!-- Page Content with Quick Formatting Toolbar -->
+              <!-- Page Content with Summernote Rich Text Editor -->
               <div class="col-12 mb-4">
                 <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
                   <label class="form-label font-weight-bold mb-0">Page Content <span class="text-danger">*</span></label>
-                  <div class="btn-group btn-group-sm" role="group">
-                    <button type="button" class="btn btn-outline-secondary" onclick="insertFormat('h2')"><i class="mdi mdi-format-header-2"></i> Heading</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="insertFormat('bold')"><i class="mdi mdi-format-bold"></i> Bold</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="insertFormat('bullet')"><i class="mdi mdi-format-list-bulleted"></i> Bullet</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="insertFormat('quote')"><i class="mdi mdi-format-quote-close"></i> Note</button>
-                    <button type="button" class="btn btn-outline-secondary" onclick="insertFormat('table')"><i class="mdi mdi-table"></i> Timings Table</button>
+                  <div class="d-flex align-items-center flex-wrap gap-1">
+                    <span class="text-muted small me-1">Insert Block:</span>
+                    <button type="button" class="template-chip" onclick="insertTemplate('timings')">
+                      <i class="mdi mdi-clock-outline"></i> Consultation Hours
+                    </button>
+                    <button type="button" class="template-chip" onclick="insertTemplate('doctor')">
+                      <i class="mdi mdi-account-star"></i> Doctor Bio
+                    </button>
+                    <button type="button" class="template-chip" onclick="insertTemplate('highlights')">
+                      <i class="mdi mdi-check-decagram"></i> Key Highlights
+                    </button>
+                    <button type="button" class="template-chip" onclick="insertTemplate('faq')">
+                      <i class="mdi mdi-help-circle-outline"></i> FAQ Item
+                    </button>
                   </div>
                 </div>
-                <textarea class="form-control font-monospace" id="page-content" name="content" rows="14" placeholder="Write your page details, clinic timings, treatments, qualifications, or guidelines..." required style="font-size: 14.5px; line-height: 1.6;">{{ old('content') }}</textarea>
-                <small class="text-muted mt-1 d-block">Supports plain text, bullet points (•), numbered lists, and HTML formatting.</small>
+
+                <textarea class="form-control" id="page-content" name="content" placeholder="Write your page details, clinic timings, treatments, qualifications, or guidelines..." required>{{ old('content') }}</textarea>
+                <small class="text-muted mt-2 d-block">
+                  <i class="mdi mdi-information-outline text-primary"></i> 
+                  Use the visual editor toolbar above to format headings, bold/italic text, bullet lists, color highlights, tables, and embed images or links.
+                </small>
               </div>
 
               <div class="col-md-8 mb-4">
@@ -89,9 +169,39 @@
     </div>
   </div>
 </div>
+@endsection
 
+@section('js')
+<!-- Summernote Lite JS -->
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.20/dist/summernote-lite.min.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() {
+$(document).ready(function() {
+    // Initialize Summernote WYSIWYG Text Editor
+    $('#page-content').summernote({
+        placeholder: 'Write your page details, clinic timings, treatments, qualifications, or guidelines...',
+        tabsize: 2,
+        height: 380,
+        toolbar: [
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'clear']],
+            ['fontname', ['fontname']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['table', ['table']],
+            ['insert', ['link', 'picture', 'video', 'hr']],
+            ['view', ['fullscreen', 'codeview', 'help']]
+        ],
+        styleTags: ['p', 'h2', 'h3', 'h4', 'h5', 'h6', 'blockquote', 'pre']
+    });
+
+    // Ensure editor content syncs on form submit
+    $('#custom-page-form').on('submit', function() {
+        let code = $('#page-content').summernote('code');
+        $('#page-content').val(code);
+    });
+
+    // Slug generation
     let titleInput = document.getElementById("page-title");
     let slugInput = document.getElementById("page-slug");
     let previewText = document.getElementById("preview-text");
@@ -113,33 +223,59 @@ document.addEventListener("DOMContentLoaded", function() {
     updateSlug();
 });
 
-function insertFormat(type) {
-    let textarea = document.getElementById("page-content");
-    let start = textarea.selectionStart;
-    let end = textarea.selectionEnd;
-    let selectedText = textarea.value.substring(start, end);
-    let replacement = "";
-
+function insertTemplate(type) {
+    let html = "";
     switch(type) {
-        case 'h2':
-            replacement = "\n\n## " + (selectedText || "Section Heading") + "\n";
+        case 'timings':
+            html = `<div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin: 16px 0;">
+  <h4 style="color: #0d9488; font-weight: 700; margin-bottom: 12px;">Consultation Hours</h4>
+  <table style="width: 100%; border-collapse: collapse;">
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 8px 12px; font-weight: 600;">Monday – Friday</td>
+      <td style="padding: 8px 12px; color: #0f172a;">09:00 AM – 01:00 PM & 05:00 PM – 08:30 PM</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #e2e8f0;">
+      <td style="padding: 8px 12px; font-weight: 600;">Saturday</td>
+      <td style="padding: 8px 12px; color: #0f172a;">10:00 AM – 03:00 PM</td>
+    </tr>
+    <tr>
+      <td style="padding: 8px 12px; font-weight: 600;">Sunday</td>
+      <td style="padding: 8px 12px; color: #dc2626;">Emergency On-Call Only</td>
+    </tr>
+  </table>
+</div><p></p>`;
             break;
-        case 'bold':
-            replacement = "**" + (selectedText || "Important Note") + "**";
+
+        case 'doctor':
+            html = `<div style="border-left: 4px solid #0d9488; background: #f0fdfa; padding: 18px 24px; border-radius: 0 12px 12px 0; margin: 18px 0;">
+  <h3 style="color: #0f172a; margin-top: 0; margin-bottom: 6px;">Doctor Profile & Credentials</h3>
+  <p style="color: #0f766e; font-weight: 600; margin-bottom: 10px;">MBBS, MD, Fellowship in Clinical Healthcare</p>
+  <p style="color: #334155; line-height: 1.7; margin-bottom: 0;">With over 12+ years of clinical excellence, specializing in comprehensive patient diagnostics, preventive wellness, and advanced treatments.</p>
+</div><p></p>`;
             break;
-        case 'bullet':
-            replacement = "\n• " + (selectedText || "Service point / feature detail");
+
+        case 'highlights':
+            html = `<div style="margin: 18px 0;">
+  <h4 style="color: #0f172a; font-weight: 700; margin-bottom: 12px;">Key Services & Facilities</h4>
+  <ul>
+    <li><strong>Advanced Diagnostic Care:</strong> Digital ECG, rapid blood sugar testing, and digital vital monitoring.</li>
+    <li><strong>Dedicated Patient Care:</strong> Personalized treatment plans and 1-on-1 confidential consultations.</li>
+    <li><strong>Clean & Modern Clinic:</strong> Strict sanitization protocols and digital paperless prescriptions.</li>
+  </ul>
+</div><p></p>`;
             break;
-        case 'quote':
-            replacement = "\n> " + (selectedText || "Special advisory or patient preparation note.") + "\n";
-            break;
-        case 'table':
-            replacement = "\nConsultation Hours:\n• Monday – Friday: 09:00 AM – 06:00 PM\n• Saturday: 10:00 AM – 02:00 PM\n• Sunday: Closed / Emergency On-Call\n";
+
+        case 'faq':
+            html = `<div style="border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px 20px; margin: 12px 0; background: #ffffff;">
+  <h5 style="color: #0d9488; font-weight: 700; margin-bottom: 6px;">Q: Do I need to book an appointment in advance?</h5>
+  <p style="color: #475569; margin-bottom: 0; line-height: 1.6;">Yes, booking your slot online through our website ensures zero wait time and guaranteed doctor availability.</p>
+</div><p></p>`;
             break;
     }
 
-    textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
-    textarea.focus();
+    if (html) {
+        $('#page-content').summernote('pasteHTML', html);
+    }
 }
 </script>
 @endsection

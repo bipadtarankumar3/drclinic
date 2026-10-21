@@ -454,22 +454,40 @@
   }
 
   @media (max-width: 991px) {
-    .vital-hero-section .container-fluid { padding-left: 20px !important; padding-right: 20px !important; }
-    .vital-hero-title { font-size: 38px; }
-    .vital-hero-backdrop { width: 320px; height: 320px; }
-    .vital-doctor-img { max-width: 300px; }
-    .vital-emergency-card { right: 0; bottom: 0; padding: 12px 16px; }
-    .vital-booking-card { padding: 20px; }
+    .vital-hero-section { padding: 30px 0 40px 0; }
+    .vital-hero-title { font-size: clamp(32px, 5vw, 42px); }
+    .vital-hero-backdrop { width: 300px; height: 300px; }
+    .vital-doctor-img { max-width: 280px; }
+    .vital-emergency-card { right: 10px; bottom: 0; padding: 10px 14px; }
+    .vital-booking-card { padding: 24px; border-radius: 18px; }
+  }
+
+  @media (max-width: 576px) {
+    .vital-hero-title { font-size: 28px; line-height: 1.2; letter-spacing: -0.5px; }
+    .vital-hero-subtitle { font-size: 14px; }
+    .vital-hero-cta { flex-direction: column; width: 100%; gap: 10px; }
+    .btn-vital-primary, .btn-vital-outline { width: 100%; justify-content: center; text-align: center; padding: 12px 20px; font-size: 14px; }
+    .vital-stats-row { gap: 8px; justify-content: center; }
+    .vital-stat-chip { padding: 8px 12px; font-size: 12px; }
+    .vital-hero-backdrop { width: 240px; height: 240px; }
+    .vital-doctor-img { max-width: 230px; }
+    .vital-emergency-card { position: static; margin-top: 16px; display: inline-flex; width: auto; }
+    .vital-booking-card { padding: 16px; border-radius: 16px; }
+    .fc .fc-toolbar { flex-direction: column; gap: 10px; align-items: center; }
+    .fc .fc-toolbar-title { font-size: 16px !important; }
+    .fc .fc-button { padding: 5px 10px !important; font-size: 12px !important; }
+    .fc-daygrid-day-number { font-size: 12px !important; padding: 4px !important; }
+    .time-slot-badge { flex: 1 1 calc(50% - 12px); min-width: 90px; justify-content: center; margin: 4px; padding: 8px 10px; font-size: 12.5px; }
   }
 </style>
 @endsection
 
 @section('banner')
 <!-- ========================================================
-     HERO SECTION (Matching Reference Design)
+     HERO SECTION (Matching Reference Design - 100% Full Width & Responsive)
      ======================================================== -->
 <section class="vital-hero-section">
-  <div class="container-fluid" style="padding-left: 48px; padding-right: 48px;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="row align-items-center">
       <!-- Left Column: Copy & CTAs -->
       <div class="col-lg-6 col-md-12 py-3 py-lg-5">
@@ -537,10 +555,10 @@
 
 @section('content')
 <!-- ========================================================
-     SECTION 2: OUR SERVICES
+     SECTION 2: OUR SERVICES (Fluid Responsive)
      ======================================================== -->
 <section id="services-section" class="vital-services-section py-5">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="text-center mb-5">
       <h2 class="vital-section-heading">Our Services</h2>
       <div class="vital-heading-bar"></div>
@@ -549,7 +567,7 @@
 
     <div class="row g-4">
       <!-- Service 1: Cardiology -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-service-card">
           <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
             <i class="fa-solid fa-heart-pulse"></i>
@@ -561,7 +579,7 @@
       </div>
 
       <!-- Service 2: General Medicine -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-service-card">
           <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
             <i class="fa-solid fa-stethoscope"></i>
@@ -573,7 +591,7 @@
       </div>
 
       <!-- Service 3: Dental Care -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-service-card">
           <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
             <i class="fa-solid fa-tooth"></i>
@@ -585,7 +603,7 @@
       </div>
 
       <!-- Service 4: Women's Health -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-service-card">
           <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
             <i class="fa-solid fa-venus"></i>
@@ -600,13 +618,13 @@
 </section>
 
 <!-- ========================================================
-     SECTION 3: 4-COLUMN PROMO & ACTION GRID
+     SECTION 3: 4-COLUMN PROMO & ACTION GRID (Fluid Responsive)
      ======================================================== -->
 <section id="packages-section" class="vital-features-grid py-4 mb-5">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="row g-4">
       <!-- Card 1: Health Checkup Packages -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
             <h5 class="feature-card-title mb-1">Health Checkup Packages</h5>
@@ -625,7 +643,7 @@
       </div>
 
       <!-- Card 2: Why Choose Us? -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
             <h5 class="feature-card-title mb-3">Why Choose Us?</h5>
@@ -641,7 +659,7 @@
       </div>
 
       <!-- Card 3: Take Care of Yourself Today -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
             <h5 class="feature-card-title mb-1">Take Care of Yourself Today</h5>
@@ -655,7 +673,7 @@
       </div>
 
       <!-- Card 4: We're Here for You -->
-      <div class="col-lg-3 col-md-6">
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
             <h5 class="feature-card-title mb-1">We're Here for You</h5>
@@ -673,10 +691,10 @@
 </section>
 
 <!-- ========================================================
-     SECTION 4: INTERACTIVE APPOINTMENT CALENDAR
+     SECTION 4: INTERACTIVE APPOINTMENT CALENDAR (Fluid Responsive)
      ======================================================== -->
 <section id="booking-section" class="py-5" style="background: #f8fafc;">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     
     <div class="text-center mb-4">
       <div class="vital-hero-badge mb-2">
