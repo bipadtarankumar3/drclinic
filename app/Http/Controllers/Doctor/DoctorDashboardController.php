@@ -14,7 +14,7 @@ class DoctorDashboardController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
-        $clinic = $user->clinic;
+        $clinic = $user ? $user->getActiveClinic() : null;
 
         if (!$clinic) {
             return redirect()->route('doctor.onboarding');

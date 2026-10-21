@@ -28,18 +28,20 @@ class AdminAuthController extends Controller
     public function adminLoginAction(Request $request){
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials)) {
+            $user = Auth::user();
 
-            if (in_array(Auth::user()->user_type, ['admin', 'super_admin'])) {
-                return redirect('admin/dashboard'); 
-            } elseif (Auth::user()->user_type === 'doctor') {
-                if (!Auth::user()->clinic) {
+            if ($user->isSuperAdmin() && !session('impersonating_admin_id')) {
+                return redirect()->route('admin.saas.dashboard'); 
+            } elseif ($user->isDoctor() || $user->clinic) {
+                if (!$user->clinic) {
                     return redirect()->route('doctor.onboarding');
                 }
                 return redirect()->route('doctor.dashboard');
             } else {
                 $request->session()->flash('success', 'Login Success');
-                return redirect('admin/dashboard');  
+                return redirect()->route('admin.saas.dashboard');  
             }
+        }
                
            
         } else {
@@ -85,6 +87,21 @@ class AdminAuthController extends Controller
 
 
     public function dashboard(){
+        $user = Auth::user();
+
+        // If visiting a clinic or doctor user, go to Doctor Dashboard
+        if (session('impersonating_admin_id') || ($user && ($user->isDoctor() || $user->clinic))) {
+            return redirect()->route('doctor.dashboard');
+        }
+
+        // If Super Admin, go to Platform Dashboard
+        if ($user && $user->isSuperAdmin()) {
+            return redirect()->route('admin.saas.dashboard');
+        }
+
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $clinicId = $clinic ? $clinic->id : null;
+
         $today = Carbon::today();
         $tomorrow = Carbon::tomorrow();
 

@@ -83,7 +83,7 @@
     {{-- CASE 2: DOCTOR CLINIC (Visible to Doctors OR Admin VISITING a clinic)     --}}
     {{-- Order: 1. Dashboard, 2. Daily Patient Activity, 3. Clinic Setup & Plans   --}}
     {{-- ========================================================================= --}}
-    @if(Auth::check() && (Auth::user()->isDoctor() || session('impersonating_admin_id')))
+    @if(Auth::check() && (Auth::user()->isDoctor() || Auth::user()->clinic || session('impersonating_admin_id')))
     
     <li class="nav-item nav-category">
       <span>MAIN</span>

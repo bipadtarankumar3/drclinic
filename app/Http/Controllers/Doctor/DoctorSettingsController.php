@@ -14,7 +14,7 @@ class DoctorSettingsController extends Controller
 {
     public function index()
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
             return redirect()->route('doctor.onboarding');
         }
@@ -29,7 +29,7 @@ class DoctorSettingsController extends Controller
      */
     public function updateProfile(Request $request)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -61,7 +61,7 @@ class DoctorSettingsController extends Controller
      */
     public function updateRazorpay(Request $request)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
 
         $request->validate([
             'razorpay_key' => 'nullable|string|max:255',
@@ -87,7 +87,7 @@ class DoctorSettingsController extends Controller
      */
     public function updateBranding(Request $request)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
 
         $request->validate([
             'theme_color' => 'nullable|string|max:30',
@@ -127,7 +127,7 @@ class DoctorSettingsController extends Controller
      */
     public function updateDomain(Request $request)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
 
         $request->validate([
             'subdomain' => 'required|alpha_dash|min:3|max:50|unique:clinics,subdomain,' . $clinic->id,

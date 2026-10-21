@@ -13,19 +13,31 @@ use DB;
 class TimeSlotController extends Controller
 {
     public function time_slot_list(){
-        $data['title']='time slot List';
-        $data['timeSlots'] = TimeSlot::all();
+        $data['title']='Time Slot List';
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $query = TimeSlot::query();
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $data['timeSlots'] = $query->get();
         return view('admin.pages.time_slot.time_slot_list',$data);
     }
 
     public function time_slot_add(){
-        $data['title']='time slot add';
+        $data['title']='Time Slot Add';
         return view('admin.pages.time_slot.time_slot_add',$data);
     }
 
     public function edit_time_slot($id)
     {
-        $timeSlot = TimeSlot::find($id);
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $query = TimeSlot::where('id', $id);
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $timeSlot = $query->first();
 
         if (!$timeSlot) {
             return redirect()->back()->with('error', 'Time Slot not found!');
@@ -42,14 +54,18 @@ class TimeSlotController extends Controller
             'to_time' => 'required',
             'status' => 'required|in:active,inactive',
         ]);
-    
+        
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
         $data = [
+            'clinic_id' => $clinic ? $clinic->id : null,
             'day_of_week' => $request->day_of_week,
             'from_time' => $request->from_time,
             'to_time' => $request->to_time,
             'status' => $request->status,
         ];
-    
+
         if ($id) {
             // Update existing record
             $timeSlot = TimeSlot::find($id);

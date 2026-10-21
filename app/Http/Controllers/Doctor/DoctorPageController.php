@@ -13,7 +13,7 @@ class DoctorPageController extends Controller
 {
     public function index()
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
             return redirect()->route('doctor.onboarding');
         }
@@ -25,13 +25,13 @@ class DoctorPageController extends Controller
 
     public function create()
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         return view('doctor.pages.create', compact('clinic'));
     }
 
     public function store(Request $request)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
 
         $request->validate([
             'title' => 'required|string|max:255',
@@ -66,7 +66,7 @@ class DoctorPageController extends Controller
 
     public function edit($id)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         $page = ClinicPage::where('clinic_id', $clinic->id)->findOrFail($id);
 
         return view('doctor.pages.edit', compact('clinic', 'page'));
@@ -74,7 +74,7 @@ class DoctorPageController extends Controller
 
     public function update(Request $request, $id)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         $page = ClinicPage::where('clinic_id', $clinic->id)->findOrFail($id);
 
         $request->validate([
@@ -103,7 +103,7 @@ class DoctorPageController extends Controller
 
     public function destroy($id)
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         $page = ClinicPage::where('clinic_id', $clinic->id)->findOrFail($id);
         $title = $page->title;
         $page->delete();

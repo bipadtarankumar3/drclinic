@@ -14,14 +14,26 @@ use App\Models\TimeSlot;
 class AvailabilityController extends Controller
 {
     public function availability_list(){
-        $data['title']='availability List';
-        $data['availabilities'] = Availability::all();
+        $data['title']='Availability List';
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $query = Availability::query();
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $data['availabilities'] = $query->get();
         return view('admin.pages.availability.availability_list',$data);
     }
 
     public function availability_calander_list(){
-        $data['title']='availability calander List';
-        $data['availabilities'] = Availability::all();
+        $data['title']='Availability Calendar List';
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $query = Availability::query();
+        if ($clinic) {
+            $query->where('clinic_id', $clinic->id);
+        }
+        $data['availabilities'] = $query->get();
         return view('admin.pages.availability.availability_calander_list',$data);
     }
 
@@ -34,8 +46,11 @@ class AvailabilityController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
             
         $data = [
+            'clinic_id' => $clinic ? $clinic->id : null,
             'from_date' => $request->from_date,
             'to_date' => $request->to_date,
             'remarks' => $request->remarks,
@@ -129,19 +144,27 @@ public function get_time_slots(Request $request)
     $date = $request->input('date');
     $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
 
-    // Adjust for your database format where 1 = Monday, 2 = Tuesday
-    $dbDayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek; // Convert Sunday(0) to 7
+    // Adjust for database format where 1 = Monday, 2 = Tuesday
+    $dbDayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek;
+
+    $user = auth()->user();
+    $clinic = $user ? $user->getActiveClinic() : null;
 
     // Fetch available time slots for the selected day
-    $timeSlots = TimeSlot::select('id', 'from_time', 'to_time')
-        ->where('day_of_week', $dbDayOfWeek)
-        ->get();
+    $query = TimeSlot::select('id', 'from_time', 'to_time')
+        ->where('day_of_week', $dbDayOfWeek);
+
+    if ($clinic) {
+        $query->where('clinic_id', $clinic->id);
+    }
+
+    $timeSlots = $query->get();
 
     $select = "<option value=''>--select--</option>";
 
     foreach ($timeSlots as $slot) {
-        $fromTime = Carbon::parse($slot->from_time)->format('h:i A'); // Convert to AM/PM format
-        $toTime = Carbon::parse($slot->to_time)->format('h:i A'); // Convert to AM/PM format
+        $fromTime = Carbon::parse($slot->from_time)->format('h:i A');
+        $toTime = Carbon::parse($slot->to_time)->format('h:i A');
         
         $select .= '<option value="' . $slot->id . '">' . $fromTime . ' - ' . $toTime . '</option>'; 
     }
@@ -153,15 +176,17 @@ public function get_time_slots(Request $request)
     public function markUnavailable(Request $request)
     {
         $start_time_end_time =  $request->start_time_end_time;
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
     
         foreach ($start_time_end_time as $index => $data) {
-            // Create a new availability record
             $timeSlot = TimeSlot::select('id', 'from_time', 'to_time')->where('id',  $data)->first();
             Availability::create([
+                'clinic_id' => $clinic ? $clinic->id : null,
                 'from_date' => $request->date,
                 'time_slot_id' => $data,
-                'start_time' => $timeSlot->from_time,
-                'end_time' => $timeSlot->to_time,
+                'start_time' => $timeSlot ? $timeSlot->from_time : null,
+                'end_time' => $timeSlot ? $timeSlot->to_time : null,
             ]);
         }
     

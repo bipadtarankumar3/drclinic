@@ -172,7 +172,10 @@ class SaaSAdminController extends Controller
             return back()->with('error', 'This clinic does not have an attached doctor account.');
         }
 
-        session(['impersonating_admin_id' => Auth::id()]);
+        session([
+            'impersonating_admin_id' => Auth::id(),
+            'active_clinic_id' => $clinic->id
+        ]);
         Auth::login($clinic->user);
 
         return redirect()->route('doctor.dashboard')->with('info', "Logged in as Dr. {$clinic->user->name} ({$clinic->name})");
@@ -188,7 +191,10 @@ class SaaSAdminController extends Controller
             return back()->with('error', 'This clinic does not have an attached doctor account.');
         }
 
-        session(['impersonating_admin_id' => Auth::id()]);
+        session([
+            'impersonating_admin_id' => Auth::id(),
+            'active_clinic_id' => $clinic->id
+        ]);
         Auth::login($clinic->user);
 
         return redirect()->route('doctor.subscription.index')->with('info', "Viewing subscription & plan for Dr. {$clinic->user->name} ({$clinic->name})");
@@ -204,12 +210,13 @@ class SaaSAdminController extends Controller
             $adminUser = User::find($adminId);
             if ($adminUser) {
                 Auth::login($adminUser);
-                session()->forget('impersonating_admin_id');
+                session()->forget(['impersonating_admin_id', 'active_clinic_id']);
                 return redirect()->route('admin.saas.clinics')->with('success', 'Returned to Super Admin Panel.');
             }
         }
 
-        return redirect()->route('admin.login');
+        session()->forget(['impersonating_admin_id', 'active_clinic_id']);
+        return redirect()->route('login');
     }
 
     /**

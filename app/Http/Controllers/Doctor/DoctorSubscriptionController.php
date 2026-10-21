@@ -14,7 +14,7 @@ class DoctorSubscriptionController extends Controller
 {
     public function index()
     {
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
             return redirect()->route('doctor.onboarding');
         }
@@ -35,7 +35,7 @@ class DoctorSubscriptionController extends Controller
             'plan_id' => 'required|exists:subscription_plans,id',
         ]);
 
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         $plan = SubscriptionPlan::findOrFail($request->plan_id);
 
         $platformKey = config('services.razorpay.key', env('RAZORPAY_KEY'));
@@ -92,7 +92,7 @@ class DoctorSubscriptionController extends Controller
             'plan_id' => 'required|exists:subscription_plans,id',
         ]);
 
-        $clinic = Auth::user()->clinic;
+        $clinic = Auth::user()->getActiveClinic();
         $plan = SubscriptionPlan::findOrFail($request->plan_id);
 
         $platformKey = config('services.razorpay.key', env('RAZORPAY_KEY'));

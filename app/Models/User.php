@@ -72,4 +72,15 @@ class User extends Authenticatable
     {
         return in_array($this->user_type, ['office_employee', 'field_employee', 'sales_employee', 'transport_employee', 'staff', 'employee']);
     }
+
+    public function getActiveClinic()
+    {
+        if (session()->has('active_clinic_id')) {
+            $clinic = Clinic::find(session('active_clinic_id'));
+            if ($clinic) {
+                return $clinic;
+            }
+        }
+        return $this->clinic;
+    }
 }

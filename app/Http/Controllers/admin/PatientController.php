@@ -26,7 +26,7 @@ class PatientController extends Controller
         $yesterday = Carbon::yesterday();
 
         $user = auth()->user();
-        $clinic = $user && $user->clinic ? $user->clinic : null;
+        $clinic = $user ? $user->getActiveClinic() : null;
         $clinicId = $clinic ? $clinic->id : null;
 
         // Base Query
@@ -71,7 +71,8 @@ class PatientController extends Controller
                 $q->where('patients.first_name', 'like', "%{$search}%")
                   ->orWhere('patients.last_name', 'like', "%{$search}%")
                   ->orWhere('patients.mobile_no', 'like', "%{$search}%")
-                  ->orWhere('orders.order_id', 'like', "%{$search}%")
+                  ->orWhere('orders.id', 'like', "%{$search}%")
+                  ->orWhere('orders.razorpay_payment_id', 'like', "%{$search}%")
                   ->orWhere('patients.patient_problem', 'like', "%{$search}%");
             });
         }
@@ -145,7 +146,7 @@ class PatientController extends Controller
                 'time_slots.to_time'
             );
         $user = auth()->user();
-        $clinic = $user && $user->clinic ? $user->clinic : null;
+        $clinic = $user ? $user->getActiveClinic() : null;
         if ($clinic) {
             $query->where('orders.clinic_id', $clinic->id);
         }
@@ -179,7 +180,7 @@ class PatientController extends Controller
         $data['title'] = 'Patient History List';
 
         $user = auth()->user();
-        $clinic = $user && $user->clinic ? $user->clinic : null;
+        $clinic = $user ? $user->getActiveClinic() : null;
     
         // Query Builder
         $query = DB::table('patients')
@@ -215,22 +216,30 @@ class PatientController extends Controller
 
     public function view_booking_history($id)
     {
-        $order = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-        ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-        ->where('orders.id', $id)
-        ->select('orders.*', 
-        'patients.first_name as first_name', 
-        'patients.last_name as last_name', 
-        'patients.dob', 
-        'patients.age', 
-        'patients.sex', 
-        'patients.mobile_no', 
-        'patients.alternate_mobile_no', 
-        'patients.address', 
-        'patients.patient_problem', 
-        'time_slots.from_time', 
-        'time_slots.to_time')
-        ->first();
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
+        $orderQuery = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
+            ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+            ->where('orders.id', $id)
+            ->select('orders.*', 
+            'patients.first_name as first_name', 
+            'patients.last_name as last_name', 
+            'patients.dob', 
+            'patients.age', 
+            'patients.sex', 
+            'patients.mobile_no', 
+            'patients.alternate_mobile_no', 
+            'patients.address', 
+            'patients.patient_problem', 
+            'time_slots.from_time', 
+            'time_slots.to_time');
+
+        if ($clinic) {
+            $orderQuery->where('orders.clinic_id', $clinic->id);
+        }
+
+        $order = $orderQuery->first();
 
         if (!$order) {
             return redirect()->back()->with('error', 'Patient history not found!');
@@ -241,22 +250,30 @@ class PatientController extends Controller
 
     public function booking_details($id)
     {
-        $order = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-        ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-        ->where('orders.id', $id)
-        ->select('orders.*', 
-        'patients.first_name as first_name', 
-        'patients.last_name as last_name', 
-        'patients.dob', 
-        'patients.age', 
-        'patients.sex', 
-        'patients.mobile_no', 
-        'patients.alternate_mobile_no', 
-        'patients.address', 
-        'patients.patient_problem', 
-        'time_slots.from_time', 
-        'time_slots.to_time')
-        ->first();
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
+        $orderQuery = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
+            ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+            ->where('orders.id', $id)
+            ->select('orders.*', 
+            'patients.first_name as first_name', 
+            'patients.last_name as last_name', 
+            'patients.dob', 
+            'patients.age', 
+            'patients.sex', 
+            'patients.mobile_no', 
+            'patients.alternate_mobile_no', 
+            'patients.address', 
+            'patients.patient_problem', 
+            'time_slots.from_time', 
+            'time_slots.to_time');
+
+        if ($clinic) {
+            $orderQuery->where('orders.clinic_id', $clinic->id);
+        }
+
+        $order = $orderQuery->first();
 
         if (!$order) {
             return redirect()->back()->with('error', 'Patient history not found!');
@@ -267,22 +284,31 @@ class PatientController extends Controller
 
     public function view_patient_history($id)
     {
-        $patient = Patient::where('id', $id)->first();
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
+        $patientQuery = Patient::where('id', $id);
+        if ($clinic) {
+            $patientQuery->where('clinic_id', $clinic->id);
+        }
+        $patient = $patientQuery->first();
+
         if (!$patient) {
             return redirect()->back()->with('error', 'Patient not found!');
         }
 
-        $orders = Order::
+        $ordersQuery = Order::
             join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
             ->where('orders.patient_id', $id)
             ->select('orders.*', 
             'time_slots.from_time', 
-            'time_slots.to_time')
-            ->get();
+            'time_slots.to_time');
 
-        if (!$orders) {
-            return redirect()->back()->with('error', 'Patient history not found!');
+        if ($clinic) {
+            $ordersQuery->where('orders.clinic_id', $clinic->id);
         }
+
+        $orders = $ordersQuery->get();
 
         return view('admin.pages.patient.patient_history_view', compact('orders','patient'));
     }

@@ -19,6 +19,10 @@ class PaymentController extends Controller
     {
         $data['title'] = 'Payment & Transaction Logs';
 
+        $user = auth()->user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+        $clinicId = $clinic ? $clinic->id : null;
+
         // Query orders with patient and time slot details
         $query = Order::leftJoin('patients', 'patients.id', '=', 'orders.patient_id')
             ->leftJoin('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
@@ -36,6 +40,10 @@ class PaymentController extends Controller
                 'time_slots.from_time',
                 'time_slots.to_time'
             );
+
+        if ($clinicId) {
+            $query->where('orders.clinic_id', $clinicId);
+        }
 
         // Filter by Status
         if ($request->filled('status') && $request->status !== 'all') {
@@ -63,10 +71,14 @@ class PaymentController extends Controller
         }
 
         // Calculate KPI Statistics
-        $data['total_count'] = Order::count();
-        $data['success_count'] = Order::where('payment_status', 'success')->count();
-        $data['failed_count'] = Order::whereIn('payment_status', ['cancelled', 'failed'])->count();
-        $data['total_revenue'] = Order::where('payment_status', 'success')->sum('total_amount');
+        $baseKpi = Order::query();
+        if ($clinicId) {
+            $baseKpi->where('clinic_id', $clinicId);
+        }
+        $data['total_count'] = (clone $baseKpi)->count();
+        $data['success_count'] = (clone $baseKpi)->where('payment_status', 'success')->count();
+        $data['failed_count'] = (clone $baseKpi)->whereIn('payment_status', ['cancelled', 'failed'])->count();
+        $data['total_revenue'] = (clone $baseKpi)->where('payment_status', 'success')->sum('total_amount');
 
         // Fetch all matching orders for DataTable
         $data['orders'] = $query->orderBy('orders.id', 'DESC')->get();

@@ -274,6 +274,71 @@ body {
   color: #0f172a !important;
 }
 
+/* Header Impersonation Visiting Pill */
+.header-visiting-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  background: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+  border-radius: 9999px !important;
+  padding: 4px 6px 4px 12px !important;
+  margin-left: 14px !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  flex-shrink: 0 !important;
+  box-shadow: 0 1px 3px rgba(225, 29, 72, 0.08);
+}
+
+.visiting-pulse-dot {
+  width: 7px;
+  height: 7px;
+  background: #e11d48;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.2);
+  flex-shrink: 0;
+}
+
+.visiting-tag {
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.6px !important;
+  color: #e11d48 !important;
+  text-transform: uppercase !important;
+}
+
+.visiting-name {
+  font-weight: 700 !important;
+  color: #0f172a !important;
+  max-width: 170px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.visiting-exit-btn {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  background: #e11d48 !important;
+  color: #ffffff !important;
+  padding: 4px 10px !important;
+  border-radius: 9999px !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  border: none !important;
+  line-height: 1.2 !important;
+  transition: all 0.15s ease !important;
+}
+
+.visiting-exit-btn:hover {
+  background: #be123c !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
 /* Header Plan Validity Pill */
 .header-validity-pill {
   background: #ecfdf5 !important;
@@ -436,6 +501,11 @@ body.sidebar-icon-only .nav-chevron {
 /* ==========================================================================
    Full Width Page Layouts & Containers
    ========================================================================== */
+.page-body-wrapper {
+  padding-top: 64px !important;
+  min-height: calc(100vh - 64px) !important;
+}
+
 .main-panel,
 .page-body-wrapper > .content-wrapper,
 .page-body-wrapper > .container-xxl,
@@ -444,7 +514,7 @@ body.sidebar-icon-only .nav-chevron {
   max-width: calc(100% - var(--sidebar-width)) !important;
   flex: 1 1 auto !important;
   min-width: 0 !important;
-  min-height: calc(100vh - 97px) !important;
+  min-height: calc(100vh - 64px) !important;
   transition: all 0.25s ease;
 }
 
@@ -456,17 +526,23 @@ body.sidebar-icon-only .nav-chevron {
 .container-p-y {
   max-width: 100% !important;
   width: 100% !important;
-  padding-left: 28px !important;
-  padding-right: 28px !important;
-  padding-top: 24px !important;
-  padding-bottom: 24px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+  padding-top: 16px !important;
+  padding-bottom: 20px !important;
 }
 
 .content-wrapper {
   background: transparent !important;
-  padding: 28px 32px !important;
+  padding: 20px 24px !important;
   width: 100% !important;
   max-width: 100% !important;
+}
+
+.content-wrapper > .container-fluid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* Modern Card with Glassmorphism */

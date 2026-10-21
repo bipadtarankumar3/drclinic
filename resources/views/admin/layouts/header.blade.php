@@ -2,11 +2,12 @@
   @php
     $isImpersonating = session()->has('impersonating_admin_id');
     $isSuperAdmin = Auth::check() && Auth::user()->isSuperAdmin() && !$isImpersonating;
-    $brandRoute = $isSuperAdmin ? route('admin.saas.dashboard') : (Auth::check() && Auth::user()->clinic ? route('doctor.dashboard') : URL::to('admin/dashboard'));
-    $brandTitle = $isSuperAdmin ? 'Dr Clinic' : (Auth::check() && Auth::user()->clinic ? Auth::user()->clinic->name : 'Dr Clinic');
-    $brandSubtitle = $isSuperAdmin ? 'Master Administration' : (Auth::check() && Auth::user()->clinic ? (Auth::user()->clinic->city ? Auth::user()->clinic->city . ' Clinic' : 'Doctor Clinic Portal') : 'Clinic Portal');
+    $activeClinic = Auth::check() ? Auth::user()->getActiveClinic() : null;
+    $brandRoute = $isSuperAdmin ? route('admin.saas.dashboard') : ($activeClinic ? route('doctor.dashboard') : URL::to('admin/dashboard'));
+    $brandTitle = $isSuperAdmin ? 'Dr Clinic' : ($activeClinic ? $activeClinic->name : 'Dr Clinic');
+    $brandSubtitle = $isSuperAdmin ? 'Master Administration' : ($activeClinic ? ($activeClinic->city ? $activeClinic->city . ' Clinic' : 'Doctor Clinic Portal') : 'Clinic Portal');
     $brandInitial = strtoupper(substr($brandTitle, 0, 1));
-    $clinic = Auth::check() && Auth::user()->clinic ? Auth::user()->clinic : null;
+    $clinic = $activeClinic;
   @endphp
 
   <!-- Sidebar Top Brand Header Widget -->
@@ -24,7 +25,7 @@
   </div>
 
   <div class="navbar-menu-wrapper d-flex align-items-center justify-content-between px-3 px-md-4">
-    <!-- Left: Hide Panel Toggle Button -->
+    <!-- Left: Hide Panel Toggle Button + Impersonation Visiting Pill -->
     <div class="d-flex align-items-center">
       <button class="navbar-toggler navbar-toggler align-self-center btn-hide-panel" type="button" data-bs-toggle="minimize">
         <i class="mdi mdi-menu font-18"></i>
@@ -33,10 +34,14 @@
 
       {{-- Impersonation Alert Badge in Header --}}
       @if($isImpersonating)
-      <div class="d-flex align-items-center bg-danger bg-opacity-10 text-danger px-3 py-1 rounded-pill ms-3 font-12 font-weight-bold border border-danger border-opacity-25" style="gap: 6px;">
-        <span class="pulse-dot"></span>
-        <span>Visiting: {{ Auth::user()->clinic->name ?? 'Clinic' }}</span>
-        <a href="{{ route('admin.saas.stop_impersonate') }}" class="btn btn-xs btn-danger text-white py-0 px-2 ms-2 font-11 rounded-pill shadow-none" style="text-decoration: none;">Exit to Admin</a>
+      <div class="header-visiting-pill">
+        <span class="visiting-pulse-dot"></span>
+        <span class="visiting-tag">VISITING CLINIC</span>
+        <span class="visiting-name" title="{{ $clinic->name ?? 'Clinic' }}">{{ $clinic->name ?? 'Clinic' }}</span>
+        <a href="{{ route('admin.saas.stop_impersonate') }}" class="visiting-exit-btn">
+          <span>Exit to Admin</span>
+          <i class="mdi mdi-close font-12 ms-1"></i>
+        </a>
       </div>
       @endif
     </div>
