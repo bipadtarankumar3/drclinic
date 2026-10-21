@@ -26,7 +26,7 @@
   </div>
   @endif
 
-  @if($errors->any())
+  @if(isset($errors) && $errors->any())
   <div class="alert alert-danger alert-dismissible fade show rounded-3 p-3 mb-4 shadow-sm" role="alert">
     <strong><i class="mdi mdi-alert-circle mr-1"></i> Please check the following errors:</strong>
     <ul class="mb-0 mt-2 ps-3">
@@ -174,158 +174,215 @@
 <!-- ========================================================================= -->
 <div class="modal fade" id="createClinicModal" tabindex="-1" aria-labelledby="createClinicModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 18px;">
-      <div class="modal-header border-bottom p-4" style="background: #fafbfc; border-radius: 18px 18px 0 0;">
-        <div>
-          <h5 class="modal-title font-weight-bold text-dark mb-0 d-flex align-items-center" id="createClinicModalLabel">
-            <i class="mdi mdi-hospital-building text-primary me-2 font-22"></i> Create Doctor Clinic & Assign User
-          </h5>
-          <small class="text-muted">Set up a new doctor clinic portal and assign an owner user (type = user).</small>
+    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+      <!-- Modal Header -->
+      <div class="modal-header border-0 px-4 pt-4 pb-3" style="background: #ffffff;">
+        <div class="d-flex align-items-center gap-3">
+          <div class="d-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 44px; height: 44px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; flex-shrink: 0;">
+            <i class="mdi mdi-hospital-building font-22"></i>
+          </div>
+          <div>
+            <h5 class="modal-title font-weight-bold text-dark mb-0" id="createClinicModalLabel" style="font-size: 19px; letter-spacing: -0.3px;">
+              Create Doctor Clinic &amp; Assign User
+            </h5>
+            <p class="text-muted font-12 mb-0">Set up a new doctor clinic portal and assign an owner user (type = user or doctor).</p>
+          </div>
         </div>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <form method="POST" action="{{ route('admin.saas.clinic.store') }}">
         @csrf
-        <div class="modal-body p-4">
-          <!-- Step 1: Clinic Information -->
-          <div class="mb-4">
-            <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center">
-              <span class="badge bg-primary bg-opacity-10 text-primary me-2">1</span> Clinic Details
-            </h6>
-            <div class="row g-3">
-              <div class="col-md-7">
-                <label class="form-label font-weight-bold font-12 text-dark">Clinic Name <span class="text-danger">*</span></label>
-                <input type="text" name="clinic_name" class="form-control" placeholder="e.g. Apex Multispecialty Clinic" required onkeyup="syncModalSubdomain(this.value)">
-              </div>
+        <div class="modal-body px-4 py-2" style="background: #f8fafc;">
 
-              <div class="col-md-5">
-                <label class="form-label font-weight-bold font-12 text-dark">Subdomain <span class="text-danger">*</span></label>
-                <div class="input-group">
-                  <input type="text" name="subdomain" id="modalSubdomain" class="form-control" placeholder="apex" required>
-                  <span class="input-group-text bg-light font-11 text-muted">.{{ request()->getHost() }}</span>
-                </div>
-              </div>
+          <!-- Section 1: Clinic Profile & Storefront Details -->
+          <div class="card border-0 shadow-sm rounded-4 mb-3" style="border: 1.5px solid #e2e8f0 !important; border-radius: 14px; background: #ffffff;">
+            <div class="card-body p-3 p-md-4">
+              <h6 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 14px;">
+                <span class="me-2" style="color: #2563eb; font-size: 16px;">●</span> Clinic Profile &amp; Storefront
+              </h6>
 
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Specialization</label>
-                <input type="text" name="specialization" class="form-control" placeholder="e.g. Neurology, Pediatrics">
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Consultation Fee (₹)</label>
-                <input type="number" step="0.01" name="consultation_fee" class="form-control" value="500.00">
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Clinic Phone</label>
-                <input type="text" name="clinic_phone" class="form-control" placeholder="+91 9876543210">
-              </div>
-
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Clinic Email</label>
-                <input type="email" name="clinic_email" class="form-control" placeholder="clinic@example.com">
-              </div>
-            </div>
-          </div>
-
-          <!-- Step 2: User Assignment -->
-          <div class="mb-4">
-            <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center">
-              <span class="badge bg-success bg-opacity-10 text-success me-2">2</span> User Assignment (type = user)
-            </h6>
-
-            <div class="btn-group w-100 mb-3" role="group">
-              <input type="radio" class="btn-check" name="user_mode" id="modal_mode_new" value="new" checked onchange="toggleModalUserMode('new')">
-              <label class="btn btn-outline-primary font-weight-bold btn-sm py-2" for="modal_mode_new">
-                <i class="mdi mdi-account-plus me-1"></i> Create New User
-              </label>
-
-              <input type="radio" class="btn-check" name="user_mode" id="modal_mode_existing" value="existing" onchange="toggleModalUserMode('existing')">
-              <label class="btn btn-outline-primary font-weight-bold btn-sm py-2" for="modal_mode_existing">
-                <i class="mdi mdi-account-check me-1"></i> Link Existing User
-              </label>
-            </div>
-
-            <!-- New User Section -->
-            <div id="modalNewUserSection">
               <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label font-weight-bold font-12 text-dark">Full Name <span class="text-danger">*</span></label>
-                  <input type="text" name="user_name" class="form-control" placeholder="Dr. Full Name">
+                <div class="col-md-7">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Name <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-domain"></i></span>
+                    <input type="text" name="clinic_name" class="form-control border-start-0" placeholder="e.g. Apex Multispecialty Clinic" required onkeyup="syncModalSubdomain(this.value)" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
+                </div>
+
+                <div class="col-md-5">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Subdomain <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                    <input type="text" name="subdomain" id="modalSubdomain" class="form-control" placeholder="apex" required style="border-radius: 8px 0 0 8px; font-size: 13.5px;">
+                    <span class="input-group-text bg-light font-12 text-muted font-weight-bold" style="border-radius: 0 8px 8px 0;">.{{ request()->getHost() }}</span>
+                  </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label font-weight-bold font-12 text-dark">Login Email <span class="text-danger">*</span></label>
-                  <input type="email" name="user_email" class="form-control" placeholder="doctor@example.com">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Specialization</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-stethoscope"></i></span>
+                    <input type="text" name="specialization" class="form-control border-start-0" placeholder="e.g. Neurology, Pediatrics" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label font-weight-bold font-12 text-dark">Password <span class="text-danger">*</span></label>
-                  <input type="password" name="user_password" class="form-control" value="Password@123">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Consultation Fee (₹)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted font-weight-bold" style="border-radius: 8px 0 0 8px;">₹</span>
+                    <input type="number" step="0.01" name="consultation_fee" class="form-control border-start-0" value="500.00" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
                 </div>
 
                 <div class="col-md-6">
-                  <label class="form-label font-weight-bold font-12 text-dark">User Type <span class="text-danger">*</span></label>
-                  <select name="user_type" class="form-select font-weight-bold">
-                    <option value="user" selected>User (type = user)</option>
-                    <option value="doctor">Doctor (type = doctor)</option>
-                  </select>
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Phone</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-phone-outline"></i></span>
+                    <input type="text" name="clinic_phone" class="form-control border-start-0" placeholder="+91 9876543210" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Email</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-email-outline"></i></span>
+                    <input type="email" name="clinic_email" class="form-control border-start-0" placeholder="clinic@example.com" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Existing User Section -->
-            <div id="modalExistingUserSection" style="display: none;">
-              <label class="form-label font-weight-bold font-12 text-dark">Select Registered User <span class="text-danger">*</span></label>
-              <select name="user_id" class="form-select font-weight-bold">
-                <option value="">-- Choose User to Assign --</option>
-                @foreach($availableUsers as $u)
-                  <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }}) - [type: {{ $u->user_type }}]</option>
-                @endforeach
-              </select>
             </div>
           </div>
 
-          <!-- Step 3: Subscription & Status -->
-          <div>
-            <h6 class="font-weight-bold text-dark border-bottom pb-2 mb-3 d-flex align-items-center">
-              <span class="badge bg-warning bg-opacity-10 text-warning me-2">3</span> Subscription Plan & Status
-            </h6>
+          <!-- Section 2: User & Doctor Assignment -->
+          <div class="card border-0 shadow-sm rounded-4 mb-3" style="border: 1.5px solid #e2e8f0 !important; border-radius: 14px; background: #ffffff;">
+            <div class="card-body p-3 p-md-4">
+              <h6 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 14px;">
+                <span class="me-2" style="color: #10b981; font-size: 16px;">●</span> User &amp; Doctor Assignment
+              </h6>
 
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Initial Status <span class="text-danger">*</span></label>
-                <select name="status" class="form-select font-weight-bold">
-                  <option value="trialing" selected>7-Day Free Trial (Trialing)</option>
-                  <option value="active">Active Paid Account</option>
-                  <option value="suspended">Suspended</option>
-                </select>
+              <!-- Segmented Pill Selector -->
+              <div class="p-1 mb-3 rounded-3 d-flex gap-1" style="background: #f1f5f9; width: 100%; max-width: 420px;">
+                <button type="button" class="btn btn-sm flex-fill font-weight-bold py-2 user-mode-btn active-mode" id="btnModeNew" onclick="toggleModalUserMode('new')" style="border-radius: 8px; font-size: 12.5px; transition: all 0.15s ease;">
+                  <i class="mdi mdi-account-plus me-1"></i> Create New User
+                </button>
+                <button type="button" class="btn btn-sm flex-fill font-weight-bold py-2 user-mode-btn text-muted" id="btnModeExisting" onclick="toggleModalUserMode('existing')" style="border-radius: 8px; font-size: 12.5px; transition: all 0.15s ease;">
+                  <i class="mdi mdi-account-check me-1"></i> Link Existing User
+                </button>
+              </div>
+              <input type="hidden" name="user_mode" id="modalUserModeInput" value="new">
+
+              <!-- New User Form -->
+              <div id="modalNewUserSection">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Full Name <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-account-outline"></i></span>
+                      <input type="text" name="user_name" class="form-control border-start-0" placeholder="Dr. Full Name" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Login Email <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-email-outline"></i></span>
+                      <input type="email" name="user_email" class="form-control border-start-0" placeholder="doctor@example.com" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Password <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-lock-outline"></i></span>
+                      <input type="password" id="modalUserPassword" name="user_password" class="form-control border-start-0 border-end-0" value="Password@123" style="font-size: 13.5px;">
+                      <button type="button" class="btn btn-light border border-start-0 text-muted" onclick="toggleModalPassword()" style="border-radius: 0 8px 8px 0;">
+                        <i class="mdi mdi-eye-outline" id="modalPasswordEye"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">User Type <span class="text-danger">*</span></label>
+                    <select name="user_type" class="form-select font-weight-bold" style="border-radius: 8px; font-size: 13.5px;">
+                      <option value="user" selected>User (type = user)</option>
+                      <option value="doctor">Doctor (type = doctor)</option>
+                    </select>
+                  </div>
+                </div>
               </div>
 
-              <div class="col-md-6">
-                <label class="form-label font-weight-bold font-12 text-dark">Assign Subscription Plan</label>
-                <select name="plan_id" class="form-select font-weight-bold">
-                  <option value="">-- No Plan / Default Trial --</option>
-                  @foreach($plans as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }} (₹{{ number_format($p->price, 0) }})</option>
+              <!-- Existing User Selection -->
+              <div id="modalExistingUserSection" style="display: none;">
+                <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Select Registered User <span class="text-danger">*</span></label>
+                <select name="user_id" class="form-select font-weight-bold" style="border-radius: 8px; font-size: 13.5px;">
+                  <option value="">-- Choose User to Assign as Owner --</option>
+                  @foreach($availableUsers as $u)
+                    <option value="{{ $u->id }}">{{ $u->name }} ({{ $u->email }}) &mdash; [role: {{ $u->user_type }}]</option>
                   @endforeach
                 </select>
               </div>
             </div>
           </div>
+
+          <!-- Section 3: Subscription Plan & Status -->
+          <div class="card border-0 shadow-sm rounded-4 mb-2" style="border: 1.5px solid #e2e8f0 !important; border-radius: 14px; background: #ffffff;">
+            <div class="card-body p-3 p-md-4">
+              <h6 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 14px;">
+                <span class="me-2" style="color: #f59e0b; font-size: 16px;">●</span> Subscription Plan &amp; Status
+              </h6>
+
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Initial Status <span class="text-danger">*</span></label>
+                  <select name="status" class="form-select font-weight-bold" style="border-radius: 8px; font-size: 13.5px;">
+                    <option value="trialing" selected>7-Day Free Trial (Trialing)</option>
+                    <option value="active">Active Paid Account</option>
+                    <option value="suspended">Suspended</option>
+                  </select>
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Assign Subscription Plan</label>
+                  <select name="plan_id" class="form-select font-weight-bold" style="border-radius: 8px; font-size: 13.5px;">
+                    <option value="">-- No Plan / Default Trial (Starter Tier) --</option>
+                    @foreach($plans as $p)
+                      <option value="{{ $p->id }}">{{ $p->name }} (₹{{ number_format($p->price, 0) }}/mo)</option>
+                    @endforeach
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <div class="modal-footer border-top p-3 px-4" style="background: #fafbfc; border-radius: 0 0 18px 18px;">
-          <button type="button" class="btn btn-outline-secondary font-weight-bold" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary font-weight-bold px-4 shadow-sm">
-            <i class="mdi mdi-check-circle me-1"></i> Create Clinic & Assign User
-          </button>
+        <!-- Modal Footer -->
+        <div class="modal-footer border-0 px-4 py-3 d-flex justify-content-between align-items-center" style="background: #ffffff; border-top: 1px solid #e2e8f0 !important;">
+          <small class="text-muted font-12 d-none d-sm-inline">
+            <i class="mdi mdi-shield-check-outline text-success me-1"></i> The user will be assigned as clinic owner automatically.
+          </small>
+          <div class="d-flex gap-2 ms-auto">
+            <button type="button" class="btn btn-light border font-weight-bold px-3 py-2" data-bs-dismiss="modal" style="border-radius: 8px; font-size: 13px;">
+              Cancel
+            </button>
+            <button type="submit" class="btn font-weight-bold text-white px-4 py-2" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+              <i class="mdi mdi-check-circle-outline me-1"></i> Create Clinic &amp; Assign User
+            </button>
+          </div>
         </div>
       </form>
     </div>
   </div>
 </div>
+
+<style>
+.active-mode {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+}
+</style>
 
 <script>
 function syncModalSubdomain(name) {
@@ -345,12 +402,38 @@ document.getElementById('modalSubdomain').addEventListener('input', function() {
 function toggleModalUserMode(mode) {
   const newSec = document.getElementById('modalNewUserSection');
   const existSec = document.getElementById('modalExistingUserSection');
+  const btnNew = document.getElementById('btnModeNew');
+  const btnExist = document.getElementById('btnModeExisting');
+  const hiddenInput = document.getElementById('modalUserModeInput');
+
+  hiddenInput.value = mode;
+
   if (mode === 'new') {
     newSec.style.display = 'block';
     existSec.style.display = 'none';
+    btnNew.classList.add('active-mode');
+    btnNew.classList.remove('text-muted');
+    btnExist.classList.remove('active-mode');
+    btnExist.classList.add('text-muted');
   } else {
     newSec.style.display = 'none';
     existSec.style.display = 'block';
+    btnExist.classList.add('active-mode');
+    btnExist.classList.remove('text-muted');
+    btnNew.classList.remove('active-mode');
+    btnNew.classList.add('text-muted');
+  }
+}
+
+function toggleModalPassword() {
+  const pwd = document.getElementById('modalUserPassword');
+  const icon = document.getElementById('modalPasswordEye');
+  if (pwd.type === 'password') {
+    pwd.type = 'text';
+    icon.className = 'mdi mdi-eye-off-outline';
+  } else {
+    pwd.type = 'password';
+    icon.className = 'mdi mdi-eye-outline';
   }
 }
 </script>
