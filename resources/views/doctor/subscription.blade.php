@@ -24,6 +24,8 @@
                   {{ $activeSub->plan->name ?? 'Active Plan' }}
                 @elseif($clinic->status === 'trialing')
                   7-Day Free Trial
+                @elseif($clinic->status === 'active')
+                  Active Plan
                 @else
                   Plan Expired
                 @endif
@@ -32,8 +34,12 @@
                 @if($clinic->isPlanActive())
                   @if($clinic->status === 'trialing')
                     Your free trial expires on <strong>{{ $clinic->trial_ends_at ? $clinic->trial_ends_at->format('d M, Y') : 'in 7 days' }}</strong> ({{ $clinic->trialDaysRemaining() }} days left). Upgrade anytime to guarantee seamless service.
+                  @elseif($activeSub && $activeSub->ends_at)
+                    Your active subscription is valid until <strong>{{ $activeSub->ends_at->format('d M, Y') }}</strong>.
+                  @elseif($clinic->trial_ends_at)
+                    Your active plan is valid until <strong>{{ $clinic->trial_ends_at->format('d M, Y') }}</strong>.
                   @else
-                    Your active subscription is valid until <strong>{{ $activeSub->ends_at ? $activeSub->ends_at->format('d M, Y') : 'Active' }}</strong>.
+                    Your clinic plan is active with lifetime access.
                   @endif
                 @else
                   Your clinic booking service is currently paused because your subscription plan has expired. Please select a plan below to reactivate your clinic.
