@@ -11,6 +11,7 @@ use App\Models\ClinicSubscription;
 use App\Models\Patient;
 use App\Models\Order;
 use App\Models\ActivityLog;
+use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
