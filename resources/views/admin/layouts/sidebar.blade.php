@@ -1,28 +1,5 @@
 <nav class="sidebar sidebar-offcanvas" id="sidebar">
   <ul class="nav">
-    {{-- Impersonation Mode Banner in Sidebar (When Admin is visiting a Doctor Clinic) --}}
-    @if(session('impersonating_admin_id'))
-    <li class="nav-item mb-2">
-      <div class="impersonation-sidebar-widget">
-        <div class="d-flex align-items-center mb-1">
-          <span class="pulse-dot"></span>
-          <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: #c2410c;">
-            Visiting Clinic
-          </span>
-        </div>
-        <div class="font-weight-bold text-dark font-14 text-truncate mb-1" title="{{ Auth::user()->clinic->name ?? '' }}">
-          {{ Auth::user()->clinic->name ?? 'Doctor Clinic' }}
-        </div>
-        <div class="text-muted font-12 text-truncate mb-2" title="{{ Auth::user()->name }}">
-          Dr. {{ Auth::user()->name }}
-        </div>
-        <a class="btn btn-danger btn-sm text-white font-weight-bold w-100 py-2 shadow-sm d-flex align-items-center justify-content-center" href="{{ route('admin.saas.stop_impersonate') }}" style="border-radius: 8px; font-size: 12px; gap: 6px;">
-          <i class="mdi mdi-arrow-left-bold"></i> Exit Back to Admin
-        </a>
-      </div>
-    </li>
-    @endif
-
     {{-- ========================================================================= --}}
     {{-- CASE 1: SUPER ADMIN (When NOT visiting a clinic)                          --}}
     {{-- Super Admin sees ONLY his Platform Admin menu, NOT the clinic menu        --}}
@@ -87,11 +64,13 @@
 
     {{-- ========================================================================= --}}
     {{-- CASE 2: DOCTOR CLINIC (Visible to Doctors OR Admin VISITING a clinic)     --}}
-    {{-- Admin can see ALL clinic menu items ONLY when visiting a clinic!          --}}
+    {{-- Order: 1. Dashboard, 2. Daily Activity (Bookings), 3. Setup, Pages & Plan --}}
     {{-- ========================================================================= --}}
     @if(Auth::check() && (Auth::user()->isDoctor() || session('impersonating_admin_id')))
-    <li class="nav-item nav-category">Doctor Portal</li>
+    
+    <li class="nav-item nav-category">Daily Activity</li>
 
+    {{-- 1. Dashboard --}}
     <li class="nav-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.dashboard') }}">
         <div class="nav-icon-box icon-box-blue">
@@ -101,35 +80,7 @@
       </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.subscription.*') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.subscription.index') }}">
-        <div class="nav-icon-box icon-box-amber">
-          <i class="mdi mdi-crown text-warning"></i>
-        </div>
-        <span class="menu-title font-weight-bold">Plan & Billing</span>
-      </a>
-    </li>
-
-    <li class="nav-item {{ request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.pages.index') }}">
-        <div class="nav-icon-box icon-box-purple">
-          <i class="mdi mdi-file-document-edit-outline"></i>
-        </div>
-        <span class="menu-title">Custom Pages</span>
-      </a>
-    </li>
-
-    <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.settings') }}">
-        <div class="nav-icon-box icon-box-teal">
-          <i class="mdi mdi-tune"></i>
-        </div>
-        <span class="menu-title">Clinic & Razorpay</span>
-      </a>
-    </li>
-
-    <li class="nav-item nav-category">Patient & Bookings</li>
-
+    {{-- 2. Daily Patient & Appointments Activity --}}
     <li class="nav-item {{ request()->is('admin/patient*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ URL::To('admin/patient') }}">
         <div class="nav-icon-box icon-box-emerald">
@@ -181,6 +132,36 @@
           <i class="mdi mdi-credit-card-check-outline"></i>
         </div>
         <span class="menu-title">Payment Logs</span>
+      </a>
+    </li>
+
+    {{-- 3. Configuration & Plans (AT THE LAST: Plan, Custom, Clinic & Razorpay) --}}
+    <li class="nav-item nav-category">Clinic Setup & Plan</li>
+
+    <li class="nav-item {{ request()->routeIs('doctor.subscription.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.subscription.index') }}">
+        <div class="nav-icon-box icon-box-amber">
+          <i class="mdi mdi-crown text-warning"></i>
+        </div>
+        <span class="menu-title font-weight-bold">Plan & Billing</span>
+      </a>
+    </li>
+
+    <li class="nav-item {{ request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.pages.index') }}">
+        <div class="nav-icon-box icon-box-purple">
+          <i class="mdi mdi-file-document-edit-outline"></i>
+        </div>
+        <span class="menu-title">Custom Pages</span>
+      </a>
+    </li>
+
+    <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.settings') }}">
+        <div class="nav-icon-box icon-box-teal">
+          <i class="mdi mdi-tune"></i>
+        </div>
+        <span class="menu-title">Clinic & Razorpay</span>
       </a>
     </li>
 
