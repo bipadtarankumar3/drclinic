@@ -364,10 +364,39 @@
                 </table>
             </div>
         </div>
+
+        <!-- Server-Side Pagination Bar -->
+        <div class="card-footer bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-3 py-3 px-4" style="border-radius: 0 0 16px 16px;">
+            <div class="d-flex align-items-center gap-2 text-muted font-13">
+                <span>Showing <strong>{{ $orders->firstItem() ?? 0 }}</strong> to <strong>{{ $orders->lastItem() ?? 0 }}</strong> of <strong>{{ $orders->total() }}</strong> entries</span>
+                <span class="mx-1">&bull;</span>
+                <div class="d-flex align-items-center gap-1">
+                    <span>Show</span>
+                    <select class="form-select form-select-sm d-inline-block w-auto" onchange="window.location.href = updatePerPage(this.value)" style="border-radius: 6px; font-size: 12px; padding: 2px 24px 2px 8px; border-color: #cbd5e1;">
+                        <option value="10" {{ ($perPage ?? 10) == 10 ? 'selected' : '' }}>10</option>
+                        <option value="25" {{ ($perPage ?? 10) == 25 ? 'selected' : '' }}>25</option>
+                        <option value="50" {{ ($perPage ?? 10) == 50 ? 'selected' : '' }}>50</option>
+                        <option value="100" {{ ($perPage ?? 10) == 100 ? 'selected' : '' }}>100</option>
+                    </select>
+                    <span>per page</span>
+                </div>
+            </div>
+
+            <div class="server-pagination">
+                {{ $orders->links('pagination::bootstrap-5') }}
+            </div>
+        </div>
     </div>
 </div>
 
 <script>
+function updatePerPage(val) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('per_page', val);
+    url.searchParams.set('page', 1);
+    return url.href;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const selectAll = document.getElementById('selectAllCheckbox');
     const checkboxes = document.querySelectorAll('.row-checkbox');

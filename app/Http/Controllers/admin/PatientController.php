@@ -102,8 +102,14 @@ class PatientController extends Controller
             $filterQuery->whereDate('orders.booking_date', $request->specific_date);
         }
 
-        // Fetch Main Filtered Orders
-        $data['orders'] = $filterQuery->latest('orders.id')->get();
+        // Server-Side Paginated Orders (default 10 per page, supports per_page)
+        $perPage = (int) $request->input('per_page', 10);
+        if (!in_array($perPage, [10, 25, 50, 100])) {
+            $perPage = 10;
+        }
+
+        $data['orders'] = $filterQuery->latest('orders.id')->paginate($perPage)->withQueryString();
+        $data['perPage'] = $perPage;
 
         // Backward compatibility for tab views
         $data['today_orders'] = (clone $baseQuery)->whereDate('orders.booking_date', $today)->get();
@@ -138,6 +144,11 @@ class PatientController extends Controller
                 'time_slots.from_time',
                 'time_slots.to_time'
             );
+        $user = auth()->user();
+        $clinic = $user && $user->clinic ? $user->clinic : null;
+        if ($clinic) {
+            $query->where('orders.clinic_id', $clinic->id);
+        }
     
         // Apply Filters
         if ($request->has('patient_id') && !empty($request->patient_id)) {
@@ -152,9 +163,12 @@ class PatientController extends Controller
             $query->whereDate('orders.created_at', '<=', $request->to_date);
         }
     
-        // Get results
-        $data['orders'] = $query->get();
-        $data['patients'] = Patient::get();
+        // Server-Side Paginated Orders
+        $perPage = (int) $request->input('per_page', 15);
+        $data['orders'] = $query->latest('orders.id')->paginate($perPage)->withQueryString();
+        $data['patients'] = Patient::when($clinic, function($q) use ($clinic) {
+            $q->where('clinic_id', $clinic->id);
+        })->get();
     
         // Return the view
         return view('admin.pages.patient.booking_history', $data);
@@ -163,10 +177,17 @@ class PatientController extends Controller
     public function history_of_customer(Request $request)
     {
         $data['title'] = 'Patient History List';
+
+        $user = auth()->user();
+        $clinic = $user && $user->clinic ? $user->clinic : null;
     
         // Query Builder
         $query = DB::table('patients')
             ->select('patients.*');
+
+        if ($clinic) {
+            $query->where('patients.clinic_id', $clinic->id);
+        }
     
         // Apply Filters
         if ($request->has('patient_id') && !empty($request->patient_id)) {
@@ -181,9 +202,12 @@ class PatientController extends Controller
             $query->whereDate('patients.created_at', '<=', $request->to_date);
         }
     
-        // Get results
-        $data['patients_lists'] = $query->get();
-        $data['patients'] = Patient::get();
+        // Server-Side Paginated Patients
+        $perPage = (int) $request->input('per_page', 15);
+        $data['patients_lists'] = $query->latest('patients.id')->paginate($perPage)->withQueryString();
+        $data['patients'] = Patient::when($clinic, function($q) use ($clinic) {
+            $q->where('clinic_id', $clinic->id);
+        })->get();
     
         // Return the view
         return view('admin.pages.patient.patient_history_list', $data);

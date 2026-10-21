@@ -102,6 +102,16 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Server-Side Pagination Bar -->
+            <div class="card-footer bg-white border-top d-flex align-items-center justify-content-between flex-wrap gap-3 py-3 px-4" style="border-radius: 0 0 16px 16px;">
+                <div class="d-flex align-items-center gap-2 text-muted font-13">
+                    <span>Showing <strong>{{ $patients_lists->firstItem() ?? 0 }}</strong> to <strong>{{ $patients_lists->lastItem() ?? 0 }}</strong> of <strong>{{ $patients_lists->total() }}</strong> entries</span>
+                </div>
+                <div class="server-pagination">
+                    {{ $patients_lists->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
         </div>
         
 </div>
@@ -110,20 +120,23 @@
 @section('js')
 <script>
     $(document).ready(function () {
-        $('#patient_history').DataTable(  {
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'csvHtml5',
-                text: 'Export CSV',
-                className: 'btn btn-sm btn-primary',
-                title: 'Patient Lists',
-                exportOptions: {
-                    columns: ':visible'
+        $('#patient_history').DataTable({
+            paging: false,
+            info: false,
+            searching: false,
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'csvHtml5',
+                    text: 'Export CSV',
+                    className: 'btn btn-sm btn-primary',
+                    title: 'Patient Lists',
+                    exportOptions: {
+                        columns: ':visible'
+                    }
                 }
-            }
-        ]
-    });
+            ]
+        });
     });
 
     function deleteConfirmation(event, id) {
