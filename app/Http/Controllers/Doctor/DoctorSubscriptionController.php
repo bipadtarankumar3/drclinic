@@ -21,6 +21,7 @@ class DoctorSubscriptionController extends Controller
 
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
         $subscriptions = ClinicSubscription::where('clinic_id', $clinic->id)->with('plan')->latest()->get();
+        $activeSub = $clinic->activeSubscription;
         $features = \App\Http\Controllers\Admin\SaaSAdminController::getAvailableFeatures();
 
         return view('doctor.subscription', compact('clinic', 'plans', 'subscriptions', 'activeSub', 'features'));
