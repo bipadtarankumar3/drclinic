@@ -104,14 +104,17 @@ class WebViewController extends Controller
 
 
 
-    public function appoinment(){
-        $data['title'] = 'appoinment';
+    public function appoinment($clinic_slug = null){
+        $clinic = $this->getClinic($clinic_slug);
+        $data['clinic'] = $clinic;
+        $data['currentClinic'] = $clinic;
+        view()->share('currentClinic', $clinic);
+        $data['title'] = $clinic ? $clinic->name . ' - Health Clinic & Appointments' : 'Health Clinic & Appointments';
         $data['availabilities'] = Availability::get();
-        $data['setting'] = Setting::first();
+        $data['setting'] = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
         $data['TimeSlot'] = TimeSlot::all();
 
-        // dd($data['availabilities']);
-        return view('web.pages.appoinment',$data);
+        return view('web.pages.appoinment', $data);
     }
     public function checkAvailability(Request $request)
     {

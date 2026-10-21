@@ -1,144 +1,251 @@
 @php
   $clinic = $currentClinic ?? \App\Models\Clinic::first();
-  $themeColor = $clinic->theme_color ?? '#0d6efd';
+  $themeColor = $clinic->theme_color ?? '#0d9488'; // Modern medical teal default
+  $secondaryColor = $clinic->secondary_color ?? '#14b8a6';
+  $clinicUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug)) : url('/');
 @endphp
+
 <style>
   :root {
-    --primary-color: {{ $themeColor }};
+    --clinic-primary: {{ $themeColor }};
+    --clinic-secondary: {{ $secondaryColor }};
   }
-  .desk-nav {
+
+  /* Top Announcement Sub-Header */
+  .vital-top-bar {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 13px;
+    color: #64748b;
+    padding: 8px 0;
+  }
+  .vital-top-main {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .vital-top-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-weight: 500;
+  }
+  .vital-top-left .divider {
+    color: #cbd5e1;
+  }
+  .vital-top-right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    font-weight: 500;
+  }
+  .vital-top-right a {
+    color: #64748b;
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .vital-top-right a:hover {
+    color: var(--clinic-primary);
+  }
+
+  /* Main Modern Navbar */
+  .vital-nav-bar {
     background: #ffffff;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
-    padding: 12px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    padding: 14px 0;
   }
-  .desk-main {
-    max-width: 1280px;
+  .vital-nav-main {
+    max-width: 1240px;
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
   }
-  .clinic-brand {
+  .vital-brand {
     display: flex;
     align-items: center;
     gap: 12px;
     text-decoration: none;
-    color: #0f172a;
   }
-  .clinic-brand img {
-    max-height: 50px;
-    object-fit: contain;
+  .vital-logo-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 22px;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
   }
-  .clinic-brand-text {
+  .vital-brand-info {
+    line-height: 1.2;
+  }
+  .vital-brand-name {
     font-size: 20px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -0.3px;
+    display: block;
   }
-  .clinic-tagline {
+  .vital-brand-sub {
     font-size: 12px;
     color: #64748b;
     font-weight: 600;
+    text-transform: capitalize;
   }
-  .nav-custom-links {
+  .vital-nav-links {
     display: flex;
     align-items: center;
-    gap: 24px;
+    gap: 26px;
     list-style: none;
     margin: 0;
     padding: 0;
   }
-  .nav-custom-links a {
+  .vital-nav-links a {
     color: #334155;
     text-decoration: none;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 14.5px;
+    position: relative;
+    padding: 6px 0;
     transition: color 0.2s;
   }
-  .nav-custom-links a:hover {
-    color: var(--primary-color);
+  .vital-nav-links a:hover,
+  .vital-nav-links a.active {
+    color: #0d9488;
   }
-  .header-actions {
+  .vital-nav-links a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #0d9488;
+    border-radius: 3px;
+  }
+  .vital-nav-actions {
     display: flex;
     align-items: center;
     gap: 14px;
   }
-  .btn-header-login {
-    color: #475569;
-    font-weight: 600;
-    font-size: 14px;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    border: 1px solid #e2e8f0;
-  }
-  .btn-header-login:hover {
-    background: #f8fafc;
-    color: #0f172a;
-  }
-  .btn-header-book {
-    background: var(--primary-color);
-    color: #ffffff;
+  .btn-vital-book {
+    background: #0d9488;
+    color: #ffffff !important;
     font-weight: 700;
     font-size: 14px;
+    padding: 10px 22px;
+    border-radius: 30px;
     text-decoration: none;
-    padding: 10px 20px;
-    border-radius: 10px;
-    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+    transition: all 0.2s ease;
   }
-  .btn-header-book:hover {
-    opacity: 0.9;
+  .btn-vital-book:hover {
+    background: #0f766e;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4);
     color: #ffffff;
+  }
+  .vital-search-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .vital-search-btn:hover {
+    background: #f1f5f9;
+    color: #0f172a;
+  }
+
+  @media (max-width: 991px) {
+    .vital-nav-links {
+      display: none;
+    }
+    .vital-top-bar {
+      display: none;
+    }
   }
 </style>
 
 <header>
-  <div class="desk-nav">
-    <div class="desk-main">
-      <a href="{{ url('/') }}" class="clinic-brand">
+  <!-- 1. Top Sub-Header Bar -->
+  <div class="vital-top-bar">
+    <div class="vital-top-main">
+      <div class="vital-top-left">
+        <span><i class="fa-regular fa-circle-check text-success mr-1"></i> Your Health, Our Priority</span>
+        <span class="divider">|</span>
+        <span><i class="fa-regular fa-clock mr-1" style="color: #0d9488;"></i> Open 7 Days a Week</span>
+      </div>
+      <div class="vital-top-right">
+        <span><i class="fa-solid fa-globe mr-1" style="color: #94a3b8;"></i> INR (₹)</span>
+        <a href="#booking-section"><i class="fa-regular fa-calendar-check mr-1" style="color: #0d9488;"></i> Book Appointment</a>
+        <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#' }}"><i class="fa-solid fa-phone mr-1" style="color: #0d9488;"></i> {{ $clinic->phone ?? '+91 9830012345' }}</a>
+        <a href="{{ url('/admin/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Main Sticky Modern Navbar -->
+  <div class="vital-nav-bar">
+    <div class="vital-nav-main">
+      <a href="{{ $clinicUrl }}" class="vital-brand">
         @if($clinic && $clinic->logo)
-          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}">
+          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
         @else
-          <div style="width: 44px; height: 44px; border-radius: 10px; background: {{ $themeColor }}; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 22px;">
-            <i class="fa-solid fa-hospital"></i>
+          <div class="vital-logo-icon">
+            <i class="fa-solid fa-plus-large fa-hospital"></i>
           </div>
         @endif
-        <div>
-          <div class="clinic-brand-text">{{ $clinic->name ?? 'Dr Clinic' }}</div>
-          <div class="clinic-tagline">{{ $clinic->specialization ?? 'Certified Healthcare Services' }}</div>
+        <div class="vital-brand-info">
+          <span class="vital-brand-name">{{ $clinic->name ?? 'VitalCare Health Clinic' }}</span>
+          <span class="vital-brand-sub">{{ $clinic->specialization ?? 'Health Clinic & Consultation' }}</span>
         </div>
       </a>
 
-      <!-- Dynamic Custom Pages Navigation -->
-      @if($clinic && $clinic->pages && $clinic->pages->where('is_published', true)->count() > 0)
-      <ul class="nav-custom-links d-none d-lg-flex">
-        <a href="{{ url('/') }}">Appointment</a>
-        @foreach($clinic->pages->where('is_published', true) as $cp)
-          <a href="{{ url('/page/' . $cp->slug) }}">{{ $cp->title }}</a>
-        @endforeach
-      </ul>
-      @endif
-
-      <div class="header-actions">
-        @if(auth()->check())
-          @if(auth()->user()->isSuperAdmin())
-            <a href="{{ route('admin.saas.dashboard') }}" class="btn-header-login">
-              <i class="fa-solid fa-shield-halved"></i> Super Admin
-            </a>
-          @else
-            <a href="{{ route('doctor.dashboard') }}" class="btn-header-login">
-              <i class="fa-solid fa-user-doctor"></i> Doctor Portal
-            </a>
-          @endif
-        @else
-          <a href="{{ url('/admin/login') }}" class="btn-header-login">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Doctor Login
-          </a>
+      <!-- Navigation Links -->
+      <ul class="vital-nav-links">
+        <li><a href="{{ $clinicUrl }}" class="active">Home</a></li>
+        <li><a href="#about-section">About Us</a></li>
+        <li><a href="#services-section">Our Services</a></li>
+        <li><a href="#doctors-section">Doctors</a></li>
+        <li><a href="#packages-section">Health Packages</a></li>
+        @if($clinic && $clinic->pages && $clinic->pages->where('is_published', true)->count() > 0)
+          @foreach($clinic->pages->where('is_published', true)->take(2) as $cp)
+            <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $cp->slug) }}">{{ $cp->title }}</a></li>
+          @endforeach
         @endif
+        <li><a href="#contact-section">Contact</a></li>
+      </ul>
 
-        <a href="{{ url('/') }}" class="btn-header-book">
-          <i class="fa-regular fa-calendar-check"></i> Book Now
+      <!-- Action Buttons -->
+      <div class="vital-nav-actions">
+        <a href="#booking-section" class="btn-vital-book">
+          <i class="fa-regular fa-calendar-check"></i> Book Appointment
+        </a>
+        <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#contact-section' }}" class="vital-search-btn" title="Call Clinic">
+          <i class="fa-solid fa-phone"></i>
         </a>
       </div>
     </div>
