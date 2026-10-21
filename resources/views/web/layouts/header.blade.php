@@ -20,9 +20,8 @@
     padding: 8px 0;
   }
   .vital-top-main {
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 20px;
+    width: 100%;
+    padding: 0 36px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,6 +54,7 @@
 
   /* Main Modern Navbar */
   .vital-nav-bar {
+    width: 100%;
     background: #ffffff;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
     position: sticky;
@@ -63,12 +63,12 @@
     padding: 14px 0;
   }
   .vital-nav-main {
-    max-width: 1240px;
-    margin: 0 auto;
-    padding: 0 20px;
+    width: 100%;
+    padding: 0 36px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 20px;
   }
   .vital-brand {
     display: flex;
@@ -180,6 +180,10 @@
   }
 
   @media (max-width: 991px) {
+    .vital-top-main,
+    .vital-nav-main {
+      padding: 0 16px;
+    }
     .vital-nav-links {
       display: none;
     }

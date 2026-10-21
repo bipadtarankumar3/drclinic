@@ -4,7 +4,7 @@
 @endphp
 
 <footer class="vital-footer" style="background: #0f172a; color: #94a3b8; padding-top: 60px; margin-top: 60px; border-top: 1px solid #1e293b;">
-  <div class="container" style="max-width: 1240px;">
+  <div class="container-fluid" style="padding-left: 36px; padding-right: 36px;">
     <div class="row g-4 pb-5">
       <!-- Col 1: Brand & Bio -->
       <div class="col-lg-4 col-md-6">
