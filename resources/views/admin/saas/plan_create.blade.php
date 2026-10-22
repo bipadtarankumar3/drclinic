@@ -119,7 +119,7 @@
         <!-- Header with Quick Actions & Dynamic Count -->
         <div class="d-flex justify-content-between align-items-center flex-wrap pb-3 mb-4" style="border-bottom: 1.5px solid #f1f5f9; gap: 12px;">
           <div class="d-flex align-items-center" style="gap: 14px;">
-            <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #2563eb, #06b6d4); color: #ffffff; font-size: 22px;">
+            <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: var(--theme-primary-gradient, linear-gradient(135deg, #059669, #10b981)); color: #ffffff; font-size: 22px;">
               <i class="mdi mdi-shield-star-outline"></i>
             </div>
             <div>
@@ -340,7 +340,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 .ios-switch input:checked + .ios-slider {
-  background-color: #2563eb;
+  background-color: var(--theme-primary, #059669);
 }
 .ios-switch input:checked + .ios-slider:before {
   transform: translateX(20px);
@@ -383,9 +383,9 @@
 
 /* Feature Counter Pill */
 .feature-counter-badge {
-  background: #eff6ff;
-  color: #2563eb;
-  border: 1px solid #bfdbfe;
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
   font-size: 11.5px;
   font-weight: 700;
   padding: 4px 12px;

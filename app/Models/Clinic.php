@@ -284,4 +284,27 @@ class Clinic extends Model
     {
         return $this->hasMany(ClinicService::class)->where('status', true)->orderBy('sort_order', 'asc');
     }
+
+    /**
+     * Get clinic primary theme color with green as default
+     */
+    public function getThemeColor(): string
+    {
+        if (!empty($this->theme_color) && $this->theme_color !== '#0d6efd') {
+            return $this->theme_color;
+        }
+        return '#059669'; // Default Medical Emerald Green
+    }
+
+    /**
+     * Get clinic secondary theme color with green as default
+     */
+    public function getSecondaryColor(): string
+    {
+        if (!empty($this->secondary_color) && $this->secondary_color !== '#20c997') {
+            return $this->secondary_color;
+        }
+        return '#10b981';
+    }
 }
+

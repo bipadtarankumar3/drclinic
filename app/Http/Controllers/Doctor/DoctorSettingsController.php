@@ -122,8 +122,8 @@ class DoctorSettingsController extends Controller
         ]);
 
         $data = [
-            'theme_color' => $request->theme_color ?? '#0d6efd',
-            'secondary_color' => $request->secondary_color ?? '#20c997',
+            'theme_color' => $request->theme_color ?? '#059669',
+            'secondary_color' => $request->secondary_color ?? '#10b981',
             'topbar_tagline' => $request->filled('topbar_tagline') ? $request->topbar_tagline : 'Your Health, Our Priority',
             'topbar_hours' => $request->filled('topbar_hours') ? $request->topbar_hours : 'Open 7 Days a Week',
             'show_topbar' => $request->has('show_topbar'),

@@ -20,14 +20,14 @@
           @if($clinic->logo)
             <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="width: 56px; height: 56px; border-radius: 14px; object-fit: contain; background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); flex-shrink: 0;">
           @else
-            <div style="width: 56px; height: 56px; border-radius: 14px; background: #0d9488; color: #fff; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25); flex-shrink: 0;">
+            <div style="width: 56px; height: 56px; border-radius: 14px; background: var(--theme-primary-gradient, linear-gradient(135deg, #059669, #10b981)); color: #fff; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px var(--theme-primary-glow, rgba(5, 150, 105, 0.25)); flex-shrink: 0;">
               {{ strtoupper(substr($clinic->name, 0, 1)) }}
             </div>
           @endif
           <div>
             <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
               <h3 class="font-weight-bold text-dark mb-0" style="font-size: 22px;">{{ $clinic->name }}</h3>
-              <span class="badge px-3 py-1 rounded-pill font-weight-bold" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-size: 11.5px;">
+              <span class="badge px-3 py-1 rounded-pill font-weight-bold" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-size: 11.5px;">
                 {{ $clinic->specialization ?? 'Healthcare Clinic' }} ({{ ucfirst($clinic->status) }})
               </span>
               <span class="badge px-3 py-1 rounded-pill font-weight-bold" style="background: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; font-size: 11.5px;">
@@ -52,7 +52,7 @@
           <a href="{{ route('doctor.settings') }}" class="btn btn-dark btn-sm font-weight-bold px-3 py-2 text-white" style="background: #0f172a; border-radius: 8px; font-size: 12.5px;">
             <i class="mdi mdi-pencil-outline me-1"></i> Edit Profile & Clinic
           </a>
-          <a href="{{ URL::To('admin/patient') }}" class="btn btn-danger btn-sm font-weight-bold px-3 py-2 text-white" style="background: #dc2626; border-radius: 8px; font-size: 12.5px;">
+          <a href="{{ URL::To('admin/patient') }}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2 text-white" style="border-radius: 8px; font-size: 12.5px;">
             <i class="mdi mdi-plus me-1"></i> + New Booking
           </a>
           <a href="{{ route('doctor.services.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">

@@ -6,7 +6,7 @@
   <div class="d-flex justify-content-between align-items-center flex-wrap mb-4" style="gap: 12px;">
     <div>
       <div class="d-flex align-items-center" style="gap: 12px;">
-        <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #2563eb, #06b6d4); color: #ffffff; font-size: 22px;">
+        <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #059669, #10b981); color: #ffffff; font-size: 22px; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);">
           <i class="mdi mdi-tune-vertical"></i>
         </div>
         <div>
@@ -19,7 +19,8 @@
     </div>
 
     <div>
-      <span class="badge" style="background: #eff6ff; color: #2563eb; border: 1.5px solid #bfdbfe; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+      <span class="badge" style="background: #ecfdf5; color: #047857; border: 1.5px solid #a7f3d0; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #10b981; margin-right: 6px;"></span>
         <i class="mdi mdi-shield-crown-outline mr-1"></i> Super Admin Master Scope
       </span>
     </div>
@@ -56,7 +57,7 @@
     <div class="card border-0 shadow-sm rounded-4 mb-4" style="border-radius: 16px; border: 1.5px solid #e2e8f0; background: #ffffff;">
       <div class="card-body p-4">
         <div class="d-flex align-items-center mb-3 pb-2 border-bottom" style="border-color: #f1f5f9 !important;">
-          <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #eff6ff; color: #2563eb; font-size: 18px; margin-right: 12px;">
+          <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf5; color: #059669; font-size: 18px; margin-right: 12px;">
             <i class="mdi mdi-domain"></i>
           </div>
           <div>
@@ -142,7 +143,7 @@
       <div class="card-body p-4">
         <div class="d-flex justify-content-between align-items-center flex-wrap mb-3 pb-2 border-bottom" style="border-color: #f1f5f9 !important; gap: 10px;">
           <div class="d-flex align-items-center">
-            <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #eff6ff; color: #2563eb; font-size: 18px; margin-right: 12px;">
+            <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf5; color: #059669; font-size: 18px; margin-right: 12px;">
               <i class="mdi mdi-credit-card-fast-outline"></i>
             </div>
             <div>
@@ -158,9 +159,9 @@
           </div>
         </div>
 
-        <div class="alert alert-info rounded-3 p-3 mb-4" style="background: #f0f7ff; border: 1px solid #bae6fd; color: #0369a1;">
+        <div class="alert rounded-3 p-3 mb-4" style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534;">
           <div class="d-flex align-items-start" style="gap: 10px;">
-            <i class="mdi mdi-information-outline font-20 flex-shrink-0 mt-1"></i>
+            <i class="mdi mdi-shield-check-outline font-20 flex-shrink-0 mt-1 text-success"></i>
             <div class="font-12" style="line-height: 1.5;">
               <strong>Platform Gateway vs Doctor Gateways:</strong>
               These master credentials collect payments when clinics upgrade to paid subscription tiers (Starter, Professional, Enterprise). Doctor consultation fees from patients are routed directly to each doctor's individual Razorpay account configured inside their clinic portal.
@@ -195,7 +196,7 @@
     <div class="card border-0 shadow-sm rounded-4 mb-4" style="border-radius: 16px; border: 1.5px solid #e2e8f0; background: #ffffff;">
       <div class="card-body p-4">
         <div class="d-flex align-items-center mb-3 pb-2 border-bottom" style="border-color: #f1f5f9 !important;">
-          <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #fff1f2; color: #be123c; font-size: 18px; margin-right: 12px;">
+          <div class="d-flex align-items-center justify-content-center mr-3 shadow-sm" style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf5; color: #059669; font-size: 18px; margin-right: 12px;">
             <i class="mdi mdi-bullhorn-outline"></i>
           </div>
           <div>
@@ -207,7 +208,7 @@
         <div class="row g-3">
           <div class="col-md-6 mb-3">
             <label class="form-label font-weight-bold text-dark font-13">
-              <i class="mdi mdi-bullhorn text-danger mr-1"></i> Global Announcement / System Notice
+              <i class="mdi mdi-bullhorn text-success mr-1"></i> Global Announcement / System Notice
             </label>
             <textarea name="frontend_notice" rows="7" class="form-control font-13" placeholder="Broadcast notification visible across all portals (e.g., Scheduled maintenance, system upgrade advisory, holiday announcement)..." style="resize: vertical;">{{ old('frontend_notice', $setting->frontend_notice) }}</textarea>
             <small class="text-muted font-11">Broadcast alert displayed globally. Leave empty if no announcement is needed.</small>
@@ -215,7 +216,7 @@
 
           <div class="col-md-6 mb-3">
             <label class="form-label font-weight-bold text-dark font-13">
-              <i class="mdi mdi-file-document-outline text-primary mr-1"></i> Platform SaaS Terms &amp; Conditions
+              <i class="mdi mdi-file-document-outline text-success mr-1"></i> Platform SaaS Terms &amp; Conditions
             </label>
             <textarea name="payment_terms_and_condition" rows="7" class="form-control font-13" placeholder="Master terms and conditions governing clinic subscriptions, data privacy, and usage policies..." style="resize: vertical;">{{ old('payment_terms_and_condition', $setting->payment_terms_and_condition) }}</textarea>
             <small class="text-muted font-11">The overarching SaaS platform agreement for clinics and practitioners.</small>
@@ -224,13 +225,13 @@
       </div>
     </div>
 
-    <!-- Action Buttons -->
-    <div class="d-flex justify-content-end align-items-center mb-5" style="gap: 12px;">
+    <!-- Action Buttons (Positioned at the end as requested) -->
+    <div class="form-actions-end mb-5">
       <a href="{{ route('admin.saas.dashboard') }}" class="btn font-weight-bold px-4 py-2" style="border-radius: 10px; font-size: 14px; background: #ffffff; border: 1.5px solid #cbd5e1; color: #475569;">
         Cancel
       </a>
-      <button type="submit" class="btn font-weight-bold text-white px-4 py-2 d-flex align-items-center" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 10px; font-size: 14px; box-shadow: 0 4px 14px rgba(37,99,235,0.3);">
-        <i class="mdi mdi-content-save-outline font-18 mr-2" style="margin-right: 6px;"></i> Save Platform Settings
+      <button type="submit" class="btn btn-primary font-weight-bold text-white px-4 py-2 d-flex align-items-center" style="border-radius: 10px; font-size: 14px;">
+        <i class="mdi mdi-check-circle-outline font-18 mr-2" style="margin-right: 6px;"></i> Save Platform Settings
       </button>
     </div>
   </form>

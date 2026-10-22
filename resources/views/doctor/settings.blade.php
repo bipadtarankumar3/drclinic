@@ -33,8 +33,8 @@
     flex-shrink: 0;
   }
   .active-brand-card .brand-radio-indicator {
-    border-color: #0d9488;
-    background: #0d9488;
+    border-color: var(--theme-primary, #059669);
+    background: var(--theme-primary, #059669);
   }
   .active-brand-card .brand-radio-indicator::after {
     content: '';
@@ -61,9 +61,9 @@
     border-color: #cbd5e1;
   }
   .doctor-switch-card.is-active {
-    background: #f0fdfa;
-    border-color: #0d9488;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
+    background: var(--theme-primary-subtle, #ecfdf5);
+    border-color: var(--theme-primary, #059669);
+    box-shadow: 0 0 0 3px var(--theme-primary-focus, rgba(5, 150, 105, 0.12));
   }
   .doctor-switch-title {
     font-weight: 700;
@@ -115,7 +115,7 @@
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
   .doctor-toggle-pill input:checked + .doctor-toggle-slider {
-    background-color: #0d9488;
+    background-color: var(--theme-primary, #059669);
   }
   .doctor-toggle-pill input:checked + .doctor-toggle-slider:before {
     transform: translateX(22px);
@@ -131,24 +131,24 @@
     transition: border-color 0.2s, box-shadow 0.2s;
   }
   .doctor-settings-input:focus {
-    border-color: #0d9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15) !important;
+    border-color: var(--theme-primary, #059669) !important;
+    box-shadow: 0 0 0 3px var(--theme-primary-focus, rgba(5, 150, 105, 0.15)) !important;
     background-color: #ffffff !important;
   }
   .btn-doctor-save {
-    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%) !important;
+    background: var(--theme-primary-gradient, linear-gradient(135deg, #059669 0%, #10b981 100%)) !important;
     color: #ffffff !important;
     border: none !important;
     border-radius: 10px !important;
     padding: 11px 26px !important;
     font-weight: 700 !important;
     font-size: 14px !important;
-    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25) !important;
-    transition: all 0.2s;
+    box-shadow: 0 4px 14px var(--theme-primary-glow, rgba(5, 150, 105, 0.28)) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .btn-doctor-save:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35) !important;
+    transform: translateY(-1.5px);
+    box-shadow: 0 6px 18px var(--theme-primary-glow, rgba(5, 150, 105, 0.38)) !important;
   }
 </style>
 @endsection
@@ -364,7 +364,7 @@
                     <textarea class="form-control doctor-settings-input" name="bio" rows="4" placeholder="Brief background about doctor qualifications, experience, and facilities.">{{ old('bio', $clinic->bio) }}</textarea>
                   </div>
 
-                  <div class="col-12">
+                  <div class="col-12 form-actions-end mt-4">
                     <button type="submit" class="btn btn-doctor-save">
                       <i class="mdi mdi-content-save-outline mr-1"></i> Save Profile Details &amp; Pricing
                     </button>
@@ -466,7 +466,7 @@
                     </div>
                   </div>
 
-                  <div class="col-12">
+                  <div class="col-12 form-actions-end mt-4">
                     <button type="submit" class="btn btn-doctor-save">
                       <i class="mdi mdi-content-save-outline mr-1"></i> Save Payment Gateway Settings
                     </button>
@@ -487,14 +487,14 @@
                   <div class="col-12 mb-3">
                     <label class="form-label font-weight-bold d-block">Recommended Healthcare Color Palettes</label>
                     <div class="d-flex flex-wrap gap-2">
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#059669', '#10b981')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #059669; display: inline-block;"></span> Emerald Health (Default)
+                      </button>
                       <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#0d9488', '#14b8a6')">
                         <span style="width: 16px; height: 16px; border-radius: 50%; background: #0d9488; display: inline-block;"></span> Medical Teal
                       </button>
                       <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#2563eb', '#3b82f6')">
                         <span style="width: 16px; height: 16px; border-radius: 50%; background: #2563eb; display: inline-block;"></span> Royal Blue
-                      </button>
-                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#059669', '#10b981')">
-                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #059669; display: inline-block;"></span> Emerald Health
                       </button>
                       <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#6366f1', '#8b5cf6')">
                         <span style="width: 16px; height: 16px; border-radius: 50%; background: #6366f1; display: inline-block;"></span> Indigo Violet
@@ -514,8 +514,8 @@
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Primary Brand Color</label>
                     <div class="d-flex align-items-center gap-2">
-                      <input type="color" class="form-control form-control-color" id="theme_color_picker" name="theme_color" value="{{ old('theme_color', $clinic->theme_color ?? '#0d9488') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('theme_color_picker', 'theme_color_text')">
-                      <input type="text" class="form-control doctor-settings-input" id="theme_color_text" value="{{ old('theme_color', $clinic->theme_color ?? '#0d9488') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('theme_color_text', 'theme_color_picker')">
+                      <input type="color" class="form-control form-control-color" id="theme_color_picker" name="theme_color" value="{{ old('theme_color', $clinic->theme_color ?? '#059669') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('theme_color_picker', 'theme_color_text')">
+                      <input type="text" class="form-control doctor-settings-input" id="theme_color_text" value="{{ old('theme_color', $clinic->theme_color ?? '#059669') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('theme_color_text', 'theme_color_picker')">
                     </div>
                     <small class="text-muted font-11">Applies to buttons, headers, booking slots, and active highlights across all clinic pages.</small>
                   </div>
@@ -523,8 +523,8 @@
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Secondary Accent Color</label>
                     <div class="d-flex align-items-center gap-2">
-                      <input type="color" class="form-control form-control-color" id="secondary_color_picker" name="secondary_color" value="{{ old('secondary_color', $clinic->secondary_color ?? '#14b8a6') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('secondary_color_picker', 'secondary_color_text')">
-                      <input type="text" class="form-control doctor-settings-input" id="secondary_color_text" value="{{ old('secondary_color', $clinic->secondary_color ?? '#14b8a6') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('secondary_color_text', 'secondary_color_picker')">
+                      <input type="color" class="form-control form-control-color" id="secondary_color_picker" name="secondary_color" value="{{ old('secondary_color', $clinic->secondary_color ?? '#10b981') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('secondary_color_picker', 'secondary_color_text')">
+                      <input type="text" class="form-control doctor-settings-input" id="secondary_color_text" value="{{ old('secondary_color', $clinic->secondary_color ?? '#10b981') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('secondary_color_text', 'secondary_color_picker')">
                     </div>
                     <small class="text-muted font-11">Used for secondary gradients, badges, and accents.</small>
                   </div>
@@ -633,7 +633,7 @@
                     </div>
                   </div>
 
-                  <div class="col-12">
+                  <div class="col-12 form-actions-end mt-4">
                     <button type="submit" class="btn btn-doctor-save">
                       <i class="mdi mdi-palette-outline mr-1"></i> Save Branding &amp; Header Settings
                     </button>
@@ -665,8 +665,10 @@
                     <small class="text-muted">Point a CNAME or A Record from your domain DNS provider to this server's IP address.</small>
                   </div>
 
-                  <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Domain Settings</button>
+                  <div class="col-12 form-actions-end mt-4">
+                    <button type="submit" class="btn btn-doctor-save">
+                      <i class="mdi mdi-web-sync mr-1"></i> Save Domain Settings
+                    </button>
                   </div>
                 </div>
               </form>
@@ -771,8 +773,8 @@ function applyColorPreset(primary, secondary) {
 }
 
 function updateLiveBrandingPreview() {
-  var primary = document.getElementById('theme_color_picker')?.value || '#0d9488';
-  var secondary = document.getElementById('secondary_color_picker')?.value || '#14b8a6';
+  var primary = document.getElementById('theme_color_picker')?.value || '#059669';
+  var secondary = document.getElementById('secondary_color_picker')?.value || '#10b981';
 
   var btn = document.getElementById('preview-primary-btn');
   if (btn) btn.style.background = primary;
@@ -788,6 +790,13 @@ function updateLiveBrandingPreview() {
 
   var link = document.getElementById('preview-text-link');
   if (link) link.style.color = primary;
+
+  // Real-time dynamic portal preview: Immediately propagate chosen color to document root
+  document.documentElement.style.setProperty('--theme-primary', primary);
+  document.documentElement.style.setProperty('--theme-secondary', secondary);
+  document.documentElement.style.setProperty('--theme-primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+  document.documentElement.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+  document.documentElement.style.setProperty('--clinic-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

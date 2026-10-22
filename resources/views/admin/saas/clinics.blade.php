@@ -178,7 +178,7 @@
       <!-- Modal Header -->
       <div class="modal-header border-0 px-4 pt-4 pb-3" style="background: #ffffff;">
         <div class="d-flex align-items-center gap-3">
-          <div class="d-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 44px; height: 44px; background: linear-gradient(135deg, #2563eb, #1d4ed8); color: #ffffff; flex-shrink: 0;">
+          <div class="d-flex align-items-center justify-content-center rounded-3 shadow-sm" style="width: 44px; height: 44px; background: var(--theme-primary-gradient, linear-gradient(135deg, #059669, #10b981)); color: #ffffff; flex-shrink: 0;">
             <i class="mdi mdi-hospital-building font-22"></i>
           </div>
           <div>
@@ -199,7 +199,7 @@
           <div class="card border-0 shadow-sm rounded-4 mb-3" style="border: 1.5px solid #e2e8f0 !important; border-radius: 14px; background: #ffffff;">
             <div class="card-body p-3 p-md-4">
               <h6 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 14px;">
-                <span class="me-2" style="color: #2563eb; font-size: 16px;">●</span> Clinic Profile &amp; Storefront
+                <span class="me-2" style="color: var(--theme-primary, #059669); font-size: 16px;">●</span> Clinic Profile &amp; Storefront
               </h6>
 
               <div class="row g-3">
@@ -374,7 +374,7 @@
             <button type="button" class="btn btn-light border font-weight-bold px-3 py-2" data-bs-dismiss="modal" style="border-radius: 8px; font-size: 13px;">
               Cancel
             </button>
-            <button type="submit" class="btn font-weight-bold text-white px-4 py-2" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+            <button type="submit" class="btn btn-primary font-weight-bold text-white px-4 py-2" style="border: none; border-radius: 8px; font-size: 13px;">
               <i class="mdi mdi-check-circle-outline me-1"></i> Create Clinic &amp; Assign User
             </button>
           </div>
@@ -386,9 +386,9 @@
 
 <style>
 .active-mode {
-  background: #2563eb !important;
+  background: var(--theme-primary, #059669) !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 2px 6px var(--theme-primary-glow, rgba(5,150,105,0.25)) !important;
 }
 </style>
 

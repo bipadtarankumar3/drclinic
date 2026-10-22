@@ -51,7 +51,7 @@
         <div class="card border-0 shadow-sm rounded-4 h-100" style="border: 1.5px solid #e2e8f0 !important; border-radius: 16px; background: #ffffff;">
           <div class="card-body p-4">
             <h5 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 16px;">
-              <span class="me-2" style="color: #2563eb; font-size: 16px;">●</span> Clinic Profile &amp; Storefront Details
+              <span class="me-2" style="color: var(--theme-primary, #059669); font-size: 16px;">●</span> Clinic Profile &amp; Storefront Details
             </h5>
 
             <div class="row g-3">
@@ -300,7 +300,7 @@
             </div>
 
             <div class="mt-4 pt-3 border-top" style="border-color: #f1f5f9 !important;">
-              <button type="submit" class="btn font-weight-bold text-white btn-lg w-100 shadow-sm d-flex align-items-center justify-content-center gap-2 py-3" style="background: linear-gradient(135deg, #2563eb, #1d4ed8); border: none; border-radius: 10px; font-size: 15px; box-shadow: 0 4px 14px rgba(37,99,235,0.3);">
+              <button type="submit" class="btn btn-primary font-weight-bold text-white btn-lg w-100 shadow-sm d-flex align-items-center justify-content-center gap-2 py-3" style="border: none; border-radius: 10px; font-size: 15px;">
                 <i class="mdi mdi-check-circle-outline font-18"></i> Create Clinic &amp; Assign User
               </button>
             </div>
@@ -313,9 +313,9 @@
 
 <style>
 .active-page-mode {
-  background: #2563eb !important;
+  background: var(--theme-primary, #059669) !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.25) !important;
+  box-shadow: 0 2px 6px var(--theme-primary-glow, rgba(5, 150, 105, 0.25)) !important;
 }
 </style>
 
