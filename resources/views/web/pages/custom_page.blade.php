@@ -150,15 +150,34 @@
               {!! $rawContent !!}
             </div>
           @else
-            {{-- Fallback markdown parser for plain text / legacy content --}}
+            {{-- Fallback parser for plain text / markdown content --}}
             @php
-              $content = e($rawContent);
-              $content = preg_replace('/##\s*(.*?)(?:\n|$)/', '<h4 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 20px; border-left: 3px solid #0d9488; padding-left: 12px;">$1</h4>', $content);
-              $content = preg_replace('/\*\*(.*?)\*\*/', '<strong style="color: #0f172a;">$1</strong>', $content);
-              $content = preg_replace('/•\s*(.*?)(?:\n|$)/', '<div class="d-flex align-items-start mb-2" style="gap: 10px;"><i class="fa-solid fa-circle-check mt-1" style="color: #0d9488; font-size: 14px; flex-shrink: 0;"></i><span>$1</span></div>', $content);
-              $content = preg_replace('/>\s*(.*?)(?:\n|$)/', '<div class="p-3 my-3 rounded-3" style="background: #f0fdfa; border-left: 4px solid #0d9488; color: #0f766e; font-weight: 500;">$1</div>', $content);
+              $lines = explode("\n", str_replace(["\r\n", "\r"], "\n", $rawContent));
+              $parsedLines = [];
+              foreach ($lines as $line) {
+                  $trimmed = trim($line);
+                  if (str_starts_with($trimmed, '### ')) {
+                      $parsedLines[] = '<h5 class="fw-bold mt-4 mb-2" style="color: #0f172a;">' . e(substr($trimmed, 4)) . '</h5>';
+                  } elseif (str_starts_with($trimmed, '## ')) {
+                      $parsedLines[] = '<h4 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 20px; border-left: 3px solid #0d9488; padding-left: 12px;">' . e(substr($trimmed, 3)) . '</h4>';
+                  } elseif (str_starts_with($trimmed, '# ')) {
+                      $parsedLines[] = '<h3 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 24px;">' . e(substr($trimmed, 2)) . '</h3>';
+                  } elseif (preg_match('/^[•\-\*]\s*(.+)$/u', $trimmed, $m)) {
+                      $bulletText = e($m[1]);
+                      $bulletText = preg_replace('/\*\*(.*?)\*\*/', '<strong style="color: #0f172a;">$1</strong>', $bulletText);
+                      $parsedLines[] = '<div class="d-flex align-items-start mb-2" style="gap: 10px;"><i class="fa-solid fa-circle-check mt-1" style="color: #0d9488; font-size: 14px; flex-shrink: 0;"></i><span>' . $bulletText . '</span></div>';
+                  } elseif (str_starts_with($trimmed, '> ')) {
+                      $parsedLines[] = '<div class="p-3 my-3 rounded-3" style="background: #f0fdfa; border-left: 4px solid #0d9488; color: #0f766e; font-weight: 500;">' . e(substr($trimmed, 2)) . '</div>';
+                  } elseif ($trimmed === '') {
+                      $parsedLines[] = '<div class="my-2"></div>';
+                  } else {
+                      $lineText = e($line);
+                      $lineText = preg_replace('/\*\*(.*?)\*\*/', '<strong style="color: #0f172a;">$1</strong>', $lineText);
+                      $parsedLines[] = '<p class="mb-3">' . $lineText . '</p>';
+                  }
+              }
             @endphp
-            {!! nl2br($content) !!}
+            {!! implode("\n", $parsedLines) !!}
           @endif
         </div>
 
