@@ -82,11 +82,11 @@
     </li>
 
     {{-- 1. Overview / Dashboard --}}
-    <li class="nav-item {{ request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.dashboard') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.dashboard') || request()->routeIs('doctor.dashboard') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.dashboard') }}">
         <i class="mdi mdi-view-dashboard-outline nav-icon"></i>
-        <span class="menu-title">Doctor Dashboard</span>
-        @if(request()->routeIs('doctor.dashboard'))
+        <span class="menu-title">Clinic Dashboard</span>
+        @if(request()->routeIs('clinic.dashboard') || request()->routeIs('doctor.dashboard'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>

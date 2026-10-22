@@ -3,7 +3,7 @@
     $isImpersonating = session()->has('impersonating_admin_id');
     $isSuperAdmin = Auth::check() && Auth::user()->isSuperAdmin() && !$isImpersonating;
     $activeClinic = Auth::check() ? Auth::user()->getActiveClinic() : null;
-    $brandRoute = $isSuperAdmin ? route('admin.saas.dashboard') : ($activeClinic ? route('doctor.dashboard') : URL::to('admin/dashboard'));
+    $brandRoute = $isSuperAdmin ? route('admin.saas.dashboard') : ($activeClinic ? route('clinic.dashboard') : URL::to('admin/dashboard'));
     $brandTitle = $isSuperAdmin ? 'Dr Clinic' : ($activeClinic ? $activeClinic->name : 'Dr Clinic');
     $brandSubtitle = $isSuperAdmin ? 'Master Administration' : ($activeClinic ? ($activeClinic->city ? $activeClinic->city . ' Clinic' : 'Doctor Clinic Portal') : 'Clinic Portal');
     $brandInitial = strtoupper(substr($brandTitle, 0, 1));
@@ -154,9 +154,9 @@
 
           {{-- Case B: Super Admin VISITING a clinic --}}
           @elseif($isImpersonating)
-            <a class="dropdown-item" href="{{ route('doctor.dashboard') }}">
+            <a class="dropdown-item" href="{{ route('clinic.dashboard') }}">
               <i class="mdi mdi-view-dashboard-outline"></i>
-              <span>Doctor Dashboard</span>
+              <span>Clinic Dashboard</span>
             </a>
             <a class="dropdown-item" href="{{ URL::To('admin/patient') }}">
               <i class="mdi mdi-calendar-check-outline"></i>
@@ -180,9 +180,9 @@
 
           {{-- Case C: Doctor / Clinic Owner (Normal clinic login) --}}
           @else
-            <a class="dropdown-item" href="{{ route('doctor.dashboard') }}">
+            <a class="dropdown-item" href="{{ route('clinic.dashboard') }}">
               <i class="mdi mdi-view-dashboard-outline"></i>
-              <span>Doctor Dashboard</span>
+              <span>Clinic Dashboard</span>
             </a>
             <a class="dropdown-item" href="{{ URL::To('admin/patient') }}">
               <i class="mdi mdi-calendar-check-outline"></i>

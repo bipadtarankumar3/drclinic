@@ -90,6 +90,13 @@ Route::middleware(['auth'])->group(function () {
 // ==========================================
 // Doctor / Clinic Portal Routes
 // ==========================================
+Route::middleware(['auth'])->group(function () {
+    Route::get('/clinic/dashboard', [DoctorDashboardController::class, 'index'])->name('clinic.dashboard');
+    Route::get('/clinic/settings', [DoctorSettingsController::class, 'index'])->name('clinic.settings');
+    Route::get('/clinic/services', [DoctorServiceController::class, 'index'])->name('clinic.services');
+    Route::get('/clinic/support', [DoctorDashboardController::class, 'support'])->name('clinic.support');
+});
+
 Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']], function () {
     Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
 
