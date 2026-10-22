@@ -376,7 +376,7 @@
         <span><i class="fa-solid fa-globe mr-1" style="color: #94a3b8;"></i> INR (₹)</span>
         <a href="#booking-section"><i class="fa-regular fa-calendar-check mr-1" style="color: var(--clinic-primary);"></i> Book Appointment</a>
         <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#' }}"><i class="fa-solid fa-phone mr-1" style="color: var(--clinic-primary);"></i> {{ $clinic->phone ?? '+91 9830012345' }}</a>
-        <a href="{{ url('/admin/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a>
+        <!-- <a href="{{ url('/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a> -->
       </div>
     </div>
   </div>
