@@ -2,10 +2,13 @@
 
 @section('content')
 <div class="content-wrapper">
-  <div class="row mb-4">
-    <div class="col-12">
-      <h2 class="font-weight-bold mb-1"><i class="mdi mdi-credit-card-outline text-primary mr-1"></i> Platform Razorpay Settings</h2>
-      <p class="text-muted mb-0">Configure the master Razorpay payment credentials used to charge doctors for SaaS subscription plans.</p>
+  <div class="d-flex align-items-center mb-4" style="gap: 12px;">
+    <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: var(--theme-primary-gradient, linear-gradient(135deg, #059669, #10b981)); color: #ffffff; font-size: 22px;">
+      <i class="mdi mdi-credit-card-outline"></i>
+    </div>
+    <div>
+      <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 22px; letter-spacing: -0.5px;">Platform Razorpay Settings</h2>
+      <p class="text-muted mb-0 font-13">Configure the master Razorpay payment credentials used to charge doctors for SaaS subscription plans.</p>
     </div>
   </div>
 
@@ -48,9 +51,11 @@
               <input type="password" class="form-control font-monospace" name="platform_razorpay_secret" value="{{ old('platform_razorpay_secret', env('RAZORPAY_SECRET')) }}" required placeholder="••••••••••••••••">
             </div>
 
-            <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold">
-              <i class="mdi mdi-content-save mr-1"></i> Save Platform Credentials
-            </button>
+            <div class="form-actions-end mt-4">
+              <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 8px;">
+                <i class="mdi mdi-content-save mr-1"></i> Save Platform Credentials
+              </button>
+            </div>
           </form>
         </div>
       </div>

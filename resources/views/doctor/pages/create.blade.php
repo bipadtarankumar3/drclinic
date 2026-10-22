@@ -12,8 +12,8 @@
     transition: border-color 0.2s;
   }
   .note-editor.note-frame.focus {
-    border-color: #0d9488 !important;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15) !important;
+    border-color: var(--theme-primary, #059669) !important;
+    box-shadow: 0 0 0 3px var(--theme-primary-focus, rgba(5, 150, 105, 0.15)) !important;
   }
   .note-toolbar {
     background: #f8fafc !important;
@@ -34,9 +34,9 @@
     border-color: #cbd5e1 !important;
   }
   .note-btn.active {
-    background: #e6fffa !important;
-    color: #0d9488 !important;
-    border-color: #99f6e4 !important;
+    background: var(--theme-primary-subtle, #ecfdf5) !important;
+    color: var(--theme-primary, #059669) !important;
+    border-color: var(--theme-primary-border, #a7f3d0) !important;
   }
   .note-editable {
     min-height: 380px !important;
@@ -157,10 +157,12 @@
               </div>
 
               <div class="col-12">
-                <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold">
-                  <i class="mdi mdi-check mr-1"></i> Save and Publish Page
-                </button>
-                <a href="{{ route('doctor.pages.index') }}" class="btn btn-outline-secondary ms-2 px-4 py-2 font-weight-bold">Cancel</a>
+                <div class="form-actions-end mt-3">
+                  <a href="{{ route('doctor.pages.index') }}" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 8px;">Cancel</a>
+                  <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 8px;">
+                    <i class="mdi mdi-check mr-1"></i> Save and Publish Page
+                  </button>
+                </div>
               </div>
             </div>
           </form>

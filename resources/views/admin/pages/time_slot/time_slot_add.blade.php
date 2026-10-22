@@ -54,15 +54,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary waves-effect waves-light">{{ isset($timeSlot) ? 'Update' : 'Submit' }}</button>
-                                    <a href="{{URL::to('admin/time_slot')}}">
-                                        <button type="button" class="btn btn-warning waves-effect waves-light">Back</button> 
-                                     </a>
-                                </div>
+                            <div class="form-actions-end mt-4">
+                                <a href="{{ URL::to('admin/time_slot') }}" class="btn btn-light px-4" style="border: 1px solid #cbd5e1; border-radius: 8px;">Cancel</a>
+                                <button type="submit" class="btn btn-primary px-4 font-weight-bold" style="border-radius: 8px;">
+                                    <i class="mdi mdi-check-circle-outline me-1"></i> {{ isset($timeSlot) ? 'Update Slot' : 'Save Slot' }}
+                                </button>
                             </div>
-                            
                         </div>
                     </div>
                     

@@ -30,8 +30,8 @@
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: rgba(13, 148, 136, 0.1);
-  color: #0d9488;
+  background: var(--theme-primary-subtle, rgba(5, 150, 105, 0.1));
+  color: var(--theme-primary, #059669);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -88,7 +88,7 @@
     <div class="card border-0 shadow-sm rounded-4 mb-4" style="border-radius: 16px; border: 1.5px solid #e2e8f0; background: #ffffff;">
       <div class="card-body p-4">
         <h5 class="font-weight-bold text-dark mb-3 d-flex align-items-center" style="font-size: 16px;">
-          <span class="mr-2" style="color: #e11d48; font-size: 16px; margin-right: 8px;">●</span> Service Identity &amp; Pricing
+          <span class="mr-2" style="color: var(--theme-primary, #059669); font-size: 16px; margin-right: 8px;">●</span> Service Identity &amp; Pricing
         </h5>
 
         <div class="row g-3 mb-3">
@@ -189,11 +189,11 @@
     </div>
 
     <!-- Bottom Action Bar -->
-    <div class="d-flex justify-content-between align-items-center mt-4 pt-2 mb-5">
+    <div class="form-actions-end mt-4 pt-2 mb-5">
       <a href="{{ route('doctor.services.index') }}" class="btn btn-light border font-weight-bold px-4 py-2" style="border-radius: 10px;">
         Cancel
       </a>
-      <button type="submit" class="btn text-white font-weight-bold px-4 py-2 d-inline-flex align-items-center" style="background: #e11d48; border-radius: 10px; box-shadow: 0 2px 6px rgba(225,29,72,0.3);">
+      <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2 d-inline-flex align-items-center" style="border-radius: 10px;">
         <i class="mdi mdi-check mr-1" style="font-size: 18px;"></i> Update Service
       </button>
     </div>

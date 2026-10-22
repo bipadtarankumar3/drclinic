@@ -35,14 +35,14 @@
   @endif
 
   <!-- Notice Info Card -->
-  <div class="alert alert-info border-0 rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: rgba(13, 148, 136, 0.08); border-left: 4px solid #0d9488 !important;">
+  <div class="alert border-0 rounded-4 p-3 mb-4 d-flex align-items-center justify-content-between flex-wrap gap-2" style="background: var(--theme-primary-subtle, #ecfdf5); border-left: 4px solid var(--theme-primary, #059669) !important;">
     <div class="d-flex align-items-center gap-2">
-      <i class="mdi mdi-information-outline" style="font-size: 24px; color: #0d9488;"></i>
+      <i class="mdi mdi-information-outline" style="font-size: 24px; color: var(--theme-primary, #059669);"></i>
       <span style="color: #0f172a; font-size: 13.5px;">
         Published pages automatically appear in your clinic website's navigation bar and footer. Patients can browse them and book consultations directly.
       </span>
     </div>
-    <a href="{{ $storefrontUrl }}" target="_blank" class="btn btn-sm text-white font-weight-bold px-3 py-1 rounded-pill" style="background: #0d9488; text-decoration: none;">
+    <a href="{{ $storefrontUrl }}" target="_blank" class="btn btn-sm btn-primary font-weight-bold px-3 py-1 rounded-pill" style="text-decoration: none;">
       <i class="mdi mdi-open-in-new mr-1"></i> View Live Website
     </a>
   </div>

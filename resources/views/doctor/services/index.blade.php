@@ -7,7 +7,7 @@
     <div>
       <div class="d-flex align-items-center gap-2 mb-1">
         <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 26px; letter-spacing: -0.5px;">Clinic Services</h2>
-        <span class="badge" style="background: #e0f2fe; color: #0284c7; font-weight: 700; font-size: 11px; padding: 5px 11px; border-radius: 9999px; letter-spacing: 0.5px;">MEDICAL &amp; CLINICAL SERVICES</span>
+        <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-weight: 700; font-size: 11px; padding: 5px 11px; border-radius: 9999px; letter-spacing: 0.5px;">MEDICAL &amp; CLINICAL SERVICES</span>
       </div>
       <p class="text-muted mb-0" style="font-size: 13.5px;">Configure treatments, consultation pricing, and display order for your public clinic storefront.</p>
     </div>
@@ -15,11 +15,11 @@
       <form action="{{ route('doctor.services.seed_defaults') }}" method="POST" class="d-inline" onsubmit="return confirm('Restore standard services adapted to your clinic specialization ({{ $clinic->specialization ?? 'Healthcare' }})?');">
         @csrf
         <button type="submit" class="btn font-weight-bold d-inline-flex align-items-center" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #475569; padding: 9px 18px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-          <i class="mdi mdi-refresh mr-1" style="font-size: 18px; color: #0284c7;"></i> Auto-Generate for My Specialty
+          <i class="mdi mdi-refresh mr-1" style="font-size: 18px; color: var(--theme-primary, #059669);"></i> Auto-Generate for My Specialty
         </button>
       </form>
 
-      <a href="{{ route('doctor.services.create') }}" class="btn font-weight-bold d-inline-flex align-items-center" style="background: #e11d48; border: none; color: #ffffff; padding: 10px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(225,29,72,0.3);">
+      <a href="{{ route('doctor.services.create') }}" class="btn btn-primary font-weight-bold d-inline-flex align-items-center" style="padding: 10px 20px; border-radius: 10px;">
         <i class="mdi mdi-plus mr-1" style="font-size: 18px;"></i> Add New Service
       </a>
 
@@ -142,7 +142,7 @@
                   {{ $service->status ? 'Deactivate' : 'Activate' }}
                 </button>
               </form>
-              <a href="{{ route('doctor.services.edit', $service->id) }}" class="btn btn-sm text-white font-weight-bold px-3" style="background: #e11d48; border-radius: 8px;">
+              <a href="{{ route('doctor.services.edit', $service->id) }}" class="btn btn-sm btn-primary font-weight-bold px-3" style="border-radius: 8px;">
                 Edit
               </a>
             </div>
@@ -163,7 +163,7 @@
               <i class="mdi mdi-refresh mr-1"></i> Auto-Generate for My Specialty
             </button>
           </form>
-          <a href="{{ route('doctor.services.create') }}" class="btn text-white font-weight-bold px-4 py-2" style="background: #e11d48; border-radius: 8px;">
+          <a href="{{ route('doctor.services.create') }}" class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius: 8px;">
             <i class="mdi mdi-plus mr-1"></i> Add Custom Service
           </a>
         </div>

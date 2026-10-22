@@ -243,7 +243,7 @@
 
                             <!-- REF # -->
                             <td>
-                                <div class="font-weight-bold" style="color: #dc2626; font-size: 12.5px;">
+                                <div class="font-weight-bold" style="color: var(--theme-primary, #059669); font-size: 12.5px;">
                                     {{ $refCode }}
                                 </div>
                                 <div class="text-muted" style="font-size: 10.5px;">

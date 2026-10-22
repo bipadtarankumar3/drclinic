@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --primary: #059669;
+            --primary-hover: #047857;
             --accent: #10b981;
             --dark: #0f172a;
             --gray-100: #f1f5f9;
@@ -194,7 +194,7 @@
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            background: linear-gradient(135deg, #059669, #10b981);
             color: #ffffff;
             border: none;
             border-radius: 14px;
@@ -207,7 +207,7 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
-            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.35);
+            box-shadow: 0 10px 25px -5px rgba(5, 150, 105, 0.35);
             transition: all 0.2s ease;
             margin-top: 10px;
         }

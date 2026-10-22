@@ -42,20 +42,25 @@
 }
 .fc .fc-button-primary.fc-button-active,
 .fc .fc-button-primary:active {
-  background: #2563eb !important;
-  border-color: #2563eb !important;
+  background: var(--theme-primary, #059669) !important;
+  border-color: var(--theme-primary, #059669) !important;
   color: #ffffff !important;
-  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3) !important;
+  box-shadow: 0 2px 8px var(--theme-primary-glow, rgba(5, 150, 105, 0.3)) !important;
 }
 .fc-theme-standard th {
   background: #f8fafc;
   padding: 10px 0 !important;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #475569;
   border-color: #e2e8f0 !important;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+.fc-col-header-cell a {
+  color: #475569 !important;
+  text-decoration: none !important;
+  font-weight: 700;
 }
 .fc-theme-standard td, 
 .fc-theme-standard .fc-scrollgrid {
@@ -66,12 +71,14 @@
   font-weight: 700;
   color: #475569;
   padding: 6px 8px !important;
+  text-decoration: none !important;
 }
 .fc-day-today {
-  background: rgba(37, 99, 235, 0.04) !important;
+  background: var(--theme-primary-subtle, rgba(5, 150, 105, 0.05)) !important;
 }
 .fc-day-today .fc-daygrid-day-number {
-  color: #2563eb !important;
+  color: var(--theme-primary, #059669) !important;
+  font-weight: 800 !important;
 }
 .fc-event {
   border-radius: 6px !important;
@@ -101,13 +108,14 @@
   padding: 3px 8px;
 }
 .select2-container--default.select2-container--focus .select2-selection--multiple {
-  border-color: #2563eb !important;
+  border-color: var(--theme-primary, #059669) !important;
+  box-shadow: 0 0 0 3px var(--theme-primary-focus, rgba(5, 150, 105, 0.15)) !important;
 }
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
-  background: #eff6ff !important;
-  border: 1px solid #bfdbfe !important;
-  color: #1d4ed8 !important;
-  font-weight: 600;
+  background: var(--theme-primary-subtle, #ecfdf5) !important;
+  border: 1px solid var(--theme-primary-border, #a7f3d0) !important;
+  color: var(--theme-primary, #059669) !important;
+  font-weight: 700;
   font-size: 12px;
   border-radius: 6px;
   padding: 2px 8px;
@@ -120,7 +128,7 @@
   <!-- Page Header -->
   <div class="d-flex justify-content-between align-items-center flex-wrap mb-4" style="gap: 12px;">
     <div class="d-flex align-items-center" style="gap: 12px;">
-      <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #e11d48, #be123c); color: #ffffff; font-size: 22px;">
+      <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 44px; height: 44px; border-radius: 12px; background: var(--theme-primary-gradient, linear-gradient(135deg, #059669, #10b981)); color: #ffffff; font-size: 22px; box-shadow: 0 4px 12px var(--theme-primary-glow, rgba(5, 150, 105, 0.25));">
         <i class="mdi mdi-calendar-remove-outline"></i>
       </div>
       <div>
@@ -132,7 +140,8 @@
     </div>
 
     <div>
-      <span class="badge" style="background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+      <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
+        <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--theme-primary, #059669); margin-right: 6px;"></span>
         <i class="mdi mdi-shield-check-outline mr-1"></i> Patient Booking Guard
       </span>
     </div>
@@ -164,7 +173,7 @@
                 <span style="width: 10px; height: 10px; border-radius: 50%; background: #ef4444; margin-right: 6px; display: inline-block;"></span> Blocked / Leave
               </span>
               <span class="d-inline-flex align-items-center font-12 text-muted">
-                <span style="width: 10px; height: 10px; border-radius: 50%; background: #2563eb; margin-right: 6px; display: inline-block;"></span> Today
+                <span style="width: 10px; height: 10px; border-radius: 50%; background: var(--theme-primary, #059669); margin-right: 6px; display: inline-block;"></span> Today
               </span>
             </div>
           </div>
@@ -180,7 +189,7 @@
       <div class="card border-0 shadow-sm rounded-4 mb-4" style="border-radius: 16px; border: 1.5px solid #e2e8f0; background: #ffffff;">
         <div class="card-body p-4">
           <div class="d-flex align-items-center mb-3 pb-2 border-bottom" style="border-color: #f1f5f9 !important;">
-            <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 34px; height: 34px; border-radius: 8px; background: #fee2e2; color: #dc2626; font-size: 18px; margin-right: 10px;">
+            <div class="d-flex align-items-center justify-content-center shadow-sm" style="width: 34px; height: 34px; border-radius: 8px; background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); font-size: 18px; margin-right: 10px;">
               <i class="mdi mdi-plus-circle-outline"></i>
             </div>
             <div>
@@ -222,7 +231,7 @@
               <input type="text" class="form-control" id="remarks" name="remarks" placeholder="e.g. Personal Leave, Medical Conference" style="border-radius: 8px; height: 42px;">
             </div>
 
-            <button type="submit" id="submitBtn" class="btn btn-danger w-100 font-weight-bold py-2 d-flex align-items-center justify-content-center" style="border-radius: 10px; background: linear-gradient(135deg, #e11d48, #be123c); border: none; font-size: 14px; box-shadow: 0 4px 14px rgba(225,29,72,0.3);">
+            <button type="submit" id="submitBtn" class="btn btn-primary w-100 font-weight-bold py-2 d-flex align-items-center justify-content-center" style="border-radius: 10px; font-size: 14px;">
               <i class="mdi mdi-lock-outline font-18 mr-2" style="margin-right: 6px;"></i> Block Selected Time
             </button>
           </form>

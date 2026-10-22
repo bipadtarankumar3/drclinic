@@ -111,11 +111,11 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12">
-                                    <button type="submit" class="btn btn-primary">{{ isset($booking) ? 'Update' : 'Submit' }}</button>
-                                    <a href="{{ URL::to('admin/booking') }}" class="btn btn-warning">Back</a>
-                                </div>
+                            <div class="form-actions-end mt-4">
+                                <a href="{{ URL::to('admin/booking') }}" class="btn btn-light px-4" style="border: 1px solid #cbd5e1; border-radius: 8px;">Cancel</a>
+                                <button type="submit" class="btn btn-primary px-4 font-weight-bold" style="border-radius: 8px;">
+                                    <i class="mdi mdi-check-circle-outline me-1"></i> {{ isset($booking) ? 'Update Booking' : 'Save Booking' }}
+                                </button>
                             </div>
                         </div>
                     </div>

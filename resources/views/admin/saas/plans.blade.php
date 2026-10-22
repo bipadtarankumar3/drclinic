@@ -7,7 +7,7 @@
     <div>
       <div class="d-flex align-items-center gap-2 mb-1">
         <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 26px; letter-spacing: -0.5px;">Subscription Plans</h2>
-        <span class="badge" style="background: #ffe4e6; color: #e11d48; font-weight: 700; font-size: 11px; padding: 5px 11px; border-radius: 9999px; letter-spacing: 0.5px;">COMMERCIAL TIERS</span>
+        <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-weight: 700; font-size: 11px; padding: 5px 11px; border-radius: 9999px; letter-spacing: 0.5px;">COMMERCIAL TIERS</span>
       </div>
       <p class="text-muted mb-0" style="font-size: 13.5px;">Configure pricing, quotas, and feature flags. Grant extra special access to any clinic regardless of plan tier.</p>
     </div>
@@ -15,7 +15,7 @@
       <button class="btn font-weight-bold d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#grantVipModal" style="background: #ffffff; border: 1.5px solid #f59e0b; color: #d97706; padding: 9px 18px; border-radius: 10px; box-shadow: 0 1px 3px rgba(245,158,11,0.15);">
         <i class="mdi mdi-star mr-1" style="font-size: 18px; color: #f59e0b;"></i> Grant Extra Feature Access
       </button>
-      <a href="{{ route('admin.saas.plan.create') }}" class="btn font-weight-bold d-inline-flex align-items-center" style="background: #e11d48; border: none; color: #ffffff; padding: 10px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(225,29,72,0.3);">
+      <a href="{{ route('admin.saas.plan.create') }}" class="btn btn-primary font-weight-bold d-inline-flex align-items-center" style="padding: 10px 20px; border-radius: 10px;">
         <i class="mdi mdi-plus mr-1" style="font-size: 18px;"></i> Create New Plan
       </a>
     </div>
@@ -124,7 +124,7 @@
                   {{ $plan->is_active ? 'Deactivate' : 'Activate' }}
                 </button>
               </form>
-              <a href="{{ route('admin.saas.plan.edit', $plan->id) }}" class="btn btn-sm text-white font-weight-bold px-3" style="background: #e11d48; border-radius: 8px;">
+              <a href="{{ route('admin.saas.plan.edit', $plan->id) }}" class="btn btn-sm btn-primary font-weight-bold px-3" style="border-radius: 8px;">
                 Edit
               </a>
             </div>
