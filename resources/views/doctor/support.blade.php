@@ -110,10 +110,10 @@
     </div>
 
     <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
-      <a href="{{ route('doctor.dashboard') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
-        <i class="mdi mdi-arrow-left mr-1"></i> Doctor Dashboard
+      <a href="{{ route('clinic.dashboard') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
+        <i class="mdi mdi-arrow-left mr-1"></i> Clinic Dashboard
       </a>
-      <a href="{{ route('doctor.settings') }}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
+      <a href="{{ route('clinic.settings') }}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
         <i class="mdi mdi-tune mr-1"></i> Clinic Settings
       </a>
     </div>
@@ -264,7 +264,7 @@
           <p class="text-muted mb-3 font-13">Common configuration settings you can manage yourself in seconds:</p>
 
           <div class="d-flex flex-column gap-2">
-            <a href="{{ route('doctor.settings') }}#razorpay" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
+            <a href="{{ route('clinic.settings') }}#razorpay" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
               <div class="d-flex align-items-center gap-2">
                 <i class="mdi mdi-credit-card-outline text-warning font-18" style="font-size: 20px;"></i>
                 <div>
@@ -275,7 +275,7 @@
               <i class="mdi mdi-chevron-right text-muted"></i>
             </a>
 
-            <a href="{{ route('doctor.settings') }}#domain" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
+            <a href="{{ route('clinic.settings') }}#domain" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
               <div class="d-flex align-items-center gap-2">
                 <i class="mdi mdi-web text-success font-18" style="font-size: 20px;"></i>
                 <div>
@@ -286,7 +286,7 @@
               <i class="mdi mdi-chevron-right text-muted"></i>
             </a>
 
-            <a href="{{ route('doctor.services.index') }}" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
+            <a href="{{ route('clinic.services.index') }}" class="d-flex align-items-center justify-content-between p-3 rounded-3 text-decoration-none border" style="background: #ffffff; transition: background 0.2s;">
               <div class="d-flex align-items-center gap-2">
                 <i class="mdi mdi-medical-bag text-primary font-18" style="font-size: 20px;"></i>
                 <div>

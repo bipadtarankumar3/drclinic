@@ -14,13 +14,13 @@
         <p class="text-muted mb-0">Create, customize, and publish dedicated web pages for <strong>{{ $clinic->name }}</strong> (e.g. About Doctor, Services, Facilities, FAQ).</p>
       </div>
       <div class="d-flex align-items-center gap-2 mt-2 mt-sm-0">
-        <form action="{{ route('doctor.pages.seed_defaults') }}" method="POST" class="d-inline" onsubmit="return confirm('Generate or restore standard clinic pages (About Us, Services, Doctors, Facilities, FAQ)? Existing custom pages will be preserved.');">
+        <form action="{{ route('clinic.pages.seed_defaults') }}" method="POST" class="d-inline" onsubmit="return confirm('Generate or restore standard clinic pages (About Us, Services, Doctors, Facilities, FAQ)? Existing custom pages will be preserved.');">
           @csrf
           <button type="submit" class="btn btn-outline-secondary btn-sm font-weight-bold" title="Generate standard clinic pages">
             <i class="mdi mdi-auto-fix mr-1"></i> Generate Standard Pages
           </button>
         </form>
-        <a href="{{ route('doctor.pages.create') }}" class="btn btn-primary font-weight-bold">
+        <a href="{{ route('clinic.pages.create') }}" class="btn btn-primary font-weight-bold">
           <i class="mdi mdi-plus-circle mr-1"></i> Add New Page
         </a>
       </div>
@@ -98,10 +98,10 @@
                     <a href="{{ $pageUrl }}" target="_blank" class="btn btn-sm btn-outline-info me-1" title="View Live Page">
                       <i class="mdi mdi-eye"></i>
                     </a>
-                    <a href="{{ route('doctor.pages.edit', $page->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit Page Content">
+                    <a href="{{ route('clinic.pages.edit', $page->id) }}" class="btn btn-sm btn-outline-primary me-1" title="Edit Page Content">
                       <i class="mdi mdi-pencil"></i>
                     </a>
-                    <form action="{{ route('doctor.pages.destroy', $page->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Permanently delete this page from your clinic website?');">
+                    <form action="{{ route('clinic.pages.destroy', $page->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Permanently delete this page from your clinic website?');">
                       @csrf
                       @method('DELETE')
                       <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete">
@@ -116,13 +116,13 @@
                     <i class="mdi mdi-file-outline" style="font-size: 42px; color: #94a3b8;"></i>
                     <p class="mt-2 mb-3">No custom pages found for this clinic.</p>
                     <div class="d-flex justify-content-center gap-2">
-                      <form action="{{ route('doctor.pages.seed_defaults') }}" method="POST" class="d-inline">
+                      <form action="{{ route('clinic.pages.seed_defaults') }}" method="POST" class="d-inline">
                         @csrf
                         <button type="submit" class="btn btn-primary btn-sm font-weight-bold">
                           <i class="mdi mdi-auto-fix mr-1"></i> Generate Standard Pages (About, Services, FAQ)
                         </button>
                       </form>
-                      <a href="{{ route('doctor.pages.create') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+                      <a href="{{ route('clinic.pages.create') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
                         <i class="mdi mdi-plus"></i> Blank Page
                       </a>
                     </div>

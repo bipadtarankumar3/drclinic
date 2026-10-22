@@ -425,7 +425,7 @@ class SaaSAdminController extends Controller
         ]);
         Auth::login($clinic->user);
 
-        return redirect()->route('doctor.dashboard')->with('info', "Logged in as Dr. {$clinic->user->name} ({$clinic->name})");
+        return redirect()->route('clinic.dashboard')->with('info', "Logged in as Dr. {$clinic->user->name} ({$clinic->name})");
     }
 
     /**
@@ -444,7 +444,7 @@ class SaaSAdminController extends Controller
         ]);
         Auth::login($clinic->user);
 
-        return redirect()->route('doctor.subscription.index')->with('info', "Viewing subscription & plan for Dr. {$clinic->user->name} ({$clinic->name})");
+        return redirect()->route('clinic.subscription.index')->with('info', "Viewing subscription & plan for Dr. {$clinic->user->name} ({$clinic->name})");
     }
 
     /**

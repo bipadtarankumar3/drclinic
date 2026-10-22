@@ -474,7 +474,7 @@ function subscribePlan(planId, planName, planPrice) {
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm mr-1"></span> Preparing Checkout...';
 
-  fetch("{{ route('doctor.subscription.order') }}", {
+  fetch("{{ route('clinic.subscription.order') }}", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -501,7 +501,7 @@ function subscribePlan(planId, planName, planPrice) {
       order_id: data.order_id,
       handler: function(response) {
         // Send payment signature to backend verification
-        fetch("{{ route('doctor.subscription.verify') }}", {
+        fetch("{{ route('clinic.subscription.verify') }}", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

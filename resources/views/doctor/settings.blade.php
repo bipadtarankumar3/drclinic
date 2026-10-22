@@ -213,7 +213,7 @@
               <h4 class="font-weight-bold mb-3">Clinic Profile Details</h4>
               <p class="text-muted font-14 mb-4">This information is shown to your patients on your public booking page and appointment receipts.</p>
 
-              <form action="{{ route('doctor.settings.profile') }}" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('clinic.settings.profile') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
                   <!-- Clinic Logo Upload Section -->
@@ -389,7 +389,7 @@
                 </div>
               </div>
 
-              <form action="{{ route('doctor.settings.razorpay') }}" method="POST">
+              <form action="{{ route('clinic.settings.razorpay') }}" method="POST">
                 @csrf
                 <div class="row g-3">
                   <div class="col-md-6 mb-3">
@@ -480,7 +480,7 @@
               <h4 class="font-weight-bold mb-2">Clinic Theme & Website Branding</h4>
               <p class="text-muted font-14 mb-4">Customize colors, logo, and header banner for your public booking website to match your clinic brand.</p>
 
-              <form action="{{ route('doctor.settings.branding') }}" method="POST" enctype="multipart/form-data">
+              <form action="{{ route('clinic.settings.branding') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
                   <!-- Quick Color Palette Presets -->
@@ -647,7 +647,7 @@
               <h4 class="font-weight-bold mb-2">Domain & Subdomain Setup</h4>
               <p class="text-muted font-14 mb-4">Configure your unique clinic subdomain or connect your own custom domain.</p>
 
-              <form action="{{ route('doctor.settings.domain') }}" method="POST">
+              <form action="{{ route('clinic.settings.domain') }}" method="POST">
                 @csrf
                 <div class="row g-3">
                   <div class="col-12 mb-4">

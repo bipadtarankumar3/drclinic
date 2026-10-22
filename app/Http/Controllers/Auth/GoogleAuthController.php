@@ -66,7 +66,7 @@ class GoogleAuthController extends Controller
         $clinic = $user->clinic;
         if (!$clinic) {
             session(['show_onboarding_modal' => true]);
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         ActivityLog::log('doctor_logged_in', 'Logged in via Google', $clinic->id, $user->id);
@@ -75,7 +75,7 @@ class GoogleAuthController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        return redirect()->route('doctor.dashboard');
+        return redirect()->route('clinic.dashboard');
     }
 
     /**
@@ -85,7 +85,7 @@ class GoogleAuthController extends Controller
     {
         $user = Auth::user();
         if ($user->clinic) {
-            return redirect()->route('doctor.dashboard');
+            return redirect()->route('clinic.dashboard');
         }
 
         return view('doctor.onboarding', compact('user'));
@@ -99,7 +99,7 @@ class GoogleAuthController extends Controller
         $user = Auth::user();
 
         if ($user->clinic) {
-            return redirect()->route('doctor.dashboard')->with('info', 'Your clinic is already configured.');
+            return redirect()->route('clinic.dashboard')->with('info', 'Your clinic is already configured.');
         }
 
         $request->validate([
@@ -167,6 +167,6 @@ class GoogleAuthController extends Controller
 
         session()->forget('show_onboarding_modal');
 
-        return redirect()->route('doctor.dashboard')->with('success', '🎉 Welcome to Dr Clinic! Your 7-day free trial has been activated.');
+        return redirect()->route('clinic.dashboard')->with('success', '🎉 Welcome to Dr Clinic! Your 7-day free trial has been activated.');
     }
 }

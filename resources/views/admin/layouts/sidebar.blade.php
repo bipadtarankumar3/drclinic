@@ -159,31 +159,31 @@
       <span class="category-action">+</span>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.subscription.*') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.subscription.index') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.subscription.*') || request()->routeIs('doctor.subscription.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.subscription.index') }}">
         <i class="mdi mdi-crown-outline nav-icon"></i>
         <span class="menu-title">Plan & Billing</span>
-        @if(request()->routeIs('doctor.subscription.*'))
+        @if(request()->routeIs('clinic.subscription.*') || request()->routeIs('doctor.subscription.*'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.services.*') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.services.index') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.services.*') || request()->routeIs('doctor.services.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.services.index') }}">
         <i class="mdi mdi-medical-bag nav-icon"></i>
         <span class="menu-title">Clinic Services</span>
-        @if(request()->routeIs('doctor.services.*'))
+        @if(request()->routeIs('clinic.services.*') || request()->routeIs('doctor.services.*'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.pages.index') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.pages.*') || request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.pages.index') }}">
         <i class="mdi mdi-file-document-edit-outline nav-icon"></i>
         <span class="menu-title">Custom Pages</span>
-        @if(request()->routeIs('doctor.pages.*'))
+        @if(request()->routeIs('clinic.pages.*') || request()->routeIs('doctor.pages.*'))
         <i class="mdi mdi-chevron-right nav-chevron"></i>
         @endif
       </a>
@@ -217,15 +217,15 @@
       <span>SETTINGS</span>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.settings') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.settings') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.settings') || request()->routeIs('doctor.settings') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.settings') }}">
         <i class="mdi mdi-cog-outline nav-icon"></i>
         <span class="menu-title">Settings</span>
       </a>
     </li>
 
-    <li class="nav-item {{ request()->routeIs('doctor.support') ? 'active' : '' }}">
-      <a class="nav-link" href="{{ route('doctor.support') }}">
+    <li class="nav-item {{ request()->routeIs('clinic.support') || request()->routeIs('doctor.support') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.support') }}">
         <i class="mdi mdi-help-circle-outline nav-icon"></i>
         <span class="menu-title">Support</span>
       </a>
@@ -279,7 +279,7 @@
 
   <!-- Bottom User Profile Card (Fixed at the bottom of sidebar) -->
   <div class="sidebar-footer-section">
-    <a href="{{ Auth::check() && Auth::user()->isSuperAdmin() ? URL::To('admin/setting') : route('doctor.settings') }}" class="sidebar-user-card">
+    <a href="{{ Auth::check() && Auth::user()->isSuperAdmin() ? URL::To('admin/setting') : route('clinic.settings') }}" class="sidebar-user-card">
       <div class="d-flex align-items-center text-truncate" style="gap: 10px;">
         <div class="sidebar-user-avatar">
           {{ strtoupper(substr(Auth::user()->name ?? 'A', 0, 1)) }}

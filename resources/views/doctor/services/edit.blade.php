@@ -46,7 +46,7 @@
   <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2">
     <div>
       <div class="d-flex align-items-center gap-2 mb-1">
-        <a href="{{ route('doctor.services.index') }}" class="btn btn-sm btn-light border font-weight-bold text-muted mr-2" style="border-radius: 8px;">
+        <a href="{{ route('clinic.services.index') }}" class="btn btn-sm btn-light border font-weight-bold text-muted mr-2" style="border-radius: 8px;">
           <i class="mdi mdi-arrow-left mr-1"></i> Back to Services
         </a>
         <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 24px; letter-spacing: -0.5px;">Edit Clinic Service</h2>
@@ -60,7 +60,7 @@
     </div>
 
     <div>
-      <form action="{{ route('doctor.services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this service?');" class="d-inline">
+      <form action="{{ route('clinic.services.destroy', $service->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to permanently delete this service?');" class="d-inline">
         @csrf
         @method('DELETE')
         <button type="submit" class="btn btn-outline-danger btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
@@ -80,7 +80,7 @@
   </div>
   @endif
 
-  <form action="{{ route('doctor.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+  <form action="{{ route('clinic.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -190,7 +190,7 @@
 
     <!-- Bottom Action Bar -->
     <div class="form-actions-end mt-4 pt-2 mb-5">
-      <a href="{{ route('doctor.services.index') }}" class="btn btn-light border font-weight-bold px-4 py-2" style="border-radius: 10px;">
+      <a href="{{ route('clinic.services.index') }}" class="btn btn-light border font-weight-bold px-4 py-2" style="border-radius: 10px;">
         Cancel
       </a>
       <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2 d-inline-flex align-items-center" style="border-radius: 10px;">

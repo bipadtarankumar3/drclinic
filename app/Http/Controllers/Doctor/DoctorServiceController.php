@@ -17,7 +17,7 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $services = ClinicService::where('clinic_id', $clinic->id)->orderBy('sort_order', 'asc')->get();
@@ -38,7 +38,7 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         return view('doctor.services.create', compact('clinic'));
@@ -51,7 +51,7 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $request->validate([
@@ -85,7 +85,7 @@ class DoctorServiceController extends Controller
 
         ActivityLog::log('clinic_service_created', "Created service '{$request->title}'", $clinic->id);
 
-        return redirect()->route('doctor.services.index')->with('success', "Service '{$request->title}' added successfully.");
+        return redirect()->route('clinic.services.index')->with('success', "Service '{$request->title}' added successfully.");
     }
 
     /**
@@ -95,7 +95,7 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $service = ClinicService::where('clinic_id', $clinic->id)->findOrFail($id);
@@ -110,7 +110,7 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $service = ClinicService::where('clinic_id', $clinic->id)->findOrFail($id);
@@ -145,7 +145,7 @@ class DoctorServiceController extends Controller
 
         ActivityLog::log('clinic_service_updated', "Updated service '{$service->title}'", $clinic->id);
 
-        return redirect()->route('doctor.services.index')->with('success', "Service '{$service->title}' updated successfully.");
+        return redirect()->route('clinic.services.index')->with('success', "Service '{$service->title}' updated successfully.");
     }
 
     /**
@@ -181,7 +181,7 @@ class DoctorServiceController extends Controller
 
         ActivityLog::log('clinic_service_deleted', "Deleted service '{$title}'", $clinic->id);
 
-        return redirect()->route('doctor.services.index')->with('success', "Service '{$title}' removed successfully.");
+        return redirect()->route('clinic.services.index')->with('success', "Service '{$title}' removed successfully.");
     }
 
     /**
@@ -191,13 +191,13 @@ class DoctorServiceController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $this->seedDefaultServicesForClinic($clinic);
         ActivityLog::log('clinic_services_seeded', "Reset standard clinic services", $clinic->id);
 
-        return redirect()->route('doctor.services.index')->with('success', "Standard clinic services loaded successfully!");
+        return redirect()->route('clinic.services.index')->with('success', "Standard clinic services loaded successfully!");
     }
 
     /**

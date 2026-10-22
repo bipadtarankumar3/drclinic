@@ -27,7 +27,7 @@ class SuperAdminMiddleware
         if (!auth()->user()->isSuperAdmin()) {
             // If they are a doctor, redirect them to their clinic dashboard
             if (auth()->user()->isDoctor() || auth()->user()->clinic) {
-                return redirect()->route('doctor.dashboard')->with('error', 'Access restricted to Super Admin.');
+                return redirect()->route('clinic.dashboard')->with('error', 'Access restricted to Super Admin.');
             }
             abort(403, 'Unauthorized access.');
         }

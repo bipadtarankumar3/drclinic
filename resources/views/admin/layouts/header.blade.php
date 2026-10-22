@@ -62,7 +62,7 @@
             : ($clinic->trial_ends_at ? \Carbon\Carbon::parse($clinic->trial_ends_at)->format('d M Y') : 'Active');
         @endphp
         <li class="nav-item d-none d-md-flex align-items-center">
-          <a href="{{ route('doctor.subscription.index') }}" class="header-validity-pill">
+          <a href="{{ route('clinic.subscription.index') }}" class="header-validity-pill">
             <span class="header-validity-dot"></span>
             <i class="mdi mdi-shield-check-outline font-15 text-success"></i>
             <span>
@@ -162,7 +162,7 @@
               <i class="mdi mdi-calendar-check-outline"></i>
               <span>Patient Bookings</span>
             </a>
-            <a class="dropdown-item" href="{{ route('doctor.settings') }}">
+            <a class="dropdown-item" href="{{ route('clinic.settings') }}">
               <i class="mdi mdi-tune"></i>
               <span>Clinic Settings</span>
             </a>
@@ -188,11 +188,11 @@
               <i class="mdi mdi-calendar-check-outline"></i>
               <span>Patient Bookings</span>
             </a>
-            <a class="dropdown-item" href="{{ route('doctor.subscription.index') }}">
+            <a class="dropdown-item" href="{{ route('clinic.subscription.index') }}">
               <i class="mdi mdi-crown-outline"></i>
               <span>Plan & Billing</span>
             </a>
-            <a class="dropdown-item" href="{{ route('doctor.settings') }}">
+            <a class="dropdown-item" href="{{ route('clinic.settings') }}">
               <i class="mdi mdi-tune"></i>
               <span>Clinic Settings</span>
             </a>

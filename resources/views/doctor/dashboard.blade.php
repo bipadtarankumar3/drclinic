@@ -60,19 +60,19 @@
             </select>
           </form>
 
-          <a href="{{ route('doctor.settings') }}" class="btn btn-dark btn-sm font-weight-bold px-3 py-2 text-white" style="background: #0f172a; border-radius: 8px; font-size: 12.5px;">
+          <a href="{{ route('clinic.settings') }}" class="btn btn-dark btn-sm font-weight-bold px-3 py-2 text-white" style="background: #0f172a; border-radius: 8px; font-size: 12.5px;">
             <i class="mdi mdi-pencil-outline me-1"></i> Edit Profile & Clinic
           </a>
           <a href="{{ URL::To('admin/patient') }}" class="btn btn-primary btn-sm font-weight-bold px-3 py-2 text-white" style="border-radius: 8px; font-size: 12.5px;">
             <i class="mdi mdi-plus me-1"></i> + New Booking
           </a>
-          <a href="{{ route('doctor.services.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
+          <a href="{{ route('clinic.services.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
             <i class="mdi mdi-medical-bag me-1"></i> Manage Services
           </a>
-          <a href="{{ route('doctor.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
+          <a href="{{ route('clinic.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
             <i class="mdi mdi-file-document-edit-outline me-1"></i> Website Builder
           </a>
-          <a href="{{ route('doctor.subscription.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
+          <a href="{{ route('clinic.subscription.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
             <i class="mdi mdi-credit-card-outline me-1"></i> Subscription
           </a>
           <a href="{{ $clinicUrl }}" target="_blank" class="btn btn-outline-secondary btn-sm px-2 py-2" style="border-radius: 8px; border-color: #e2e8f0; color: #475569; background: #ffffff;" title="View Public Storefront">
@@ -734,7 +734,7 @@
               </h5>
               <p class="text-muted font-12 mb-0">Services and specialties available for patients on the clinic storefront.</p>
             </div>
-            <a href="{{ route('doctor.services.index') }}" class="btn btn-sm btn-primary font-weight-bold" style="border-radius: 8px; font-size: 12px;">
+            <a href="{{ route('clinic.services.index') }}" class="btn btn-sm btn-primary font-weight-bold" style="border-radius: 8px; font-size: 12px;">
               <i class="mdi mdi-plus me-1"></i> Add / Edit Services
             </a>
           </div>
@@ -779,7 +779,7 @@
                     @endif
                   </td>
                   <td class="text-end">
-                    <a href="{{ route('doctor.services.index') }}" class="btn btn-sm btn-outline-secondary py-1 px-2 font-weight-bold" style="border-radius: 6px; font-size: 11px;">
+                    <a href="{{ route('clinic.services.index') }}" class="btn btn-sm btn-outline-secondary py-1 px-2 font-weight-bold" style="border-radius: 6px; font-size: 11px;">
                       <i class="mdi mdi-pencil"></i> Edit
                     </a>
                   </td>

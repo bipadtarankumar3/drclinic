@@ -16,7 +16,7 @@ class DoctorSettingsController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $setting = Setting::where('clinic_id', $clinic->id)->first() ?? Setting::first();

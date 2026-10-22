@@ -34,9 +34,9 @@ class AdminAuthController extends Controller
                 return redirect()->route('admin.saas.dashboard'); 
             } elseif ($user->isDoctor() || $user->clinic) {
                 if (!$user->clinic) {
-                    return redirect()->route('doctor.onboarding');
+                    return redirect()->route('clinic.onboarding');
                 }
-                return redirect()->route('doctor.dashboard');
+                return redirect()->route('clinic.dashboard');
             } else {
                 $request->session()->flash('success', 'Login Success');
                 return redirect()->route('admin.saas.dashboard');  
@@ -86,9 +86,9 @@ class AdminAuthController extends Controller
     public function dashboard(){
         $user = Auth::user();
 
-        // If visiting a clinic or doctor user, go to Doctor Dashboard
+        // If visiting a clinic or doctor user, go to Clinic Dashboard
         if (session('impersonating_admin_id') || ($user && ($user->isDoctor() || $user->clinic))) {
-            return redirect()->route('doctor.dashboard');
+            return redirect()->route('clinic.dashboard');
         }
 
         // If Super Admin, go to Platform Dashboard

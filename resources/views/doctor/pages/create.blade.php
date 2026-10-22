@@ -80,7 +80,7 @@
         <h2 class="font-weight-bold mb-1"><i class="mdi mdi-file-plus-outline text-primary mr-1"></i> Create Custom Page</h2>
         <p class="text-muted mb-0">Publish custom content for <strong>{{ $clinic->name }}</strong> such as Doctor Bio, Facilities, Treatments, or Guidelines.</p>
       </div>
-      <a href="{{ route('doctor.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+      <a href="{{ route('clinic.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
         &larr; Back to Custom Pages
       </a>
     </div>
@@ -90,7 +90,7 @@
     <div class="col-12">
       <div class="card border-0 shadow-sm rounded-4" style="border-radius: 16px;">
         <div class="card-body p-4 p-md-5">
-          <form action="{{ route('doctor.pages.store') }}" method="POST" id="custom-page-form">
+          <form action="{{ route('clinic.pages.store') }}" method="POST" id="custom-page-form">
             @csrf
 
             <div class="row g-3">
@@ -158,7 +158,7 @@
 
               <div class="col-12">
                 <div class="form-actions-end mt-3">
-                  <a href="{{ route('doctor.pages.index') }}" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 8px;">Cancel</a>
+                  <a href="{{ route('clinic.pages.index') }}" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 8px;">Cancel</a>
                   <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 8px;">
                     <i class="mdi mdi-check mr-1"></i> Save and Publish Page
                   </button>

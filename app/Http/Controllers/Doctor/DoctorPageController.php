@@ -15,7 +15,7 @@ class DoctorPageController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $pages = ClinicPage::where('clinic_id', $clinic->id)->orderBy('sort_order', 'asc')->get();
@@ -31,13 +31,13 @@ class DoctorPageController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $this->seedDefaultPagesForClinic($clinic);
         ActivityLog::log('custom_pages_seeded', "Initialized standard clinic pages", $clinic->id);
 
-        return redirect()->route('doctor.pages.index')->with('success', 'Standard clinic pages initialized successfully! You can now customize them.');
+        return redirect()->route('clinic.pages.index')->with('success', 'Standard clinic pages initialized successfully! You can now customize them.');
     }
 
     public function seedDefaultPagesForClinic($clinic)
@@ -137,7 +137,7 @@ class DoctorPageController extends Controller
 
         ActivityLog::log('custom_page_created', "Created page: {$page->title}", $clinic->id);
 
-        return redirect()->route('doctor.pages.index')->with('success', 'Page published successfully.');
+        return redirect()->route('clinic.pages.index')->with('success', 'Page published successfully.');
     }
 
     public function edit($id)
@@ -174,7 +174,7 @@ class DoctorPageController extends Controller
 
         ActivityLog::log('custom_page_updated', "Updated page: {$page->title}", $clinic->id);
 
-        return redirect()->route('doctor.pages.index')->with('success', 'Page updated successfully.');
+        return redirect()->route('clinic.pages.index')->with('success', 'Page updated successfully.');
     }
 
     public function destroy($id)
@@ -186,6 +186,6 @@ class DoctorPageController extends Controller
 
         ActivityLog::log('custom_page_deleted', "Deleted page: {$title}", $clinic->id);
 
-        return redirect()->route('doctor.pages.index')->with('success', 'Page removed successfully.');
+        return redirect()->route('clinic.pages.index')->with('success', 'Page removed successfully.');
     }
 }

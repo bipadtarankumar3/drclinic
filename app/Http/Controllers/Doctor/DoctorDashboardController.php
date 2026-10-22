@@ -22,7 +22,7 @@ class DoctorDashboardController extends Controller
         $clinic = $user ? $user->getActiveClinic() : null;
 
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         // Period filter for analytics (Default 30 days)
@@ -270,7 +270,7 @@ class DoctorDashboardController extends Controller
         $clinic = $user ? $user->getActiveClinic() : null;
 
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $setting = \App\Models\Setting::where('clinic_id', $clinic->id)->first() ?? \App\Models\Setting::first();

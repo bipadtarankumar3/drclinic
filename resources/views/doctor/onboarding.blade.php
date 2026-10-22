@@ -258,7 +258,7 @@
         </div>
         @endif
 
-        <form action="{{ route('doctor.onboarding.submit') }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('clinic.onboarding.submit') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="form-grid">

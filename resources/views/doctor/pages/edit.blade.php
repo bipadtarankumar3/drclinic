@@ -85,7 +85,7 @@
         <a href="{{ $livePageUrl }}" target="_blank" class="btn btn-outline-info btn-sm font-weight-bold">
           <i class="mdi mdi-eye mr-1"></i> View Live Page
         </a>
-        <a href="{{ route('doctor.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
+        <a href="{{ route('clinic.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold">
           &larr; Back to Custom Pages
         </a>
       </div>
@@ -96,7 +96,7 @@
     <div class="col-12">
       <div class="card border-0 shadow-sm rounded-4" style="border-radius: 16px;">
         <div class="card-body p-4 p-md-5">
-          <form action="{{ route('doctor.pages.update', $page->id) }}" method="POST" id="custom-page-form">
+          <form action="{{ route('clinic.pages.update', $page->id) }}" method="POST" id="custom-page-form">
             @csrf
             @method('PUT')
 
@@ -165,7 +165,7 @@
 
               <div class="col-12">
                 <div class="form-actions-end mt-3">
-                  <a href="{{ route('doctor.pages.index') }}" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 8px;">Cancel</a>
+                  <a href="{{ route('clinic.pages.index') }}" class="btn btn-light border px-4 py-2 font-weight-bold" style="border-radius: 8px;">Cancel</a>
                   <button type="submit" class="btn btn-primary px-4 py-2 font-weight-bold" style="border-radius: 8px;">
                     <i class="mdi mdi-check mr-1"></i> Update Page Changes
                   </button>

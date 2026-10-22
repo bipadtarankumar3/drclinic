@@ -16,7 +16,7 @@ class DoctorSubscriptionController extends Controller
     {
         $clinic = Auth::user()->getActiveClinic();
         if (!$clinic) {
-            return redirect()->route('doctor.onboarding');
+            return redirect()->route('clinic.onboarding');
         }
 
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();

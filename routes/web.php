@@ -82,25 +82,19 @@ Route::get('/auth/google', [GoogleAuthController::class, 'redirectToGoogle'])->n
 Route::get('/auth/google/callback', [GoogleAuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/doctor/onboarding', [GoogleAuthController::class, 'showOnboarding'])->name('doctor.onboarding');
+    Route::get('/clinic/onboarding', [GoogleAuthController::class, 'showOnboarding'])->name('clinic.onboarding');
+    Route::post('/clinic/onboarding', [GoogleAuthController::class, 'completeOnboarding'])->name('clinic.onboarding.submit');
+    Route::get('/doctor/onboarding', fn() => redirect()->route('clinic.onboarding'))->name('doctor.onboarding');
     Route::post('/doctor/onboarding', [GoogleAuthController::class, 'completeOnboarding'])->name('doctor.onboarding.submit');
 });
 
-
 // ==========================================
-// Doctor / Clinic Portal Routes
+// Clinic Portal Routes (All prefix 'clinic', as 'clinic.')
 // ==========================================
-Route::middleware(['auth'])->group(function () {
-    Route::get('/clinic/dashboard', [DoctorDashboardController::class, 'index'])->name('clinic.dashboard');
-    Route::get('/clinic/settings', [DoctorSettingsController::class, 'index'])->name('clinic.settings');
-    Route::get('/clinic/services', [DoctorServiceController::class, 'index'])->name('clinic.services');
-    Route::get('/clinic/support', [DoctorDashboardController::class, 'support'])->name('clinic.support');
-});
-
-Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'clinic', 'as' => 'clinic.', 'middleware' => ['auth']], function () {
     Route::get('/dashboard', [DoctorDashboardController::class, 'index'])->name('dashboard');
 
-    // Clinic Settings & Doctor Razorpay
+    // Clinic Settings & Razorpay
     Route::get('/settings', [DoctorSettingsController::class, 'index'])->name('settings');
     Route::post('/settings/profile', [DoctorSettingsController::class, 'updateProfile'])->name('settings.profile');
     Route::post('/settings/razorpay', [DoctorSettingsController::class, 'updateRazorpay'])->name('settings.razorpay');
@@ -121,8 +115,20 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']]
     Route::post('/subscription/order', [DoctorSubscriptionController::class, 'createOrder'])->name('subscription.order');
     Route::post('/subscription/verify', [DoctorSubscriptionController::class, 'verifyPayment'])->name('subscription.verify');
 
-    // Doctor Support & Help Center
+    // Clinic Support & Help Center
     Route::get('/support', [DoctorDashboardController::class, 'support'])->name('support');
+});
+
+// Backward-compatibility redirect from legacy /doctor/* routes to /clinic/*
+Route::middleware(['auth'])->group(function () {
+    Route::get('/doctor/dashboard', fn() => redirect()->route('clinic.dashboard'))->name('doctor.dashboard');
+    Route::get('/doctor/settings', fn() => redirect()->route('clinic.settings'))->name('doctor.settings');
+    Route::get('/doctor/services', fn() => redirect()->route('clinic.services.index'))->name('doctor.services.index');
+    Route::get('/doctor/subscription', fn() => redirect()->route('clinic.subscription.index'))->name('doctor.subscription.index');
+    Route::get('/doctor/support', fn() => redirect()->route('clinic.support'))->name('doctor.support');
+    Route::get('/doctor/{any}', function ($any) {
+        return redirect('/clinic/' . $any);
+    })->where('any', '.*');
 });
 
 

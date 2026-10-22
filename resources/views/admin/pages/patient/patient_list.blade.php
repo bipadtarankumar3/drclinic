@@ -6,7 +6,7 @@
     <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <div>
             <div class="text-muted font-12 mb-1">
-                <a href="{{ route('doctor.dashboard') }}" class="text-muted text-decoration-none">Dashboard</a>
+                <a href="{{ route('clinic.dashboard') }}" class="text-muted text-decoration-none">Dashboard</a>
                 <span class="mx-1">/</span>
                 <span class="text-dark font-weight-bold">Patient Bookings</span>
             </div>
