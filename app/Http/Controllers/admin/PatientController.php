@@ -230,6 +230,7 @@ class PatientController extends Controller
             'patients.sex', 
             'patients.mobile_no', 
             'patients.alternate_mobile_no', 
+            'patients.customer_email',
             'patients.address', 
             'patients.patient_problem', 
             'time_slots.from_time', 
