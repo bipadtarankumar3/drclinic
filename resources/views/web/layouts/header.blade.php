@@ -354,7 +354,7 @@
     <div class="vital-nav-main">
       <a href="{{ $clinicUrl }}" class="vital-brand">
         @if($clinic && $clinic->logo)
-          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" class="vital-brand-logo-img">
+          <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" class="vital-brand-logo-img">
         @else
           <div class="vital-logo-icon">
             <i class="fa-solid fa-hospital"></i>

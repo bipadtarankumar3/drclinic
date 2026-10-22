@@ -118,7 +118,8 @@ class GoogleAuthController extends Controller
         $logoPath = null;
         if ($request->hasFile('logo')) {
             $file = $request->file('logo');
-            $filename = time() . '_' . Str::slug($request->clinic_name) . '.' . $file->getClientOriginalExtension();
+            $ext = strtolower($file->getClientOriginalExtension()) ?: 'webp';
+            $filename = time() . '_' . Str::slug($request->clinic_name) . '.' . $ext;
             $file->move(public_path('upload/clinic_logos'), $filename);
             $logoPath = 'upload/clinic_logos/' . $filename;
         }

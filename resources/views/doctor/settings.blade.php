@@ -69,7 +69,7 @@
                     <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
                       <div id="profile-logo-preview-wrap" style="width: 70px; height: 70px; border-radius: 14px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
                         @if($clinic->logo)
-                          <img id="profile-logo-preview" src="{{ asset($clinic->logo) }}" alt="Logo" style="max-height: 56px; max-width: 64px; object-fit: contain;">
+                          <img id="profile-logo-preview" src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="Logo" style="max-height: 56px; max-width: 64px; object-fit: contain;">
                         @else
                           <img id="profile-logo-preview" src="" alt="Preview" style="max-height: 56px; max-width: 64px; object-fit: contain; display: none;">
                           <div id="profile-logo-placeholder" style="color: #0d9488; font-size: 28px;">
@@ -205,18 +205,18 @@
                     <label class="form-label font-weight-bold">Clinic Logo</label>
                     @if($clinic->logo)
                       <div class="mb-2">
-                        <img src="{{ asset($clinic->logo) }}" alt="Logo" class="img-thumbnail" style="max-height: 60px;">
+                        <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="Logo" class="img-thumbnail" style="max-height: 60px;">
                       </div>
                     @endif
                     <input type="file" class="form-control" name="logo" accept="image/*">
-                    <small class="text-muted">Recommended: PNG or SVG with transparent background.</small>
+                    <small class="text-muted">Recommended: PNG, SVG, or WEBP with transparent background.</small>
                   </div>
 
                   <div class="col-md-6 mb-4">
                     <label class="form-label font-weight-bold">Header Banner Image</label>
                     @if($clinic->banner)
                       <div class="mb-2">
-                        <img src="{{ asset($clinic->banner) }}" alt="Banner" class="img-thumbnail" style="max-height: 60px;">
+                        <img src="{{ $clinic->banner_url ?? URL::to('public/' . $clinic->banner) }}" alt="Banner" class="img-thumbnail" style="max-height: 60px;">
                       </div>
                     @endif
                     <input type="file" class="form-control" name="banner" accept="image/*">

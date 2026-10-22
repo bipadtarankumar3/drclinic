@@ -199,4 +199,46 @@ class Clinic extends Model
         }
         return now()->diffInDays($this->trial_ends_at, false) > 0 ? (int) now()->diffInDays($this->trial_ends_at) : 1;
     }
+
+    /**
+     * Get fully resolved public URL for clinic logo
+     */
+    public function getLogoUrlAttribute(): ?string
+    {
+        if (empty($this->logo)) {
+            return null;
+        }
+
+        if (str_starts_with($this->logo, 'http://') || str_starts_with($this->logo, 'https://')) {
+            return $this->logo;
+        }
+
+        $cleanPath = ltrim($this->logo, '/');
+        if (str_starts_with($cleanPath, 'public/')) {
+            return \Illuminate\Support\Facades\URL::to($cleanPath);
+        }
+
+        return \Illuminate\Support\Facades\URL::to('public/' . $cleanPath);
+    }
+
+    /**
+     * Get fully resolved public URL for clinic header banner
+     */
+    public function getBannerUrlAttribute(): ?string
+    {
+        if (empty($this->banner)) {
+            return null;
+        }
+
+        if (str_starts_with($this->banner, 'http://') || str_starts_with($this->banner, 'https://')) {
+            return $this->banner;
+        }
+
+        $cleanPath = ltrim($this->banner, '/');
+        if (str_starts_with($cleanPath, 'public/')) {
+            return \Illuminate\Support\Facades\URL::to($cleanPath);
+        }
+
+        return \Illuminate\Support\Facades\URL::to('public/' . $cleanPath);
+    }
 }

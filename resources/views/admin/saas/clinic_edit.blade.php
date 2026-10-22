@@ -48,7 +48,7 @@
                 <div class="d-flex align-items-center gap-3">
                   <div id="edit-logo-preview-wrap" style="width: 64px; height: 64px; border-radius: 12px; background: #f8fafc; border: 1.5px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
                     @if($clinic->logo)
-                      <img id="edit-logo-preview" src="{{ asset($clinic->logo) }}" alt="Logo" style="max-height: 52px; max-width: 52px; object-fit: contain;">
+                      <img id="edit-logo-preview" src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="Logo" style="max-height: 52px; max-width: 52px; object-fit: contain;">
                       <i id="edit-logo-icon" class="mdi mdi-hospital-building text-muted font-24" style="display: none;"></i>
                     @else
                       <img id="edit-logo-preview" src="" alt="Preview" style="max-height: 52px; max-width: 52px; object-fit: contain; display: none;">

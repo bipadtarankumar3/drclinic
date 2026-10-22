@@ -14,7 +14,7 @@
   <div class="navbar-brand-wrapper d-flex align-items-center justify-content-start">
     <a class="sidebar-brand-card" href="{{ $brandRoute }}">
       @if($clinic && $clinic->logo)
-        <img src="{{ asset($clinic->logo) }}" alt="{{ $brandTitle }}" style="width: 34px; height: 34px; border-radius: 8px; object-fit: contain; background: #ffffff; margin-right: 8px; flex-shrink: 0; border: 1px solid #e2e8f0; padding: 2px;">
+        <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $brandTitle }}" style="width: 34px; height: 34px; border-radius: 8px; object-fit: contain; background: #ffffff; margin-right: 8px; flex-shrink: 0; border: 1px solid #e2e8f0; padding: 2px;">
       @else
         <div class="brand-square-avatar me-2">
           {{ $brandInitial }}

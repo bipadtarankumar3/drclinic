@@ -227,7 +227,7 @@ class SaaSAdminController extends Controller
             'plan_id' => 'nullable|exists:subscription_plans,id',
             'status' => 'required|in:active,trialing,suspended,expired',
             'trial_days' => 'nullable|integer|min:1|max:365',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
         ];
 
         if ($userMode === 'new') {
@@ -276,7 +276,8 @@ class SaaSAdminController extends Controller
             $logoPath = null;
             if ($request->hasFile('logo')) {
                 $logo = $request->file('logo');
-                $logoName = 'logo_' . time() . '_' . Str::random(6) . '.' . $logo->getClientOriginalExtension();
+                $ext = strtolower($logo->getClientOriginalExtension()) ?: 'webp';
+                $logoName = 'logo_' . time() . '_' . Str::random(6) . '.' . $ext;
                 $logo->move(public_path('upload/clinic_logos'), $logoName);
                 $logoPath = 'upload/clinic_logos/' . $logoName;
             }
@@ -360,7 +361,7 @@ class SaaSAdminController extends Controller
             'subdomain' => 'required|alpha_dash|unique:clinics,subdomain,' . $clinic->id,
             'custom_domain' => 'nullable|string|unique:clinics,custom_domain,' . $clinic->id,
             'trial_extend_days' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
         ]);
 
         $trialEndsAt = $clinic->trial_ends_at;
@@ -379,7 +380,8 @@ class SaaSAdminController extends Controller
 
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
-            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+            $ext = strtolower($logo->getClientOriginalExtension()) ?: 'webp';
+            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $ext;
             $logo->move(public_path('upload/clinic_logos'), $logoName);
             $updateData['logo'] = 'upload/clinic_logos/' . $logoName;
         }

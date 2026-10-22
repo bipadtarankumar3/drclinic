@@ -10,7 +10,7 @@
       <div class="col-lg-4 col-md-6">
         <div class="d-flex align-items-center mb-3" style="gap: 12px;">
           @if($clinic && $clinic->logo)
-            <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; max-width: 150px; object-fit: contain;">
+            <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; max-width: 150px; object-fit: contain;">
           @else
             <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
               <i class="fa-solid fa-hospital"></i>

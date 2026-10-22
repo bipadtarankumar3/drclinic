@@ -39,7 +39,7 @@ class DoctorSettingsController extends Controller
             'address' => 'nullable|string|max:500',
             'consultation_fee' => 'nullable|numeric|min:0',
             'bio' => 'nullable|string',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
         ]);
 
         $data = [
@@ -54,7 +54,8 @@ class DoctorSettingsController extends Controller
 
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
-            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+            $ext = strtolower($logo->getClientOriginalExtension()) ?: 'webp';
+            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $ext;
             $logo->move(public_path('upload/clinic_logos'), $logoName);
             $data['logo'] = 'upload/clinic_logos/' . $logoName;
         }
@@ -102,8 +103,8 @@ class DoctorSettingsController extends Controller
         $request->validate([
             'theme_color' => 'nullable|string|max:30',
             'secondary_color' => 'nullable|string|max:30',
-            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
-            'banner' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:5120',
+            'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
+            'banner' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp|max:5120',
         ]);
 
         $data = [
@@ -113,14 +114,16 @@ class DoctorSettingsController extends Controller
 
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
-            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+            $ext = strtolower($logo->getClientOriginalExtension()) ?: 'webp';
+            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $ext;
             $logo->move(public_path('upload/clinic_logos'), $logoName);
             $data['logo'] = 'upload/clinic_logos/' . $logoName;
         }
 
         if ($request->hasFile('banner')) {
             $banner = $request->file('banner');
-            $bannerName = 'banner_' . $clinic->id . '_' . time() . '.' . $banner->getClientOriginalExtension();
+            $ext = strtolower($banner->getClientOriginalExtension()) ?: 'jpg';
+            $bannerName = 'banner_' . $clinic->id . '_' . time() . '.' . $ext;
             $banner->move(public_path('upload/clinic_banners'), $bannerName);
             $data['banner'] = 'upload/clinic_banners/' . $bannerName;
         }
