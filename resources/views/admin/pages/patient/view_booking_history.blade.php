@@ -584,6 +584,101 @@
 
       </div>
     </div>
+
+    <!-- Patient's Complete History: All Visits & All Payments -->
+    @if(isset($patient_orders) && count($patient_orders) > 0)
+    <div class="clinical-card mb-4 mt-2">
+      <div class="clinical-card-header d-flex align-items-center justify-content-between">
+        <h5 class="fw-bold text-dark mb-0 d-flex align-items-center font-15">
+          <span class="d-inline-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; border-radius: 8px; background: #ecfdf5; color: #059669;">
+            <i class="mdi mdi-history font-18"></i>
+          </span>
+          Patient's Past Visit &amp; Payment History
+        </h5>
+        <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); font-weight: 700; border: 1px solid var(--theme-primary-border, #a7f3d0);">
+          {{ count($patient_orders) }} Records On File
+        </span>
+      </div>
+      <div class="clinical-card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead style="background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">
+              <tr>
+                <th class="py-3 px-3">Appointment Date</th>
+                <th class="py-3 px-3">Slot</th>
+                <th class="py-3 px-3">Amount</th>
+                <th class="py-3 px-3">Payment Mode</th>
+                <th class="py-3 px-3">Transaction / Ref</th>
+                <th class="py-3 px-3">Status</th>
+                <th class="py-3 px-3 text-end no-print">Action</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: 13.5px;">
+              @foreach($patient_orders as $pOrder)
+              @php
+                $isCurrent = ($pOrder->id == $order->id);
+                $isCash = ($pOrder->razorpay_payment_id === 'CASH_PAYMENT' || $pOrder->razorpay_payment_id === 'CASH_AT_CLINIC' || str_contains($pOrder->transaction_id ?? '', 'CASH'));
+              @endphp
+              <tr style="border-bottom: 1px solid #f1f5f9; {{ $isCurrent ? 'background: #f0fdf4;' : '' }}">
+                <td class="py-3 px-3">
+                  <div class="fw-bold text-dark font-14">
+                    {{ $pOrder->booking_date ? date('d M Y', strtotime($pOrder->booking_date)) : '-' }}
+                    @if($isCurrent)
+                      <span class="badge bg-primary ms-1 font-11 text-white">Current Case</span>
+                    @endif
+                  </div>
+                  <small class="text-muted font-11">Booked {{ date('d M Y', strtotime($pOrder->created_at)) }}</small>
+                </td>
+                <td class="py-3 px-3">
+                  @if($pOrder->from_time && $pOrder->to_time)
+                    <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); font-weight: 700;">
+                      {{ date('h:i A', strtotime($pOrder->from_time)) }} - {{ date('h:i A', strtotime($pOrder->to_time)) }}
+                    </span>
+                  @else
+                    <span class="text-muted font-12">-</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3 font-weight-bold" style="color: var(--theme-primary, #059669);">
+                  ₹{{ number_format($pOrder->total_amount, 2) }}
+                </td>
+                <td class="py-3 px-3">
+                  @if($isCash)
+                    <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 600;">Cash at Clinic</span>
+                  @else
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 600;">Razorpay Online</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3 font-monospace font-11 text-muted">
+                  {{ $pOrder->razorpay_payment_id ?: ($pOrder->transaction_id ?: 'MANUAL') }}
+                </td>
+                <td class="py-3 px-3">
+                  @if($pOrder->status === 'confirmed')
+                    <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">Confirmed</span>
+                  @elseif($pOrder->status === 'completed')
+                    <span class="badge" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd;">Completed</span>
+                  @elseif($pOrder->status === 'cancelled')
+                    <span class="badge" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecdd3;">Cancelled</span>
+                  @else
+                    <span class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a;">Pending</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3 text-end no-print">
+                  @if(!$isCurrent)
+                    <a href="{{ url('admin/booking-history/view/'.$pOrder->id) }}" class="btn btn-sm btn-outline-primary font-weight-bold px-2 py-1" style="border-radius: 6px; font-size: 11.5px;">
+                      View Record
+                    </a>
+                  @else
+                    <span class="text-muted font-12 font-italic">Viewing</span>
+                  @endif
+                </td>
+              </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    @endif
   </div>
 </div>
 @endsection

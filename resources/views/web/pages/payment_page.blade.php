@@ -134,6 +134,71 @@
     cursor: not-allowed;
     box-shadow: none;
   }
+  /* Patient Type Switcher & Account Lookup */
+  .patient-type-card {
+    display: block;
+    border: 2px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 12px 16px;
+    cursor: pointer;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    height: 100%;
+    margin-bottom: 0;
+  }
+  .patient-type-card:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+  }
+  .patient-type-card.active {
+    border-color: var(--vital-primary, #0d9488);
+    background: #f0fdfa;
+    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.12);
+  }
+  .patient-type-card.active .type-title {
+    color: var(--vital-primary-dark, #0f766e);
+  }
+  .patient-type-card.active .type-icon {
+    background: var(--vital-primary, #0d9488);
+    color: #ffffff;
+  }
+  .type-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .patient-selection-item {
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 14px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+  }
+  .patient-selection-item:hover {
+    border-color: var(--vital-primary, #0d9488);
+    background: #f0fdfa;
+  }
+  .patient-selection-item.selected {
+    border-color: var(--vital-primary, #0d9488);
+    background: #f0fdfa;
+    box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25);
+  }
+  .existing-selected-banner {
+    background: #f0fdfa;
+    border: 1.5px solid #99f6e4;
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
 </style>
 @endsection
 
@@ -189,6 +254,7 @@
     @csrf
     <input type="hidden" name="booking_date" id="booking_date" @if (isset($booking_date)) value="{{ base64_decode($booking_date) }}" @endif>
     <input type="hidden" name="time_slot_id" id="time_slot_id" @if (isset($time_slot_id)) value="{{ base64_decode($time_slot_id) }}" @endif>
+    <input type="hidden" name="patient_id" id="selected_patient_id" value="">
 
     <div class="row g-4">
       <!-- Left Column: Patient Details Form -->
@@ -203,7 +269,91 @@
               <small class="text-muted">Enter details accurately as per Government ID / Medical Records</small>
             </div>
           </div>
-          <hr class="mb-4" style="opacity: 0.1;">
+          <hr class="mb-3" style="opacity: 0.1;">
+
+          <!-- Patient Type Toggle: New Patient vs Already a Patient -->
+          <div class="patient-type-selector mb-4">
+            <div class="row g-2">
+              <div class="col-sm-6">
+                <label class="patient-type-card active" id="type-new-label">
+                  <input type="radio" name="patient_type" value="new" checked class="d-none" id="type-new-radio">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="type-icon">
+                      <i class="fa-solid fa-user-plus"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold type-title font-15 text-dark">New Patient</div>
+                      <small class="text-muted d-block font-12">First time visiting this clinic</small>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              <div class="col-sm-6">
+                <label class="patient-type-card" id="type-existing-label">
+                  <input type="radio" name="patient_type" value="existing" class="d-none" id="type-existing-radio">
+                  <div class="d-flex align-items-center gap-3">
+                    <div class="type-icon">
+                      <i class="fa-solid fa-address-book"></i>
+                    </div>
+                    <div>
+                      <div class="fw-bold type-title font-15 text-dark">Already a Patient</div>
+                      <small class="text-muted d-block font-12">Find record with registered phone</small>
+                    </div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing Patient Search Box (Hidden by default until "Already a Patient" is selected) -->
+          <div id="existing-patient-search-box" class="p-3 rounded-4 mb-4 d-none" style="background: #f0fdfa; border: 1.5px solid #99f6e4;">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+              <label class="form-label fw-bold text-dark mb-0 font-14">
+                <i class="fa-solid fa-phone-volume me-1 text-teal" style="color: #0d9488;"></i> Enter Registered Phone Number
+              </label>
+              <span class="badge" style="background: #ccfbf1; color: #0f766e; font-size: 11.5px;">Auto Search</span>
+            </div>
+            <div class="input-group">
+              <input type="text" id="lookup_phone" class="form-control" placeholder="Enter 10-digit registered mobile number" maxlength="10" style="font-size: 14.5px; border-radius: 10px 0 0 10px;">
+              <button type="button" class="btn btn-primary fw-bold px-3 d-inline-flex align-items-center gap-1" id="btn-lookup-patient" style="background: #0d9488; border-color: #0d9488; border-radius: 0 10px 10px 0;">
+                <i class="fa-solid fa-magnifying-glass font-14"></i> Find Patient
+              </button>
+            </div>
+            <small class="text-muted mt-1 d-block font-12">
+              We will pull up past accounts linked to this phone number so you don't have to re-enter details.
+            </small>
+
+            <div id="lookup-spinner" class="d-none mt-2 text-teal font-13" style="color: #0d9488;">
+              <span class="spinner-border spinner-border-sm me-1" role="status"></span> Searching patient medical records...
+            </div>
+            
+            <div id="lookup-results" class="mt-3"></div>
+          </div>
+
+          <!-- Existing Patient Selected Confirmation Banner -->
+          <div id="existing-patient-banner" class="existing-selected-banner mb-4 d-none">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+              <div class="d-flex align-items-center gap-3">
+                <div style="width: 42px; height: 42px; border-radius: 12px; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold;" id="selected-avatar-initials">
+                  P
+                </div>
+                <div>
+                  <div class="d-flex align-items-center gap-2">
+                    <strong class="font-15 text-dark" id="selected-patient-fullname">Rajesh Das</strong>
+                    <span class="badge bg-success font-11 text-white">Verified Patient</span>
+                  </div>
+                  <div class="text-muted font-12" id="selected-patient-meta">
+                    PID #363 • Male, 35 Yrs • 9833445566
+                  </div>
+                </div>
+              </div>
+              <div>
+                <button type="button" class="btn btn-sm btn-outline-secondary font-12 fw-bold px-3 py-1" id="btn-change-patient" style="border-radius: 8px;">
+                  <i class="fa-solid fa-arrows-rotate me-1"></i> Change / Reset
+                </button>
+              </div>
+            </div>
+          </div>
 
           <!-- First & Last Name -->
           <div class="row g-3">
@@ -456,6 +606,173 @@ $(document).ready(function () {
         });
     }
 
+    // ==========================================
+    // Patient Type Switcher & Phone Lookup
+    // ==========================================
+    const lookupUrl = "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/lookup-patient') : url('lookup-patient') }}";
+
+    function setPatientType(type) {
+        if (type === 'existing') {
+            $("#type-existing-label").addClass("active");
+            $("#type-new-label").removeClass("active");
+            $("#type-existing-radio").prop("checked", true);
+            $("#existing-patient-search-box").removeClass("d-none");
+            $("#lookup_phone").focus();
+        } else {
+            $("#type-new-label").addClass("active");
+            $("#type-existing-label").removeClass("active");
+            $("#type-new-radio").prop("checked", true);
+            $("#existing-patient-search-box").addClass("d-none");
+            $("#existing-patient-banner").addClass("d-none");
+            clearSelectedPatient();
+        }
+    }
+
+    $("#type-new-label").on("click", function () {
+        setPatientType('new');
+    });
+
+    $("#type-existing-label").on("click", function () {
+        setPatientType('existing');
+    });
+
+    function clearSelectedPatient() {
+        $("#selected_patient_id").val("");
+        $("input[name='first_name']").val("").prop("readonly", false);
+        $("input[name='last_name']").val("").prop("readonly", false);
+        $("select[name='sex']").val("Male");
+        $("input[name='age']").val("");
+        $("input[name='mobile_no']").val("").prop("readonly", false);
+        $("input[name='alternate_mobile_no']").val("");
+        $("textarea[name='address']").val("");
+        $("#lookup-results").empty();
+    }
+
+    function selectPatientRecord(p) {
+        $("#selected_patient_id").val(p.id);
+        $("input[name='first_name']").val(p.first_name || "");
+        $("input[name='last_name']").val(p.last_name || "");
+        if (p.sex) {
+            $("select[name='sex']").val(p.sex);
+        }
+        if (p.age) {
+            $("input[name='age']").val(p.age);
+        }
+        $("input[name='mobile_no']").val(p.mobile_no || "");
+        $("input[name='alternate_mobile_no']").val(p.alternate_mobile_no || "");
+        $("textarea[name='address']").val(p.address || "");
+        
+        let fullName = ((p.first_name || '') + ' ' + (p.last_name || '')).trim();
+        let initials = (p.first_name ? p.first_name.charAt(0) : 'P') + (p.last_name ? p.last_name.charAt(0) : 'T');
+        $("#selected-avatar-initials").text(initials.toUpperCase());
+        $("#selected-patient-fullname").text(fullName || ('Patient #' + p.id));
+        $("#selected-patient-meta").text('#PID-' + p.id + ' • ' + (p.sex || 'N/A') + (p.age ? (', ' + p.age + ' Yrs') : '') + ' • ' + (p.mobile_no || ''));
+
+        $("#existing-patient-banner").removeClass("d-none");
+        $("#existing-patient-search-box").addClass("d-none");
+        $("#lookup-results").empty();
+        $("textarea[name='patient_problem']").focus();
+    }
+
+    $("#btn-change-patient").on("click", function () {
+        $("#existing-patient-banner").addClass("d-none");
+        $("#existing-patient-search-box").removeClass("d-none");
+        $("#lookup_phone").focus();
+    });
+
+    function performPatientLookup() {
+        let phone = $("#lookup_phone").val().trim();
+        if (phone.length < 5) {
+            $("#lookup-results").html('<div class="alert alert-warning py-2 px-3 font-13 mb-0" style="border-radius: 8px;">Please enter at least 5 digits to search.</div>');
+            return;
+        }
+
+        $("#lookup-spinner").removeClass("d-none");
+        $("#lookup-results").empty();
+
+        $.ajax({
+            url: lookupUrl,
+            type: "GET",
+            data: { phone: phone },
+            success: function (res) {
+                $("#lookup-spinner").addClass("d-none");
+                if (res.success && res.patients && res.patients.length > 0) {
+                    if (res.patients.length === 1) {
+                        selectPatientRecord(res.patients[0]);
+                    } else {
+                        let html = '<div class="alert alert-info py-2 px-3 font-12 mb-2" style="border-radius: 8px; background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">' +
+                            '<strong>' + res.patients.length + ' matching patient records found.</strong> Please select who this consultation is for:</div>' +
+                            '<div class="patient-selection-list">';
+                        
+                        res.patients.forEach(function (p) {
+                            let name = ((p.first_name || '') + ' ' + (p.last_name || '')).trim() || ('Patient #' + p.id);
+                            let init = (p.first_name ? p.first_name.charAt(0) : 'P') + (p.last_name ? p.last_name.charAt(0) : '');
+                            let pDataJson = encodeURIComponent(JSON.stringify(p));
+                            
+                            html += '<div class="patient-selection-item d-flex align-items-center justify-content-between flex-wrap gap-2" data-patient="' + pDataJson + '">' +
+                                '<div class="d-flex align-items-center gap-2">' +
+                                    '<div style="width: 32px; height: 32px; border-radius: 8px; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold;">' + init.toUpperCase() + '</div>' +
+                                    '<div>' +
+                                        '<strong class="font-14 text-dark d-block">' + name + '</strong>' +
+                                        '<small class="text-muted font-11">#PID-' + p.id + ' • ' + (p.sex || 'N/A') + (p.age ? (', ' + p.age + ' Yrs') : '') + ' • ' + (p.address ? (p.address.substring(0, 25) + '...') : 'No address') + '</small>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<button type="button" class="btn btn-sm btn-outline-primary font-12 fw-bold px-3 py-1" style="border-radius: 6px;">Select</button>' +
+                            '</div>';
+                        });
+
+                        html += '<div class="mt-2 text-end">' +
+                            '<button type="button" class="btn btn-sm btn-link text-muted font-12 text-decoration-none" id="btn-none-of-above">' +
+                                '<i class="fa-solid fa-plus me-1"></i> Register as a new family member under this phone' +
+                            '</button>' +
+                        '</div></div>';
+
+                        $("#lookup-results").html(html);
+
+                        $(".patient-selection-item").on("click", function () {
+                            let raw = $(this).attr("data-patient");
+                            let patientObj = JSON.parse(decodeURIComponent(raw));
+                            selectPatientRecord(patientObj);
+                        });
+
+                        $("#btn-none-of-above").on("click", function () {
+                            $("#selected_patient_id").val("");
+                            $("#existing-patient-search-box").addClass("d-none");
+                            $("input[name='mobile_no']").val($("#lookup_phone").val());
+                            $("input[name='first_name']").val("").focus();
+                            $("input[name='last_name']").val("");
+                            $("textarea[name='address']").val("");
+                        });
+                    }
+                } else {
+                    $("#lookup-results").html(
+                        '<div class="alert alert-warning py-2 px-3 font-13 mb-0" style="border-radius: 8px; background: #fffbeb; color: #b45309; border: 1px solid #fde68a;">' +
+                            '<i class="fa-solid fa-circle-exclamation me-1"></i> No patient record found for <strong>' + phone + '</strong>. You can proceed below to register as a new patient.' +
+                        '</div>'
+                    );
+                    $("input[name='mobile_no']").val(phone);
+                }
+            },
+            error: function () {
+                $("#lookup-spinner").addClass("d-none");
+                $("#lookup-results").html('<div class="alert alert-danger py-2 px-3 font-13 mb-0" style="border-radius: 8px;">Failed to lookup patient. Please verify your connection or register as a new patient.</div>');
+            }
+        });
+    }
+
+    $("#btn-lookup-patient").on("click", function () {
+        performPatientLookup();
+    });
+
+    $("#lookup_phone").on("keyup", function (e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (e.key === "Enter") {
+            performPatientLookup();
+        } else if (this.value.length === 10) {
+            performPatientLookup();
+        }
+    });
+
     $("input[name='mobile_no'], input[name='alternate_mobile_no']").on("input", function () {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
@@ -490,6 +807,7 @@ function payWithRazorpay(e) {
     $(".error-message").remove();
 
     let isValid = true;
+    let patient_id = $("#selected_patient_id").val();
     let first_name = $("input[name='first_name']").val();
     let last_name = $("input[name='last_name']").val();
     let dob = null;
@@ -567,6 +885,7 @@ function payWithRazorpay(e) {
                                 razorpay_payment_id: paymentResponse.razorpay_payment_id,
                                 razorpay_order_id: response.order_id,
                                 razorpay_signature: paymentResponse.razorpay_signature,
+                                patient_id: patient_id,
                                 first_name: first_name,
                                 last_name: last_name,
                                 dob: dob,
@@ -619,6 +938,7 @@ function payWithRazorpay(e) {
                                 data: {
                                     _token: "{{ csrf_token() }}",
                                     order_id: response.order_id,
+                                    patient_id: patient_id,
                                     first_name: first_name,
                                     last_name: last_name,
                                     dob: dob,
@@ -685,6 +1005,7 @@ function payWithCash(e) {
     $(".error-message").remove();
 
     let isValid = true;
+    let patient_id = $("#selected_patient_id").val();
     let first_name = $("input[name='first_name']").val();
     let last_name = $("input[name='last_name']").val();
     let dob = null;
@@ -732,6 +1053,7 @@ function payWithCash(e) {
             _token: "{{ csrf_token() }}",
             payment_method: 'cash',
             razorpay_payment_id: 'CASH_PAYMENT',
+            patient_id: patient_id,
             first_name: first_name,
             last_name: last_name,
             dob: dob,

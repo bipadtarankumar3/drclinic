@@ -42,6 +42,7 @@ Route::get('get-timeslots', [WebViewController::class, 'getTimeSlots']);
 Route::post('/check_availability', [WebViewController::class, 'checkAvailability']);
 
 Route::any('/book_appointment', [WebViewController::class, 'book_appointment']);
+Route::get('/lookup-patient', [WebViewController::class, 'lookupPatient'])->name('lookup_patient');
 Route::post('/generate-order', [WebViewController::class, 'generateOrder']);
 Route::post('/payment-success', [WebViewController::class, 'paymentSuccess']);
 Route::post('/payment-failed', [WebViewController::class, 'paymentFailed']);
@@ -61,6 +62,7 @@ Route::group(['prefix' => 'c/{clinic_slug}'], function () {
     Route::get('/', [WebViewController::class, 'appoinment'])->name('clinic.home');
     Route::get('/appoinment', [WebViewController::class, 'appoinment'])->name('clinic.appoinment');
     Route::any('/book_appointment', [WebViewController::class, 'book_appointment'])->name('clinic.book_appointment');
+    Route::get('/lookup-patient', [WebViewController::class, 'lookupPatient'])->name('clinic.lookup_patient');
     Route::post('/generate-order', [WebViewController::class, 'generateOrder'])->name('clinic.generate_order');
     Route::post('/payment-success', [WebViewController::class, 'paymentSuccess'])->name('clinic.payment_success');
     Route::post('/payment-failed', [WebViewController::class, 'paymentFailed'])->name('clinic.payment_failed');

@@ -258,10 +258,11 @@ class PatientController extends Controller
         $user = auth()->user();
         $clinic = $user ? $user->getActiveClinic() : null;
 
-        $orderQuery = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-            ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+        $orderQuery = Order::leftJoin('patients', 'patients.id', '=', 'orders.patient_id')
+            ->leftJoin('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
             ->where('orders.id', $id)
             ->select('orders.*', 
+            'patients.id as patient_db_id',
             'patients.first_name as first_name', 
             'patients.last_name as last_name', 
             'patients.dob', 
@@ -285,41 +286,27 @@ class PatientController extends Controller
             return redirect()->back()->with('error', 'Patient history not found!');
         }
 
-        return view('admin.pages.patient.view_booking_history', compact('order'));
+        // Fetch all other visits & payments for this patient (including matching phone numbers)
+        $relatedPatientIds = collect([$order->patient_id]);
+        if (!empty($order->mobile_no)) {
+            $phoneMatches = Patient::where('mobile_no', $order->mobile_no)
+                ->when($clinic, fn($q) => $q->where('clinic_id', $clinic->id))
+                ->pluck('id');
+            $relatedPatientIds = $relatedPatientIds->merge($phoneMatches)->unique();
+        }
+
+        $patient_orders = Order::leftJoin('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+            ->whereIn('orders.patient_id', $relatedPatientIds)
+            ->select('orders.*', 'time_slots.from_time', 'time_slots.to_time')
+            ->latest('orders.booking_date')
+            ->get();
+
+        return view('admin.pages.patient.view_booking_history', compact('order', 'patient_orders'));
     }
 
     public function booking_details($id)
     {
-        $user = auth()->user();
-        $clinic = $user ? $user->getActiveClinic() : null;
-
-        $orderQuery = Order::join('patients', 'patients.id', '=', 'orders.patient_id')
-            ->join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-            ->where('orders.id', $id)
-            ->select('orders.*', 
-            'patients.first_name as first_name', 
-            'patients.last_name as last_name', 
-            'patients.dob', 
-            'patients.age', 
-            'patients.sex', 
-            'patients.mobile_no', 
-            'patients.alternate_mobile_no', 
-            'patients.address', 
-            'patients.patient_problem', 
-            'time_slots.from_time', 
-            'time_slots.to_time');
-
-        if ($clinic) {
-            $orderQuery->where('orders.clinic_id', $clinic->id);
-        }
-
-        $order = $orderQuery->first();
-
-        if (!$order) {
-            return redirect()->back()->with('error', 'Patient history not found!');
-        }
-
-        return view('admin.pages.patient.view_booking_history', compact('order'));
+        return $this->view_booking_history($id);
     }
 
     public function view_patient_history($id)
@@ -337,9 +324,18 @@ class PatientController extends Controller
             return redirect()->back()->with('error', 'Patient not found!');
         }
 
+        // Include orders linked to this patient ID or any past records with identical mobile number
+        $relatedPatientIds = collect([$patient->id]);
+        if (!empty($patient->mobile_no)) {
+            $phoneMatches = Patient::where('mobile_no', $patient->mobile_no)
+                ->when($clinic, fn($q) => $q->where('clinic_id', $clinic->id))
+                ->pluck('id');
+            $relatedPatientIds = $relatedPatientIds->merge($phoneMatches)->unique();
+        }
+
         $ordersQuery = Order::
-            join('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
-            ->where('orders.patient_id', $id)
+            leftJoin('time_slots', 'time_slots.id', '=', 'orders.time_slot_id')
+            ->whereIn('orders.patient_id', $relatedPatientIds)
             ->select('orders.*', 
             'time_slots.from_time', 
             'time_slots.to_time');
@@ -348,7 +344,7 @@ class PatientController extends Controller
             $ordersQuery->where('orders.clinic_id', $clinic->id);
         }
 
-        $orders = $ordersQuery->get();
+        $orders = $ordersQuery->latest('orders.booking_date')->get();
 
         return view('admin.pages.patient.patient_history_view', compact('orders','patient'));
     }

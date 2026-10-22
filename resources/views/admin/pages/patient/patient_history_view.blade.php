@@ -163,6 +163,64 @@
       </div>
     </div>
 
+    <!-- Quick KPI Summary Stats -->
+    @php
+      $totalSpent = $orders->where('payment_status', '!=', 'cancelled')->sum('total_amount');
+      $completedCount = $orders->where('status', 'completed')->count();
+      $lastBooking = $orders->first();
+    @endphp
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-lg-3">
+        <div class="clinical-card p-3 d-flex align-items-center gap-3">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+            <i class="mdi mdi-calendar-check-outline"></i>
+          </div>
+          <div>
+            <div class="attribute-label mb-0">Total Consultations</div>
+            <div class="font-weight-bold text-dark font-20">{{ count($orders) }} Visits</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="clinical-card p-3 d-flex align-items-center gap-3">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+            <i class="mdi mdi-currency-inr"></i>
+          </div>
+          <div>
+            <div class="attribute-label mb-0">Total Payments Paid</div>
+            <div class="font-weight-bold text-dark font-20">₹{{ number_format($totalSpent, 2) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="clinical-card p-3 d-flex align-items-center gap-3">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+            <i class="mdi mdi-check-all"></i>
+          </div>
+          <div>
+            <div class="attribute-label mb-0">Completed Visits</div>
+            <div class="font-weight-bold text-dark font-20">{{ $completedCount }} Consults</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="clinical-card p-3 d-flex align-items-center gap-3">
+          <div style="width: 46px; height: 46px; border-radius: 12px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 22px;">
+            <i class="mdi mdi-clock-outline"></i>
+          </div>
+          <div>
+            <div class="attribute-label mb-0">Last Consultation</div>
+            <div class="font-weight-bold text-dark font-15">
+              {{ $lastBooking && $lastBooking->booking_date ? date('d M Y', strtotime($lastBooking->booking_date)) : 'None' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Patient Demographics Card -->
     <div class="clinical-card mb-4">
       <div class="clinical-card-header">
@@ -204,7 +262,7 @@
           <div class="col-sm-6">
             <div class="attribute-tile">
               <div class="attribute-label">Primary Mobile No</div>
-              <div class="attribute-value text-primary">{{ $patient->mobile_no ?? '-' }}</div>
+              <div class="attribute-value text-primary font-weight-bold">{{ $patient->mobile_no ?? '-' }}</div>
             </div>
           </div>
           <div class="col-sm-6">
@@ -226,23 +284,108 @@
 
         @if($patient->patient_problem)
         <div class="chief-complaint-box">
-          <div class="attribute-label text-muted mb-1">Last Recorded Complaint / Condition:</div>
+          <div class="attribute-label text-muted mb-1">Chief Medical Complaint / Known Diagnosis:</div>
           <div class="font-14 text-dark font-weight-bold">{{ $patient->patient_problem }}</div>
         </div>
         @endif
       </div>
     </div>
 
-    <!-- Appointment History Table -->
+    <!-- Appointment & Visit History Table -->
     <div class="clinical-card mb-4">
       <div class="clinical-card-header">
         <h5 class="fw-bold text-dark mb-0 d-flex align-items-center font-15">
           <span class="d-inline-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; border-radius: 8px; background: #e0f2fe; color: #0284c7;">
             <i class="mdi mdi-history font-18"></i>
           </span>
-          Consultation &amp; Appointment History
+          All Consultation &amp; Visit History
         </h5>
-        <span class="badge bg-light text-muted font-11">{{ count($orders) }} Total Visits</span>
+        <span class="badge bg-light text-muted font-11">{{ count($orders) }} Total Consultations</span>
+      </div>
+      <div class="clinical-card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0">
+            <thead style="background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">
+              <tr>
+                <th class="py-3 px-3">Visit Date</th>
+                <th class="py-3 px-3">Slot</th>
+                <th class="py-3 px-3">Reason / Complaint</th>
+                <th class="py-3 px-3">Payment</th>
+                <th class="py-3 px-3">Visit Status</th>
+                <th class="py-3 px-3 text-end no-print">Action</th>
+              </tr>
+            </thead>
+            <tbody style="font-size: 13.5px;">
+              @forelse($orders as $ord)
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td class="py-3 px-3">
+                  <div class="fw-bold text-dark font-14">
+                    {{ $ord->booking_date ? date('D, d M Y', strtotime($ord->booking_date)) : '-' }}
+                  </div>
+                  <small class="text-muted font-11">Booked on {{ date('d M Y, h:i A', strtotime($ord->created_at)) }}</small>
+                </td>
+                <td class="py-3 px-3">
+                  @if($ord->from_time && $ord->to_time)
+                    <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); font-weight: 700;">
+                      {{ date('h:i A', strtotime($ord->from_time)) }} - {{ date('h:i A', strtotime($ord->to_time)) }}
+                    </span>
+                  @else
+                    <span class="text-muted font-12">Standard Slot</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3 text-wrap" style="max-width: 260px;">
+                  <span class="font-12 text-dark">{{ $patient->patient_problem ?: 'General Consultation' }}</span>
+                </td>
+                <td class="py-3 px-3">
+                  <span class="fw-bold text-dark d-block">₹{{ number_format($ord->total_amount, 2) }}</span>
+                  @if($ord->payment_status === 'success')
+                    <span class="badge bg-success font-11" style="font-size: 10px;">Paid</span>
+                  @elseif($ord->payment_status === 'pending')
+                    <span class="badge bg-warning font-11 text-dark" style="font-size: 10px;">Cash at Clinic</span>
+                  @else
+                    <span class="badge bg-secondary font-11" style="font-size: 10px;">{{ ucfirst($ord->payment_status ?? 'Pending') }}</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3">
+                  @if($ord->status === 'confirmed')
+                    <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600;">Confirmed</span>
+                  @elseif($ord->status === 'completed')
+                    <span class="badge" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; font-weight: 600;">Completed</span>
+                  @elseif($ord->status === 'cancelled')
+                    <span class="badge" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecdd3; font-weight: 600;">Cancelled</span>
+                  @else
+                    <span class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a; font-weight: 600;">Pending</span>
+                  @endif
+                </td>
+                <td class="py-3 px-3 text-end no-print">
+                  <a href="{{ url('admin/patient-history/status-change/'.$ord->id) }}" class="btn btn-sm btn-outline-primary font-weight-bold px-2 py-1" style="border-radius: 6px; font-size: 12px;">
+                    View Case
+                  </a>
+                </td>
+              </tr>
+              @empty
+              <tr>
+                <td colspan="6" class="text-center py-4 text-muted">No visits recorded for this patient.</td>
+              </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Complete Payment & Billing Transaction History -->
+    <div class="clinical-card mb-4">
+      <div class="clinical-card-header">
+        <h5 class="fw-bold text-dark mb-0 d-flex align-items-center font-15">
+          <span class="d-inline-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; border-radius: 8px; background: #ecfdf5; color: #059669;">
+            <i class="mdi mdi-cash-multiple font-18"></i>
+          </span>
+          All Payment &amp; Billing History
+        </h5>
+        <span class="badge font-12" style="background: #ecfdf5; color: #059669; font-weight: 700; border: 1px solid #a7f3d0;">
+          Total Paid: ₹{{ number_format($totalSpent, 2) }}
+        </span>
       </div>
       <div class="clinical-card-body p-0">
         <div class="table-responsive">
@@ -250,50 +393,67 @@
             <thead style="background: #f8fafc; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b;">
               <tr>
                 <th class="py-3 px-3">Date</th>
-                <th class="py-3 px-3">Time Slot</th>
-                <th class="py-3 px-3">Amount</th>
+                <th class="py-3 px-3">Order / Receipt #</th>
+                <th class="py-3 px-3">Payment Mode</th>
                 <th class="py-3 px-3">Transaction Ref</th>
+                <th class="py-3 px-3">Consultation Fee</th>
+                <th class="py-3 px-3">Total Paid</th>
                 <th class="py-3 px-3">Status</th>
-                <th class="py-3 px-3 text-end no-print">Action</th>
+                <th class="py-3 px-3 text-end no-print">Invoice</th>
               </tr>
             </thead>
             <tbody style="font-size: 13.5px;">
               @forelse($orders as $ord)
+              @php
+                $isCash = ($ord->razorpay_payment_id === 'CASH_PAYMENT' || $ord->razorpay_payment_id === 'CASH_AT_CLINIC' || str_contains($ord->transaction_id ?? '', 'CASH'));
+              @endphp
               <tr style="border-bottom: 1px solid #f1f5f9;">
-                <td class="py-3 px-3 font-weight-bold text-dark">
-                  {{ $ord->booking_date ? date('d M Y', strtotime($ord->booking_date)) : '-' }}
+                <td class="py-3 px-3 font-weight-bold text-dark text-nowrap">
+                  {{ date('d M Y, h:i A', strtotime($ord->created_at)) }}
+                </td>
+                <td class="py-3 px-3 font-monospace font-12">
+                  <strong>#ORD-{{ $ord->id }}</strong>
                 </td>
                 <td class="py-3 px-3">
-                  <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); font-weight: 700;">
-                    {{ date('h:i A', strtotime($ord->from_time)) }} - {{ date('h:i A', strtotime($ord->to_time)) }}
-                  </span>
+                  @if($isCash)
+                    <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 600; border: 1px solid #fde68a;">
+                      <i class="mdi mdi-cash me-1"></i> Cash at Clinic
+                    </span>
+                  @else
+                    <span class="badge" style="background: #e0f2fe; color: #0369a1; font-weight: 600; border: 1px solid #bae6fd;">
+                      <i class="mdi mdi-credit-card-outline me-1"></i> Razorpay Online
+                    </span>
+                  @endif
                 </td>
-                <td class="py-3 px-3 font-weight-bold" style="color: var(--theme-primary, #059669);">
+                <td class="py-3 px-3 font-monospace font-11 text-muted text-break" style="max-width: 170px;">
+                  {{ $ord->razorpay_payment_id ?: ($ord->transaction_id ?: '-') }}
+                </td>
+                <td class="py-3 px-3 text-muted">
+                  ₹{{ number_format($ord->actual_amount ?: $ord->total_amount, 2) }}
+                </td>
+                <td class="py-3 px-3 font-weight-bold" style="color: var(--theme-primary, #059669); font-size: 14.5px;">
                   ₹{{ number_format($ord->total_amount, 2) }}
                 </td>
-                <td class="py-3 px-3 font-monospace font-12 text-muted">
-                  #{{ $ord->transaction_id ?: 'MANUAL' }}
-                </td>
                 <td class="py-3 px-3">
-                  @if($ord->status === 'confirmed')
-                    <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;">Confirmed</span>
-                  @elseif($ord->status === 'completed')
-                    <span class="badge" style="background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd;">Completed</span>
-                  @elseif($ord->status === 'cancelled')
-                    <span class="badge" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecdd3;">Cancelled</span>
+                  @if($ord->payment_status === 'success')
+                    <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-weight: 600;">Paid</span>
+                  @elseif($ord->payment_status === 'pending')
+                    <span class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a; font-weight: 600;">Pending</span>
+                  @elseif($ord->payment_status === 'cancelled')
+                    <span class="badge" style="background: #fef2f2; color: #dc2626; border: 1px solid #fecdd3; font-weight: 600;">Cancelled</span>
                   @else
-                    <span class="badge" style="background: #fffbeb; color: #d97706; border: 1px solid #fde68a;">Pending</span>
+                    <span class="badge bg-light text-dark font-weight-bold">{{ ucfirst($ord->payment_status ?? 'Pending') }}</span>
                   @endif
                 </td>
                 <td class="py-3 px-3 text-end no-print">
-                  <a href="{{ url('admin/patient-history/status-change/'.$ord->id) }}" class="btn btn-xs btn-outline-primary font-weight-bold px-2 py-1" style="border-radius: 6px;">
-                    View Case
+                  <a href="{{ url('invoice/'.$ord->id) }}" target="_blank" class="btn btn-sm btn-outline-success font-weight-bold px-2 py-1 d-inline-flex align-items-center gap-1" style="border-radius: 6px; font-size: 11.5px;">
+                    <i class="mdi mdi-receipt"></i> Invoice
                   </a>
                 </td>
               </tr>
               @empty
               <tr>
-                <td colspan="6" class="text-center py-4 text-muted">No appointments found for this patient.</td>
+                <td colspan="8" class="text-center py-4 text-muted">No payment transactions found.</td>
               </tr>
               @endforelse
             </tbody>

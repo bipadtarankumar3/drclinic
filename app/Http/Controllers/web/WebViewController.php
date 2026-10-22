@@ -252,6 +252,77 @@ class WebViewController extends Controller
         }
     }
 
+    public function lookupPatient(Request $request, $clinic_slug = null)
+    {
+        $phone = trim($request->get('phone', ''));
+        $cleanPhone = preg_replace('/[^0-9]/', '', $phone);
+
+        if (strlen($cleanPhone) < 4) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Please enter at least 4 digits to search.',
+                'patients' => []
+            ]);
+        }
+
+        $clinic = $this->getClinic($clinic_slug ?: $request->clinic_slug);
+
+        $query = Patient::query();
+        if ($clinic) {
+            $query->where(function($q) use ($clinic) {
+                $q->where('clinic_id', $clinic->id)
+                  ->orWhereNull('clinic_id');
+            });
+        }
+
+        $query->where(function($q) use ($cleanPhone) {
+            $q->where('mobile_no', 'LIKE', "%{$cleanPhone}%")
+              ->orWhere('alternate_mobile_no', 'LIKE', "%{$cleanPhone}%");
+        });
+
+        $patients = $query->latest('id')->take(10)->get([
+            'id',
+            'first_name',
+            'last_name',
+            'dob',
+            'sex',
+            'age',
+            'mobile_no',
+            'alternate_mobile_no',
+            'customer_email',
+            'address',
+            'patient_problem',
+            'created_at'
+        ]);
+
+        // Fallback: If no patients found within scoped clinic, check all records by phone
+        if ($patients->isEmpty()) {
+            $patients = Patient::where(function($q) use ($cleanPhone) {
+                $q->where('mobile_no', 'LIKE', "%{$cleanPhone}%")
+                  ->orWhere('alternate_mobile_no', 'LIKE', "%{$cleanPhone}%");
+            })->latest('id')->take(10)->get([
+                'id',
+                'first_name',
+                'last_name',
+                'dob',
+                'sex',
+                'age',
+                'mobile_no',
+                'alternate_mobile_no',
+                'customer_email',
+                'address',
+                'patient_problem',
+                'created_at'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'count' => $patients->count(),
+            'patients' => $patients
+        ]);
+    }
+
     public function paymentSuccess(Request $request, $clinic_slug = null)
     {
         try {
@@ -260,19 +331,44 @@ class WebViewController extends Controller
             $clinic = $this->getClinic($clinic_slug ?: $request->clinic_slug);
             $clinicId = $clinic?->id;
 
-            $patient = Patient::create([
-                'clinic_id' => $clinicId,
-                'first_name' => $request->first_name,
-                'last_name' => $request->last_name,
-                'dob' => $request->dob,
-                'sex' => $request->sex,
-                'age' => $request->age,
-                'mobile_no' => $request->mobile_no,
-                'alternate_mobile_no' => $request->alternate_mobile_no,
-                'customer_email' => $request->customer_email ?? null,
-                'address' => $request->address,
-                'patient_problem' => $request->patient_problem,
-            ]);
+            $patient = null;
+            if ($request->filled('patient_id')) {
+                $patient = Patient::find($request->patient_id);
+                if ($patient) {
+                    $updates = [];
+                    if ($request->filled('patient_problem')) {
+                        $updates['patient_problem'] = $request->patient_problem;
+                    }
+                    if ($request->filled('address')) {
+                        $updates['address'] = $request->address;
+                    }
+                    if ($request->filled('age')) {
+                        $updates['age'] = $request->age;
+                    }
+                    if ($request->filled('alternate_mobile_no')) {
+                        $updates['alternate_mobile_no'] = $request->alternate_mobile_no;
+                    }
+                    if (!empty($updates)) {
+                        $patient->update($updates);
+                    }
+                }
+            }
+
+            if (!$patient) {
+                $patient = Patient::create([
+                    'clinic_id' => $clinicId,
+                    'first_name' => $request->first_name,
+                    'last_name' => $request->last_name,
+                    'dob' => $request->dob,
+                    'sex' => $request->sex,
+                    'age' => $request->age,
+                    'mobile_no' => $request->mobile_no,
+                    'alternate_mobile_no' => $request->alternate_mobile_no,
+                    'customer_email' => $request->customer_email ?? null,
+                    'address' => $request->address,
+                    'patient_problem' => $request->patient_problem,
+                ]);
+            }
 
             $isCash = ($request->payment_method === 'cash' || $request->razorpay_payment_id === 'CASH_PAYMENT' || empty($request->razorpay_payment_id));
             $transactionId = !empty($request->razorpay_order_id) ? $request->razorpay_order_id : ('CASH_' . strtoupper(uniqid()));
@@ -373,7 +469,10 @@ class WebViewController extends Controller
             $clinicId = $clinic?->id;
 
             $patient = null;
-            if ($request->first_name || $request->mobile_no) {
+            if ($request->filled('patient_id')) {
+                $patient = Patient::find($request->patient_id);
+            }
+            if (!$patient && ($request->first_name || $request->mobile_no)) {
                 $patient = Patient::create([
                     'clinic_id' => $clinicId,
                     'first_name' => $request->first_name ?? 'Guest',
