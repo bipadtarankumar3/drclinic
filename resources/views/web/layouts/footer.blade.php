@@ -8,18 +8,31 @@
     <div class="row g-4 pb-5">
       <!-- Col 1: Brand & Bio -->
       <div class="col-lg-4 col-md-6">
+        @php
+          $footerBrandMode = $clinic->brand_display_mode ?? 'both';
+          $footerShowLogo = (!$clinic || $clinic->showBrandLogo());
+          $footerShowText = (!$clinic || $clinic->showBrandText());
+          if ($footerBrandMode === 'logo_only' && (!$clinic || empty($clinic->logo))) {
+              $footerShowText = true;
+          }
+        @endphp
         <div class="d-flex align-items-center mb-3" style="gap: 12px;">
-          @if($clinic && $clinic->logo)
-            <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; max-width: 150px; object-fit: contain;">
-          @else
-            <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
-              <i class="fa-solid fa-hospital"></i>
+          @if($footerShowLogo)
+            @if($clinic && $clinic->logo)
+              <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: {{ $footerBrandMode === 'logo_only' ? '54px' : '44px' }}; max-width: {{ $footerBrandMode === 'logo_only' ? '220px' : '150px' }}; object-fit: contain;">
+            @else
+              <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
+                <i class="fa-solid fa-hospital"></i>
+              </div>
+            @endif
+          @endif
+
+          @if($footerShowText)
+            <div>
+              <h5 class="mb-0 text-white font-weight-bold" style="font-size: 20px;">{{ $clinic->name ?? 'VitalCare Clinic' }}</h5>
+              <small class="text-muted" style="color: #64748b !important;">{{ $clinic->specialization ?? 'Comprehensive Healthcare' }}</small>
             </div>
           @endif
-          <div>
-            <h5 class="mb-0 text-white font-weight-bold" style="font-size: 20px;">{{ $clinic->name ?? 'VitalCare Clinic' }}</h5>
-            <small class="text-muted" style="color: #64748b !important;">{{ $clinic->specialization ?? 'Comprehensive Healthcare' }}</small>
-          </div>
         </div>
         <p style="font-size: 14px; line-height: 1.6; color: #94a3b8;">
           {{ $clinic->bio ?? 'Dedicated to delivering patient-centric medical excellence with state-of-the-art facilities, certified doctors, and modern healthcare solutions.' }}

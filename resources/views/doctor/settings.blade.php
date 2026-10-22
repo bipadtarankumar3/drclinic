@@ -86,6 +86,44 @@
                     </div>
                   </div>
 
+                  <!-- Header Branding Display Option -->
+                  <div class="col-12 mb-3">
+                    <label class="form-label font-weight-bold d-block">Header &amp; Storefront Brand Display</label>
+                    <p class="text-muted small mb-2">Choose what to show in your clinic's top navigation bar and footer.</p>
+                    
+                    <div class="row g-2">
+                      <div class="col-md-4">
+                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? '#0d9488' : '#e2e8f0' }} !important;">
+                          <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold text-dark"><i class="mdi mdi-view-headline text-teal mr-1"></i> Both (Logo + Name)</span>
+                            <input type="radio" name="brand_display_mode" value="both" {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                          </div>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Shows your logo image side-by-side with your clinic name and specialty.</small>
+                        </label>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? '#0d9488' : '#e2e8f0' }} !important;">
+                          <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold text-dark"><i class="mdi mdi-image-outline text-teal mr-1"></i> Only Logo</span>
+                            <input type="radio" name="brand_display_mode" value="logo_only" {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                          </div>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays only your uploaded graphic logo in the navbar. Perfect for horizontal logos containing text.</small>
+                        </label>
+                      </div>
+
+                      <div class="col-md-4">
+                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? '#0d9488' : '#e2e8f0' }} !important;">
+                          <div class="d-flex align-items-center justify-content-between mb-2">
+                            <span class="font-weight-bold text-dark"><i class="mdi mdi-format-text text-teal mr-1"></i> Only Text</span>
+                            <input type="radio" name="brand_display_mode" value="text_only" {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                          </div>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays clean typography of your clinic name and department without any logo icon.</small>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Clinic / Practice Name</label>
                     <input type="text" class="form-control" name="name" value="{{ old('name', $clinic->name) }}" required>
@@ -286,6 +324,21 @@ function previewClinicLogo(input, imgId, placeholderId) {
     };
     reader.readAsDataURL(input.files[0]);
   }
+}
+
+function updateBrandCardStyle() {
+  document.querySelectorAll('.brand-option-card').forEach(function(card) {
+    var radio = card.querySelector('input[type="radio"]');
+    if (radio && radio.checked) {
+      card.classList.add('active-brand-card');
+      card.style.background = '#f0fdfa';
+      card.style.setProperty('border-color', '#0d9488', 'important');
+    } else {
+      card.classList.remove('active-brand-card');
+      card.style.background = '#ffffff';
+      card.style.setProperty('border-color', '#e2e8f0', 'important');
+    }
+  });
 }
 </script>
 @endsection

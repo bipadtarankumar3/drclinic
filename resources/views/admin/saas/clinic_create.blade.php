@@ -70,6 +70,39 @@
               </div>
 
               <div class="col-md-12">
+                <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Storefront Brand Display Mode</label>
+                <div class="row g-2">
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="both" {{ old('brand_display_mode', 'both') === 'both' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Both (Logo + Text)</strong>
+                        <small class="text-muted font-11">Show logo &amp; name</small>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="logo_only" {{ old('brand_display_mode') === 'logo_only' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Only Logo</strong>
+                        <small class="text-muted font-11">Show logo graphic only</small>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="text_only" {{ old('brand_display_mode') === 'text_only' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Only Text</strong>
+                        <small class="text-muted font-11">Show clinic text only</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
                 <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Name <span class="text-danger">*</span></label>
                 <div class="input-group">
                   <span class="input-group-text bg-light border-end-0 text-muted" style="border-radius: 8px 0 0 8px;"><i class="mdi mdi-domain font-16"></i></span>

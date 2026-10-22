@@ -40,6 +40,7 @@ class DoctorSettingsController extends Controller
             'consultation_fee' => 'nullable|numeric|min:0',
             'bio' => 'nullable|string',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
+            'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
         ]);
 
         $data = [
@@ -50,6 +51,7 @@ class DoctorSettingsController extends Controller
             'address' => $request->address,
             'consultation_fee' => $request->consultation_fee ?? 0,
             'bio' => $request->bio,
+            'brand_display_mode' => $request->brand_display_mode ?? 'both',
         ];
 
         if ($request->hasFile('logo')) {

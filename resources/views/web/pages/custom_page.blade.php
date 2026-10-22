@@ -202,18 +202,31 @@
         
         <!-- Clinic Consultation Card -->
         <div class="card border-0 shadow-sm rounded-4 p-4" style="border-radius: 18px; background: #ffffff; border: 1px solid #eef2f6;">
+          @php
+            $sidebarBrandMode = $clinic->brand_display_mode ?? 'both';
+            $sidebarShowLogo = (!$clinic || $clinic->showBrandLogo());
+            $sidebarShowText = (!$clinic || $clinic->showBrandText());
+            if ($sidebarBrandMode === 'logo_only' && (!$clinic || empty($clinic->logo))) {
+                $sidebarShowText = true;
+            }
+          @endphp
           <div class="d-flex align-items-center mb-3" style="gap: 12px;">
-            @if($clinic->logo)
-              <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 48px; max-width: 140px; object-fit: contain;">
-            @else
-              <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
-                <i class="fa-solid fa-hospital"></i>
+            @if($sidebarShowLogo)
+              @if($clinic && $clinic->logo)
+                <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: {{ $sidebarBrandMode === 'logo_only' ? '54px' : '48px' }}; max-width: {{ $sidebarBrandMode === 'logo_only' ? '200px' : '140px' }}; object-fit: contain;">
+              @else
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
+                  <i class="fa-solid fa-hospital"></i>
+                </div>
+              @endif
+            @endif
+
+            @if($sidebarShowText)
+              <div>
+                <h5 class="fw-bold mb-0" style="color: #0f172a; font-size: 17px;">{{ $clinic->name }}</h5>
+                <small class="text-muted">{{ $clinic->specialization ?? 'Health Clinic' }}</small>
               </div>
             @endif
-            <div>
-              <h5 class="fw-bold mb-0" style="color: #0f172a; font-size: 17px;">{{ $clinic->name }}</h5>
-              <small class="text-muted">{{ $clinic->specialization ?? 'Health Clinic' }}</small>
-            </div>
           </div>
 
           <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">

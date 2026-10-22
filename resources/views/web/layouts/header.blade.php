@@ -91,6 +91,18 @@
   .vital-brand-logo-img:hover {
     transform: scale(1.03);
   }
+  .vital-brand-logo-prominent {
+    height: 48px;
+    max-height: 48px;
+    max-width: 240px;
+  }
+  @media (max-width: 576px) {
+    .vital-brand-logo-prominent {
+      height: 36px;
+      max-height: 36px;
+      max-width: 150px;
+    }
+  }
   .vital-logo-icon {
     width: 42px;
     height: 42px;
@@ -352,18 +364,32 @@
   <!-- 2. Main Sticky Modern Navbar -->
   <div class="vital-nav-bar">
     <div class="vital-nav-main">
-      <a href="{{ $clinicUrl }}" class="vital-brand">
-        @if($clinic && $clinic->logo)
-          <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" class="vital-brand-logo-img">
-        @else
-          <div class="vital-logo-icon">
-            <i class="fa-solid fa-hospital"></i>
+      @php
+        $brandMode = $clinic->brand_display_mode ?? 'both';
+        $showBrandLogo = (!$clinic || $clinic->showBrandLogo());
+        $showBrandText = (!$clinic || $clinic->showBrandText());
+        // Fallback: If clinic selected 'logo_only' but hasn't uploaded a logo file yet, display text so the header never disappears
+        if ($brandMode === 'logo_only' && (!$clinic || empty($clinic->logo))) {
+            $showBrandText = true;
+        }
+      @endphp
+      <a href="{{ $clinicUrl }}" class="vital-brand {{ $brandMode === 'logo_only' ? 'vital-brand-logo-only' : ($brandMode === 'text_only' ? 'vital-brand-text-only' : '') }}">
+        @if($showBrandLogo)
+          @if($clinic && $clinic->logo)
+            <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" class="vital-brand-logo-img {{ $brandMode === 'logo_only' ? 'vital-brand-logo-prominent' : '' }}">
+          @else
+            <div class="vital-logo-icon">
+              <i class="fa-solid fa-hospital"></i>
+            </div>
+          @endif
+        @endif
+
+        @if($showBrandText)
+          <div class="vital-brand-info">
+            <span class="vital-brand-name">{{ $clinic->name ?? 'VitalCare Health Clinic' }}</span>
+            <span class="vital-brand-sub">{{ $clinic->specialization ?? 'Health Clinic & Consultation' }}</span>
           </div>
         @endif
-        <div class="vital-brand-info">
-          <span class="vital-brand-name">{{ $clinic->name ?? 'VitalCare Health Clinic' }}</span>
-          <span class="vital-brand-sub">{{ $clinic->specialization ?? 'Health Clinic & Consultation' }}</span>
-        </div>
       </a>
 
       <!-- Desktop Navigation Links -->

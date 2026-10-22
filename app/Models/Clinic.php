@@ -241,4 +241,28 @@ class Clinic extends Model
 
         return \Illuminate\Support\Facades\URL::to('public/' . $cleanPath);
     }
+
+    /**
+     * Get brand display mode (defaults to 'both' if not set)
+     */
+    public function getBrandDisplayModeAttribute($value): string
+    {
+        return in_array($value, ['both', 'logo_only', 'text_only']) ? $value : 'both';
+    }
+
+    /**
+     * Determine if clinic logo should be shown in branding
+     */
+    public function showBrandLogo(): bool
+    {
+        return in_array($this->brand_display_mode, ['both', 'logo_only']);
+    }
+
+    /**
+     * Determine if clinic text/title should be shown in branding
+     */
+    public function showBrandText(): bool
+    {
+        return in_array($this->brand_display_mode, ['both', 'text_only']);
+    }
 }

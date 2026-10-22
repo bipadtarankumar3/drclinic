@@ -62,6 +62,40 @@
                 </div>
               </div>
 
+              <!-- Brand Display Mode Selector -->
+              <div class="col-12 mb-3">
+                <label class="form-label font-weight-bold">Storefront Brand Display Mode</label>
+                <div class="row g-2">
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="both" {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Both (Logo + Text)</strong>
+                        <small class="text-muted font-11">Show logo image &amp; clinic name</small>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="logo_only" {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Only Logo</strong>
+                        <small class="text-muted font-11">Show logo image only</small>
+                      </div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="d-flex align-items-center p-2 rounded-3 border h-100" style="cursor: pointer; background: #f8fafc;">
+                      <input type="radio" name="brand_display_mode" value="text_only" {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'checked' : '' }} class="me-2">
+                      <div>
+                        <strong class="d-block font-13 text-dark">Only Text</strong>
+                        <small class="text-muted font-11">Show clinic name text only</small>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold">Clinic Name</label>
                 <input type="text" class="form-control" name="name" value="{{ old('name', $clinic->name) }}" required>

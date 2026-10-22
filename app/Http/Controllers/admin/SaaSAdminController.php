@@ -228,6 +228,7 @@ class SaaSAdminController extends Controller
             'status' => 'required|in:active,trialing,suspended,expired',
             'trial_days' => 'nullable|integer|min:1|max:365',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
+            'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
         ];
 
         if ($userMode === 'new') {
@@ -291,6 +292,7 @@ class SaaSAdminController extends Controller
                 'subdomain' => $subdomainClean,
                 'custom_domain' => $request->custom_domain ?: null,
                 'logo' => $logoPath,
+                'brand_display_mode' => $request->brand_display_mode ?: 'both',
                 'phone' => $request->clinic_phone ?: $user->phone,
                 'email' => $request->clinic_email ?: $user->email,
                 'address' => $request->address,
@@ -362,6 +364,7 @@ class SaaSAdminController extends Controller
             'custom_domain' => 'nullable|string|unique:clinics,custom_domain,' . $clinic->id,
             'trial_extend_days' => 'nullable|integer|min:0',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
+            'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
         ]);
 
         $trialEndsAt = $clinic->trial_ends_at;
@@ -375,6 +378,7 @@ class SaaSAdminController extends Controller
             'status' => $request->status,
             'subdomain' => strtolower($request->subdomain),
             'custom_domain' => $request->custom_domain ? strtolower(trim($request->custom_domain)) : null,
+            'brand_display_mode' => $request->brand_display_mode ?: 'both',
             'trial_ends_at' => $trialEndsAt,
         ];
 
