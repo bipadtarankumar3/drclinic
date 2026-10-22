@@ -42,7 +42,7 @@
   </div>
   @endif
 
-  <form method="POST" action="{{ route('admin.saas.clinic.store') }}" id="createClinicForm">
+  <form method="POST" action="{{ route('admin.saas.clinic.store') }}" id="createClinicForm" enctype="multipart/form-data">
     @csrf
 
     <div class="row g-4">
@@ -55,6 +55,20 @@
             </h5>
 
             <div class="row g-3">
+              <div class="col-md-12">
+                <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Logo</label>
+                <div class="d-flex align-items-center gap-3">
+                  <div id="saas-logo-preview-wrap" style="width: 58px; height: 58px; border-radius: 12px; background: #f8fafc; border: 1.5px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                    <img id="saas-logo-preview" src="" alt="Preview" style="max-height: 48px; max-width: 48px; object-fit: contain; display: none;">
+                    <i id="saas-logo-icon" class="mdi mdi-image-plus text-muted font-20"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <input type="file" name="logo" class="form-control" accept="image/*" onchange="previewAdminLogo(this)" style="border-radius: 8px; font-size: 13px;">
+                    <small class="text-muted font-11">Recommended: PNG, JPG, WebP, or SVG (Max 3MB). Appears on storefront &amp; booking receipts.</small>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-md-12">
                 <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Clinic Name <span class="text-danger">*</span></label>
                 <div class="input-group">
@@ -321,6 +335,24 @@ function toggleStatusFields(status) {
   const group = document.getElementById('trialDaysGroup');
   if (group) {
     group.style.display = (status === 'trialing') ? 'block' : 'none';
+  }
+}
+
+function previewAdminLogo(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('saas-logo-preview');
+      const icon = document.getElementById('saas-logo-icon');
+      if (img) {
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      if (icon) {
+        icon.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(input.files[0]);
   }
 }
 </script>

@@ -70,6 +70,16 @@
     box-shadow: 0 8px 28px rgba(37, 211, 102, 0.65);
     color: #ffffff !important;
   }
+  @media (max-width: 576px) {
+    .vital-float-wa {
+      bottom: 20px;
+      right: 20px;
+      width: 48px;
+      height: 48px;
+      font-size: 25px;
+      box-shadow: 0 4px 16px rgba(37, 211, 102, 0.4);
+    }
+  }
 </style>
 
 @yield('style')

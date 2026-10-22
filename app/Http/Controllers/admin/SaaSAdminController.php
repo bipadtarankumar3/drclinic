@@ -227,6 +227,7 @@ class SaaSAdminController extends Controller
             'plan_id' => 'nullable|exists:subscription_plans,id',
             'status' => 'required|in:active,trialing,suspended,expired',
             'trial_days' => 'nullable|integer|min:1|max:365',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
         ];
 
         if ($userMode === 'new') {
@@ -271,6 +272,15 @@ class SaaSAdminController extends Controller
                 $trialEndsAt = now()->addYear();
             }
 
+            // 2.1 Handle Clinic Logo Upload
+            $logoPath = null;
+            if ($request->hasFile('logo')) {
+                $logo = $request->file('logo');
+                $logoName = 'logo_' . time() . '_' . Str::random(6) . '.' . $logo->getClientOriginalExtension();
+                $logo->move(public_path('upload/clinic_logos'), $logoName);
+                $logoPath = 'upload/clinic_logos/' . $logoName;
+            }
+
             // 3. Create Clinic
             $subdomainClean = Str::slug($request->subdomain);
             $clinic = Clinic::create([
@@ -279,6 +289,7 @@ class SaaSAdminController extends Controller
                 'slug' => $subdomainClean,
                 'subdomain' => $subdomainClean,
                 'custom_domain' => $request->custom_domain ?: null,
+                'logo' => $logoPath,
                 'phone' => $request->clinic_phone ?: $user->phone,
                 'email' => $request->clinic_email ?: $user->email,
                 'address' => $request->address,
@@ -349,6 +360,7 @@ class SaaSAdminController extends Controller
             'subdomain' => 'required|alpha_dash|unique:clinics,subdomain,' . $clinic->id,
             'custom_domain' => 'nullable|string|unique:clinics,custom_domain,' . $clinic->id,
             'trial_extend_days' => 'nullable|integer|min:0',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
         ]);
 
         $trialEndsAt = $clinic->trial_ends_at;
@@ -357,13 +369,22 @@ class SaaSAdminController extends Controller
             $trialEndsAt = $base->addDays((int) $request->trial_extend_days);
         }
 
-        $clinic->update([
+        $updateData = [
             'name' => $request->name,
             'status' => $request->status,
             'subdomain' => strtolower($request->subdomain),
             'custom_domain' => $request->custom_domain ? strtolower(trim($request->custom_domain)) : null,
             'trial_ends_at' => $trialEndsAt,
-        ]);
+        ];
+
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('upload/clinic_logos'), $logoName);
+            $updateData['logo'] = 'upload/clinic_logos/' . $logoName;
+        }
+
+        $clinic->update($updateData);
 
         ActivityLog::log('super_admin_updated_clinic', "Super Admin updated clinic: {$clinic->name}", $clinic->id);
 

@@ -38,11 +38,30 @@
         <div class="card-body p-4 p-md-5">
           <h4 class="font-weight-bold mb-4">Clinic & Subscription Controls</h4>
 
-          <form action="{{ route('admin.saas.clinic.update', $clinic->id) }}" method="POST">
+          <form action="{{ route('admin.saas.clinic.update', $clinic->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <div class="row g-3">
+              <div class="col-12 mb-3">
+                <label class="form-label font-weight-bold">Clinic Logo</label>
+                <div class="d-flex align-items-center gap-3">
+                  <div id="edit-logo-preview-wrap" style="width: 64px; height: 64px; border-radius: 12px; background: #f8fafc; border: 1.5px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                    @if($clinic->logo)
+                      <img id="edit-logo-preview" src="{{ asset($clinic->logo) }}" alt="Logo" style="max-height: 52px; max-width: 52px; object-fit: contain;">
+                      <i id="edit-logo-icon" class="mdi mdi-hospital-building text-muted font-24" style="display: none;"></i>
+                    @else
+                      <img id="edit-logo-preview" src="" alt="Preview" style="max-height: 52px; max-width: 52px; object-fit: contain; display: none;">
+                      <i id="edit-logo-icon" class="mdi mdi-image-plus text-muted font-24"></i>
+                    @endif
+                  </div>
+                  <div class="flex-grow-1">
+                    <input type="file" name="logo" class="form-control" accept="image/*" onchange="previewEditLogo(this)">
+                    <small class="text-muted font-12">Recommended: PNG, JPG, WebP, or SVG (Max 3MB). Visible on public storefront header, custom pages &amp; invoices.</small>
+                  </div>
+                </div>
+              </div>
+
               <div class="col-md-6 mb-3">
                 <label class="form-label font-weight-bold">Clinic Name</label>
                 <input type="text" class="form-control" name="name" value="{{ old('name', $clinic->name) }}" required>
@@ -122,4 +141,26 @@
     </div>
   </div>
 </div>
+@endsection
+
+@section('scripts')
+<script>
+function previewEditLogo(input) {
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = document.getElementById('edit-logo-preview');
+      const icon = document.getElementById('edit-logo-icon');
+      if (img) {
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      if (icon) {
+        icon.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 @endsection

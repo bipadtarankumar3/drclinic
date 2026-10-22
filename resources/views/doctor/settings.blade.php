@@ -60,9 +60,32 @@
               <h4 class="font-weight-bold mb-3">Clinic Profile Details</h4>
               <p class="text-muted font-14 mb-4">This information is shown to your patients on your public booking page and appointment receipts.</p>
 
-              <form action="{{ route('doctor.settings.profile') }}" method="POST">
+              <form action="{{ route('doctor.settings.profile') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
+                  <!-- Clinic Logo Upload Section -->
+                  <div class="col-12 mb-3">
+                    <label class="form-label font-weight-bold d-block">Clinic Logo</label>
+                    <div class="d-flex align-items-center gap-3 p-3 rounded-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
+                      <div id="profile-logo-preview-wrap" style="width: 70px; height: 70px; border-radius: 14px; background: #ffffff; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                        @if($clinic->logo)
+                          <img id="profile-logo-preview" src="{{ asset($clinic->logo) }}" alt="Logo" style="max-height: 56px; max-width: 64px; object-fit: contain;">
+                        @else
+                          <img id="profile-logo-preview" src="" alt="Preview" style="max-height: 56px; max-width: 64px; object-fit: contain; display: none;">
+                          <div id="profile-logo-placeholder" style="color: #0d9488; font-size: 28px;">
+                            <i class="mdi mdi-hospital-building"></i>
+                          </div>
+                        @endif
+                      </div>
+                      <div class="flex-grow-1">
+                        <input type="file" class="form-control" name="logo" id="profile-logo-input" accept="image/*" onchange="previewClinicLogo(this, 'profile-logo-preview', 'profile-logo-placeholder')">
+                        <small class="text-muted d-block mt-1">
+                          <i class="mdi mdi-information-outline text-primary"></i> Recommended: PNG, SVG, or WEBP with transparent background (Max: 3MB). This logo will appear on your clinic storefront, booking header, and receipts.
+                        </small>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Clinic / Practice Name</label>
                     <input type="text" class="form-control" name="name" value="{{ old('name', $clinic->name) }}" required>
@@ -100,7 +123,7 @@
                   </div>
 
                   <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Profile Details</button>
+                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Profile Details & Logo</button>
                   </div>
                 </div>
               </form>
@@ -243,4 +266,26 @@
     </div>
   </div>
 </div>
+@endsection
+
+@section('js')
+<script>
+function previewClinicLogo(input, imgId, placeholderId) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.getElementById(imgId);
+      var placeholder = document.getElementById(placeholderId);
+      if (img) {
+        img.src = e.target.result;
+        img.style.display = 'block';
+      }
+      if (placeholder) {
+        placeholder.style.display = 'none';
+      }
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
 @endsection

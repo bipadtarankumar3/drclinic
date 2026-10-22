@@ -39,9 +39,10 @@ class DoctorSettingsController extends Controller
             'address' => 'nullable|string|max:500',
             'consultation_fee' => 'nullable|numeric|min:0',
             'bio' => 'nullable|string',
+            'logo' => 'nullable|image|mimes:jpeg,png,jpg,webp,svg|max:3072',
         ]);
 
-        $clinic->update([
+        $data = [
             'name' => $request->name,
             'phone' => $request->phone,
             'email' => $request->email,
@@ -49,11 +50,20 @@ class DoctorSettingsController extends Controller
             'address' => $request->address,
             'consultation_fee' => $request->consultation_fee ?? 0,
             'bio' => $request->bio,
-        ]);
+        ];
 
-        ActivityLog::log('clinic_profile_updated', 'Updated general clinic profile', $clinic->id);
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoName = 'logo_' . $clinic->id . '_' . time() . '.' . $logo->getClientOriginalExtension();
+            $logo->move(public_path('upload/clinic_logos'), $logoName);
+            $data['logo'] = 'upload/clinic_logos/' . $logoName;
+        }
 
-        return back()->with('success', 'Clinic details updated successfully.');
+        $clinic->update($data);
+
+        ActivityLog::log('clinic_profile_updated', 'Updated general clinic profile and logo', $clinic->id);
+
+        return back()->with('success', 'Clinic details and logo updated successfully.');
     }
 
     /**

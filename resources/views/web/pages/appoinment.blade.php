@@ -463,21 +463,109 @@
   }
 
   @media (max-width: 576px) {
-    .vital-hero-title { font-size: 28px; line-height: 1.2; letter-spacing: -0.5px; }
-    .vital-hero-subtitle { font-size: 14px; }
-    .vital-hero-cta { flex-direction: column; width: 100%; gap: 10px; }
-    .btn-vital-primary, .btn-vital-outline { width: 100%; justify-content: center; text-align: center; padding: 12px 20px; font-size: 14px; }
-    .vital-stats-row { gap: 8px; justify-content: center; }
-    .vital-stat-chip { padding: 8px 12px; font-size: 12px; }
-    .vital-hero-backdrop { width: 240px; height: 240px; }
-    .vital-doctor-img { max-width: 230px; }
-    .vital-emergency-card { position: static; margin-top: 16px; display: inline-flex; width: auto; }
-    .vital-booking-card { padding: 16px; border-radius: 16px; }
-    .fc .fc-toolbar { flex-direction: column; gap: 10px; align-items: center; }
-    .fc .fc-toolbar-title { font-size: 16px !important; }
-    .fc .fc-button { padding: 5px 10px !important; font-size: 12px !important; }
-    .fc-daygrid-day-number { font-size: 12px !important; padding: 4px !important; }
-    .time-slot-badge { flex: 1 1 calc(50% - 12px); min-width: 90px; justify-content: center; margin: 4px; padding: 8px 10px; font-size: 12.5px; }
+    .vital-hero-section { padding: 24px 0 32px 0; }
+    .vital-hero-badge { font-size: 12px; padding: 6px 14px; }
+    .vital-hero-title { font-size: 27px; line-height: 1.22; letter-spacing: -0.5px; }
+    .vital-hero-subtitle { font-size: 13.5px; line-height: 1.6; margin-bottom: 20px; }
+    .vital-hero-cta { flex-direction: column; width: 100%; gap: 10px; margin-bottom: 26px !important; }
+    .btn-vital-primary, .btn-vital-outline { width: 100%; justify-content: center; text-align: center; padding: 12px 20px; font-size: 14px; border-radius: 26px; }
+    
+    /* 3-Column Mobile Stats Grid - All 3 Badges In One Clean Row */
+    .vital-stats-row {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 6px !important;
+      width: 100% !important;
+      margin-top: 6px;
+    }
+    .vital-stat-chip {
+      padding: 10px 4px !important;
+      border-radius: 14px !important;
+      flex-direction: column !important;
+      text-align: center !important;
+      gap: 5px !important;
+      justify-content: center !important;
+      min-width: 0 !important;
+      background: #ffffff !important;
+    }
+    .stat-icon {
+      width: 28px !important;
+      height: 28px !important;
+      font-size: 12px !important;
+      margin: 0 auto !important;
+      flex-shrink: 0;
+    }
+    .stat-text {
+      min-width: 0;
+      width: 100%;
+    }
+    .stat-text strong {
+      font-size: 13px !important;
+      margin-bottom: 1px;
+      line-height: 1.1;
+    }
+    .stat-text span {
+      font-size: 9.5px !important;
+      line-height: 1.15;
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #64748b;
+    }
+
+    /* Hero Doctor Visual & Emergency Badge Centered & Clean */
+    .vital-hero-img-wrap {
+      min-height: auto !important;
+      padding: 16px 0 10px 0 !important;
+      width: 100%;
+      flex-direction: column;
+      align-items: center;
+    }
+    .vital-hero-backdrop {
+      width: 220px !important;
+      height: 220px !important;
+    }
+    .vital-doctor-img {
+      max-width: 210px !important;
+      height: 270px !important;
+      border-radius: 20px !important;
+    }
+    .vital-emergency-card {
+      position: relative !important;
+      bottom: auto !important;
+      right: auto !important;
+      margin: -18px auto 0 auto !important;
+      display: inline-flex !important;
+      width: auto !important;
+      padding: 8px 16px !important;
+      border-radius: 14px !important;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+    }
+    .emerg-icon {
+      width: 36px !important;
+      height: 36px !important;
+      font-size: 15px !important;
+    }
+    .emerg-title {
+      font-size: 18px !important;
+    }
+    .emerg-sub {
+      font-size: 10px !important;
+    }
+
+    /* Services & Features */
+    .vital-section-heading { font-size: 26px; }
+    .vital-service-card { padding: 22px 18px; border-radius: 16px; }
+
+    /* Calendar & Booking */
+    .vital-booking-card { padding: 16px 12px; border-radius: 16px; }
+    .fc .fc-toolbar { flex-direction: column; gap: 8px; align-items: center; }
+    .fc .fc-toolbar-title { font-size: 15px !important; }
+    .fc .fc-button { padding: 4px 8px !important; font-size: 11.5px !important; }
+    .fc-daygrid-day-number { font-size: 11.5px !important; padding: 3px !important; }
+    .fc-col-header-cell-cushion { font-size: 11px !important; padding: 3px !important; }
+    .time-slot-badge { flex: 1 1 calc(50% - 10px); min-width: 85px; justify-content: center; margin: 4px; padding: 8px 8px; font-size: 12px; }
   }
 </style>
 @endsection

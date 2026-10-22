@@ -185,7 +185,7 @@
         <div class="card border-0 shadow-sm rounded-4 p-4" style="border-radius: 18px; background: #ffffff; border: 1px solid #eef2f6;">
           <div class="d-flex align-items-center mb-3" style="gap: 12px;">
             @if($clinic->logo)
-              <img src="{{ URL::to($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 48px; object-fit: contain;">
+              <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 48px; max-width: 140px; object-fit: contain;">
             @else
               <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
                 <i class="fa-solid fa-hospital"></i>

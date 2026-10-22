@@ -15,11 +15,15 @@
   <div class="card border mb-4 shadow-sm" style="background: #ffffff; border-radius: 16px; border-color: #f1f5f9 !important;">
     <div class="card-body p-4">
       <div class="d-flex align-items-center justify-content-between flex-wrap" style="gap: 16px;">
-        <!-- Left: Red Avatar & Clinic Details -->
+        <!-- Left: Clinic Logo/Avatar & Clinic Details -->
         <div class="d-flex align-items-center flex-wrap" style="gap: 16px;">
-          <div style="width: 56px; height: 56px; border-radius: 14px; background: #dc2626; color: #fff; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25); flex-shrink: 0;">
-            {{ strtoupper(substr($clinic->name, 0, 1)) }}
-          </div>
+          @if($clinic->logo)
+            <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" style="width: 56px; height: 56px; border-radius: 14px; object-fit: contain; background: #ffffff; border: 1px solid #e2e8f0; padding: 4px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); flex-shrink: 0;">
+          @else
+            <div style="width: 56px; height: 56px; border-radius: 14px; background: #0d9488; color: #fff; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25); flex-shrink: 0;">
+              {{ strtoupper(substr($clinic->name, 0, 1)) }}
+            </div>
+          @endif
           <div>
             <div class="d-flex align-items-center flex-wrap" style="gap: 8px;">
               <h3 class="font-weight-bold text-dark mb-0" style="font-size: 22px;">{{ $clinic->name }}</h3>

@@ -73,36 +73,62 @@
   .vital-brand {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     text-decoration: none;
+    min-width: 0;
+    flex: 1;
+  }
+  .vital-brand-logo-img {
+    height: 42px;
+    max-height: 42px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    border-radius: 8px;
+    flex-shrink: 0;
+    transition: transform 0.2s;
+  }
+  .vital-brand-logo-img:hover {
+    transform: scale(1.03);
   }
   .vital-logo-icon {
-    width: 44px;
-    height: 44px;
+    width: 42px;
+    height: 42px;
     border-radius: 12px;
     background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
-    font-size: 22px;
+    font-size: 20px;
     box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+    flex-shrink: 0;
   }
   .vital-brand-info {
-    line-height: 1.2;
+    line-height: 1.25;
+    min-width: 0;
+    overflow: hidden;
+    flex: 1;
   }
   .vital-brand-name {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
     color: #0f172a;
     letter-spacing: -0.3px;
     display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .vital-brand-sub {
-    font-size: 12px;
+    font-size: 11.5px;
     color: #64748b;
     font-weight: 600;
     text-transform: capitalize;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .vital-nav-links {
     display: flex;
@@ -138,21 +164,24 @@
   .vital-nav-actions {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
+    flex-shrink: 0;
   }
   .btn-vital-book {
     background: #0d9488;
     color: #ffffff !important;
     font-weight: 700;
-    font-size: 14px;
-    padding: 10px 22px;
+    font-size: 13.5px;
+    padding: 9px 20px;
     border-radius: 30px;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
     transition: all 0.2s ease;
+    height: 40px;
   }
   .btn-vital-book:hover {
     background: #0f766e;
@@ -161,10 +190,10 @@
     color: #ffffff;
   }
   .vital-search-btn {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    border: 1px solid #e2e8f0;
+    border: 1.5px solid #e2e8f0;
     background: #ffffff;
     display: flex;
     align-items: center;
@@ -173,29 +202,32 @@
     cursor: pointer;
     transition: all 0.2s;
     text-decoration: none;
+    font-size: 15px;
   }
   .vital-search-btn:hover {
     background: #f1f5f9;
-    color: #0f172a;
+    color: #0d9488;
+    border-color: #cbd5e1;
   }
 
   .vital-menu-toggle {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
     border: 1.5px solid #e2e8f0;
     background: #ffffff;
     display: none;
     align-items: center;
     justify-content: center;
     color: #0f172a;
-    font-size: 17px;
+    font-size: 16px;
     cursor: pointer;
     transition: all 0.2s;
   }
   .vital-menu-toggle:hover {
     background: #f1f5f9;
     color: #0d9488;
+    border-color: #cbd5e1;
   }
   .vital-mobile-menu {
     display: none;
@@ -236,7 +268,7 @@
   @media (max-width: 991px) {
     .vital-top-main,
     .vital-nav-main {
-      padding: 0 16px;
+      padding: 0 14px;
     }
     .vital-nav-links {
       display: none;
@@ -248,20 +280,53 @@
       display: flex;
     }
     .btn-vital-book {
-      padding: 8px 16px;
-      font-size: 13px;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border-radius: 50%;
+    }
+    .btn-vital-book span {
+      display: none;
     }
   }
 
   @media (max-width: 576px) {
+    .vital-nav-main {
+      padding: 0 12px;
+      gap: 8px;
+    }
+    .vital-brand {
+      gap: 8px;
+      max-width: calc(100% - 132px);
+      flex: 1 1 auto;
+    }
     .vital-brand-name {
-      font-size: 16.5px;
+      font-size: 14.5px;
+      max-width: 100%;
     }
     .vital-brand-sub {
-      font-size: 11px;
+      font-size: 10px;
+      max-width: 100%;
     }
-    .btn-vital-book span {
-      display: none;
+    .vital-brand-logo-img {
+      height: 34px;
+      max-height: 34px;
+      max-width: 90px;
+    }
+    .vital-logo-icon {
+      width: 34px;
+      height: 34px;
+      font-size: 17px;
+    }
+    .vital-nav-actions {
+      gap: 6px;
+    }
+    .btn-vital-book,
+    .vital-search-btn,
+    .vital-menu-toggle {
+      width: 36px;
+      height: 36px;
+      font-size: 13.5px;
     }
   }
 </style>
@@ -289,10 +354,10 @@
     <div class="vital-nav-main">
       <a href="{{ $clinicUrl }}" class="vital-brand">
         @if($clinic && $clinic->logo)
-          <img src="{{ URL::to($clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: 44px; object-fit: contain;">
+          <img src="{{ asset($clinic->logo) }}" alt="{{ $clinic->name }}" class="vital-brand-logo-img">
         @else
           <div class="vital-logo-icon">
-            <i class="fa-solid fa-plus-large fa-hospital"></i>
+            <i class="fa-solid fa-hospital"></i>
           </div>
         @endif
         <div class="vital-brand-info">
