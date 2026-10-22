@@ -642,9 +642,15 @@ class WebViewController extends Controller
             abort(404);
         }
 
+        if (!empty($order->clinic_id)) {
+            $clinic = Clinic::find($order->clinic_id) ?? $clinic;
+        }
+
+        view()->share('currentClinic', $clinic);
+        $doctor = ($clinic && $clinic->user_id) ? \App\Models\User::find($clinic->user_id) : null;
         $setting = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
 
-        return view('web.pages.invoice.show', compact('order', 'setting', 'clinic'));
+        return view('web.pages.invoice.show', compact('order', 'setting', 'clinic', 'doctor'));
     }
 
     public function viewCustomPage($param1, $param2 = null)
