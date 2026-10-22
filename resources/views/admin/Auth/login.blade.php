@@ -585,7 +585,15 @@
         <p class="form-subtitle">Enter your credentials or use Single Sign-On to access your clinic workspace.</p>
 
         <!-- Flash Alerts -->
-        @if(session('error'))
+        @if(session('session_expired'))
+        <div class="alert d-flex align-items-center rounded-3 p-3 mb-3 shadow-sm" style="font-size: 13.5px; border-left: 4px solid #f59e0b; background: #fffbeb; color: #92400e; border: 1px solid #fef3c7;">
+          <i class="mdi mdi-clock-alert-outline mr-2 font-20" style="margin-right: 12px; font-size: 24px; color: #d97706; flex-shrink: 0;"></i>
+          <div>
+            <strong class="d-block" style="font-size: 14px; color: #78350f; font-weight: 700;">Session Expired</strong>
+            <span style="color: #92400e;">Your login session timed out due to inactivity. Please log in again to resume your work.</span>
+          </div>
+        </div>
+        @elseif(session('error'))
         <div class="alert alert-danger d-flex align-items-center rounded-3 p-3 mb-3 shadow-sm" style="font-size: 13.5px; border-left: 4px solid #ef4444; background: #fef2f2; color: #991b1b;">
           <i class="mdi mdi-alert-circle mr-2 font-18" style="margin-right: 8px;"></i>
           <div>{{ session('error') }}</div>

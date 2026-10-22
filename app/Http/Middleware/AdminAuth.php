@@ -17,7 +17,16 @@ class AdminAuth
     public function handle(Request $request, Closure $next): Response
     {
         if (!Auth::check()) {
-            return redirect()->route('login');
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthenticated',
+                    'error' => 'Please login to access this page.',
+                ], 401);
+            }
+            return redirect()->guest(route('login'))
+                ->with('session_expired', true)
+                ->with('error', 'Your session has expired due to inactivity. Please log in again to continue.');
         }
 
         $user = Auth::user();

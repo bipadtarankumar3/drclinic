@@ -45,27 +45,38 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // Handle CSRF Token Mismatch / Session Expiration on Form Submissions
+        $this->renderable(function (\Illuminate\Session\TokenMismatchException $e, $request) {
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'CSRF token mismatch or session expired',
+                    'error' => 'Please refresh and try again',
+                ], 419);
+            }
+
+            return redirect()->guest(route('login'))
+                ->with('session_expired', true)
+                ->with('error', 'Your session or security token has expired. Please log in again to continue.');
+        });
     }
 
     protected function unauthenticated($request, AuthenticationException $exception)
     {
-        // if ($request->expectsJson()) {
-        //     // Return JSON response for API
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'Unauthenticated',
-        //         'error' => 'Invalid or missing token',
-        //     ], 401);
-        // }
+        if ($request->expectsJson() || $request->is('api/*')) {
+            // Return JSON response for API
+            return response()->json([
+                'success' => false,
+                'message' => 'Unauthenticated',
+                'error' => 'Invalid or missing token',
+            ], 401);
+        }
 
-        // // Return redirect for web requests (if applicable)
-        // return redirect()->route('login')->with('error', 'Please login to access this page.');
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Unauthenticated',
-            'error' => 'Invalid or missing token',
-        ], 401);
+        // Return proper redirect for web browser requests
+        return redirect()->guest(route('login'))
+            ->with('session_expired', true)
+            ->with('error', 'Your session has expired due to inactivity. Please log in again to continue.');
     }
 
 }
