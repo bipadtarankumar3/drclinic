@@ -449,8 +449,8 @@
           <li><a href="{{ $clinicUrl }}#doctors-section">Doctors</a></li>
         @endif
 
-        <!-- Health Packages -->
-        <li><a href="{{ $clinicUrl }}#packages-section">Health Packages</a></li>
+        <!-- Specialties Section -->
+        <li><a href="{{ $clinicUrl }}#specialties-section">Specialties</a></li>
 
         <!-- Other Dynamic Clinic Custom Pages -->
         @if($otherPages->count() > 0)
@@ -500,7 +500,7 @@
           <li><a href="{{ $clinicUrl }}#doctors-section"><i class="fa-solid fa-user-doctor me-2 text-teal"></i> Doctors</a></li>
         @endif
 
-        <li><a href="{{ $clinicUrl }}#packages-section"><i class="fa-solid fa-box-open me-2 text-teal"></i> Health Packages</a></li>
+        <li><a href="{{ $clinicUrl }}#specialties-section"><i class="fa-solid fa-shapes me-2 text-teal"></i> Specialties</a></li>
 
         @if($otherPages->count() > 0)
           @foreach($otherPages as $cp)
@@ -509,7 +509,7 @@
         @endif
 
         <li><a href="{{ $clinicUrl }}#contact-section"><i class="fa-solid fa-location-dot me-2 text-teal"></i> Contact</a></li>
-        <li><a href="{{ url('/admin/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li>
+        <!-- <li><a href="{{ url('/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li> -->
       </ul>
 
       <div class="d-flex flex-column gap-2 pt-2">

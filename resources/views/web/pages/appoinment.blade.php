@@ -679,7 +679,7 @@
 <section id="services-section" class="vital-services-section py-5">
   <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="text-center mb-5">
-      <h2 class="vital-section-heading">Our Services &amp; Specialties</h2>
+      <h2 class="vital-section-heading">Our Services</h2>
       <div class="vital-heading-bar"></div>
       <p class="text-muted mt-2" style="font-size: 15px;">Personalized medical and clinical care tailored for your specific health needs.</p>
     </div>
@@ -776,90 +776,7 @@
 </section>
 
 <!-- ========================================================
-     SECTION 3: 4-COLUMN PROMO & ACTION GRID (Fluid Responsive)
-     ======================================================== -->
-<section id="packages-section" class="vital-features-grid py-4 mb-5">
-  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
-    <div class="row g-4">
-      <!-- Card 1: Consultation Packages -->
-      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
-          <div>
-            <h5 class="feature-card-title mb-1">Consultation Packages</h5>
-            <div class="package-price mb-3">
-              <span class="text-muted" style="font-size: 13px;">Starting From</span>
-              <div class="price-value" style="color: var(--clinic-primary); font-size: 26px; font-weight: 800;">
-                ₹{{ number_format($currentClinic->consultation_fee ?? 499, 0) }}
-              </div>
-            </div>
-            <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}" alt="Consultation Packages" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
-            </div>
-          </div>
-          <a href="#booking-section" class="btn-outline-teal">Book Consultation</a>
-        </div>
-      </div>
-
-      <!-- Card 2: Why Choose Us? -->
-      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
-          <div>
-            <h5 class="feature-card-title mb-3">Why Choose Us?</h5>
-            <ul class="why-choose-list list-unstyled mb-4">
-              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Qualified Medical Team</li>
-              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Modern Clinical Equipment</li>
-              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Patient-Centered Approach</li>
-              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Transparent Pricing</li>
-            </ul>
-          </div>
-          <a href="#booking-section" class="btn-outline-teal">Schedule Visit</a>
-        </div>
-      </div>
-
-      <!-- Card 3: Quality Care Today -->
-      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
-          <div>
-            <h5 class="feature-card-title mb-1">Quality Care Today</h5>
-            <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.5;">Prompt consultations, accurate diagnosis, healthier recovery.</p>
-            <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/patient-care.jpg') }}" alt="Quality Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
-            </div>
-          </div>
-          <a href="#booking-section" class="btn-teal-solid">Book Appointment</a>
-        </div>
-      </div>
-
-      <!-- Card 4: We're Here for You -->
-      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
-          <div>
-            <h5 class="feature-card-title mb-1">Direct Clinic Line</h5>
-            <div class="emerg-highlight mb-1" style="color: var(--clinic-secondary, #f59e0b); font-size: 24px; font-weight: 800;">
-              @if(isset($currentClinic) && $currentClinic->phone)
-                {{ $currentClinic->phone }}
-              @else
-                Patient Support
-              @endif
-            </div>
-            <p class="text-muted mb-2" style="font-size: 13px;">Reach out for inquiries, scheduling, or support.</p>
-            <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/ambulance.jpg') }}" alt="Clinic Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
-            </div>
-          </div>
-          @if(isset($currentClinic) && $currentClinic->phone)
-            <a href="tel:{{ $currentClinic->phone }}" class="btn-outline-teal">Call Clinic</a>
-          @else
-            <a href="#booking-section" class="btn-outline-teal">Book Online</a>
-          @endif
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ========================================================
-     SECTION 4: INTERACTIVE APPOINTMENT CALENDAR (Fluid Responsive)
+     SECTION 3: INTERACTIVE APPOINTMENT CALENDAR (Fluid Responsive)
      ======================================================== -->
 <section id="booking-section" class="py-5" style="background: #f8fafc;">
   <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
@@ -988,6 +905,101 @@
           <p class="text-muted mb-0">Online bookings are currently paused. Please check back later or contact clinic support.</p>
         </div>
         @endif
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========================================================
+     SECTION 4: SPECIALTIES & HEALTHCARE HIGHLIGHTS (After Booking Section)
+     ======================================================== -->
+<section id="specialties-section" class="vital-features-grid py-5" style="background: #ffffff; border-top: 1px solid #f1f5f9;">
+  <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
+    <div class="text-center mb-5">
+      <div class="vital-hero-badge mb-2">
+        <span class="vital-pulse-dot"></span>
+        <span>Clinic Specialization</span>
+      </div>
+      <h2 class="vital-section-heading">Our Specialties</h2>
+      <div class="vital-heading-bar mb-3"></div>
+      <p class="text-muted" style="max-width: 650px; margin: 0 auto; font-size: 15px;">
+        Comprehensive healthcare packages, experienced medical specialists, and dedicated patient care.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Card 1: Consultation Packages -->
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="feature-card-title mb-1">Consultation Packages</h5>
+            <div class="package-price mb-3">
+              <span class="text-muted" style="font-size: 13px;">Starting From</span>
+              <div class="price-value" style="color: var(--clinic-primary); font-size: 26px; font-weight: 800;">
+                ₹{{ number_format($currentClinic->consultation_fee ?? 499, 0) }}
+              </div>
+            </div>
+            <div class="feature-img-box mb-3">
+              <img src="{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}" alt="Consultation Packages" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+            </div>
+          </div>
+          <a href="#booking-section" class="btn-outline-teal">Book Consultation</a>
+        </div>
+      </div>
+
+      <!-- Card 2: Why Choose Us? -->
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="feature-card-title mb-3">Why Choose Us?</h5>
+            <ul class="why-choose-list list-unstyled mb-4">
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Qualified Medical Team</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Modern Clinical Equipment</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Patient-Centered Approach</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Transparent Pricing</li>
+            </ul>
+          </div>
+          <a href="#booking-section" class="btn-outline-teal">Schedule Visit</a>
+        </div>
+      </div>
+
+      <!-- Card 3: Quality Care Today -->
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="feature-card-title mb-1">Quality Care Today</h5>
+            <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.5;">Prompt consultations, accurate diagnosis, healthier recovery.</p>
+            <div class="feature-img-box mb-3">
+              <img src="{{ URL::to('public/assets/web/modern/patient-care.jpg') }}" alt="Quality Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+            </div>
+          </div>
+          <a href="#booking-section" class="btn-teal-solid">Book Appointment</a>
+        </div>
+      </div>
+
+      <!-- Card 4: Direct Clinic Line -->
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <h5 class="feature-card-title mb-1">Direct Clinic Line</h5>
+            <div class="emerg-highlight mb-1" style="color: var(--clinic-secondary, #f59e0b); font-size: 24px; font-weight: 800;">
+              @if(isset($currentClinic) && $currentClinic->phone)
+                {{ $currentClinic->phone }}
+              @else
+                Patient Support
+              @endif
+            </div>
+            <p class="text-muted mb-2" style="font-size: 13px;">Reach out for inquiries, scheduling, or support.</p>
+            <div class="feature-img-box mb-3">
+              <img src="{{ URL::to('public/assets/web/modern/ambulance.jpg') }}" alt="Clinic Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+            </div>
+          </div>
+          @if(isset($currentClinic) && $currentClinic->phone)
+            <a href="tel:{{ $currentClinic->phone }}" class="btn-outline-teal">Call Clinic</a>
+          @else
+            <a href="#booking-section" class="btn-outline-teal">Book Online</a>
+          @endif
+        </div>
       </div>
     </div>
   </div>
