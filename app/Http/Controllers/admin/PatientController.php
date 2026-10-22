@@ -327,6 +327,7 @@ class PatientController extends Controller
         'patients.sex', 
         'patients.mobile_no', 
         'patients.alternate_mobile_no', 
+        'patients.customer_email', 
         'patients.address', 
         'patients.patient_problem', 
         'time_slots.from_time', 
@@ -349,8 +350,7 @@ class PatientController extends Controller
         $order->status = $request->status;
         $order->updated_at = Carbon::now();
         $order->save();
-        return redirect()->to('admin/patient-history/view/' . $id)->with('success', 'Status updated successfully.');
-
+        return redirect()->back()->with('success', 'Appointment status updated to ' . ucfirst($request->status) . ' successfully.');
     }
 
 
