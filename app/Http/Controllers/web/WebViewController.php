@@ -273,14 +273,17 @@ class WebViewController extends Controller
                 'patient_problem' => $request->patient_problem,
             ]);
 
+            $isCash = ($request->payment_method === 'cash' || $request->razorpay_payment_id === 'CASH_PAYMENT' || empty($request->razorpay_payment_id));
+            $transactionId = !empty($request->razorpay_order_id) ? $request->razorpay_order_id : ('CASH_' . strtoupper(uniqid()));
+
             $order = Order::create([
                 'clinic_id' => $clinicId,
                 'patient_id' => $patient->id,
                 'actual_amount' => $request->actual_amount,
                 'total_amount' => $request->amount,
-                'razorpay_payment_id' => $request->razorpay_payment_id,
-                'transaction_id' => $request->razorpay_order_id,
-                'payment_status' => 'success',
+                'razorpay_payment_id' => !empty($request->razorpay_payment_id) ? $request->razorpay_payment_id : 'CASH_AT_CLINIC',
+                'transaction_id' => $transactionId,
+                'payment_status' => $isCash ? 'pending' : 'success',
                 'status' => 'confirmed',
                 'booking_date' => $request->booking_date,
                 'time_slot_id' => $request->time_slot_id

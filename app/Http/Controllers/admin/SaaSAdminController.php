@@ -220,6 +220,7 @@ class SaaSAdminController extends Controller
             'subdomain' => 'required|string|max:100|alpha_dash|unique:clinics,subdomain|unique:clinics,slug',
             'specialization' => 'nullable|string|max:255',
             'consultation_fee' => 'nullable|numeric|min:0',
+            'platform_fee' => 'nullable|numeric|min:0',
             'clinic_phone' => 'nullable|string|max:20',
             'clinic_email' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:500',
@@ -298,6 +299,7 @@ class SaaSAdminController extends Controller
                 'address' => $request->address,
                 'specialization' => $request->specialization ?: 'General Healthcare',
                 'consultation_fee' => $request->consultation_fee ?: 500.00,
+                'platform_fee' => $request->filled('platform_fee') ? $request->platform_fee : 0.00,
                 'status' => $request->status,
                 'trial_ends_at' => $trialEndsAt,
                 'allow_cash_booking' => true,
@@ -365,6 +367,8 @@ class SaaSAdminController extends Controller
             'trial_extend_days' => 'nullable|integer|min:0',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
             'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
+            'consultation_fee' => 'nullable|numeric|min:0',
+            'platform_fee' => 'nullable|numeric|min:0',
         ]);
 
         $trialEndsAt = $clinic->trial_ends_at;
@@ -381,6 +385,14 @@ class SaaSAdminController extends Controller
             'brand_display_mode' => $request->brand_display_mode ?: 'both',
             'trial_ends_at' => $trialEndsAt,
         ];
+
+        if ($request->has('consultation_fee')) {
+            $updateData['consultation_fee'] = $request->consultation_fee ?? 0;
+        }
+
+        if ($request->has('platform_fee')) {
+            $updateData['platform_fee'] = $request->filled('platform_fee') ? $request->platform_fee : 0.00;
+        }
 
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');

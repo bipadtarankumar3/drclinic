@@ -227,11 +227,19 @@
                   </div>
                 </div>
 
-                <div class="col-md-6">
+                <div class="col-md-3">
                   <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Consultation Fee (₹)</label>
                   <div class="input-group">
                     <span class="input-group-text bg-light border-end-0 text-muted font-weight-bold" style="border-radius: 8px 0 0 8px;">₹</span>
-                    <input type="number" step="0.01" name="consultation_fee" class="form-control border-start-0" value="500.00" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                    <input type="number" step="0.01" min="0" name="consultation_fee" class="form-control border-start-0" value="500.00" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label font-weight-bold text-uppercase text-muted" style="font-size: 11px; letter-spacing: 0.5px;">Platform Charge (₹)</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0 text-muted font-weight-bold" style="border-radius: 8px 0 0 8px;">₹</span>
+                    <input type="number" step="0.01" min="0" name="platform_fee" class="form-control border-start-0" value="0.00" style="border-radius: 0 8px 8px 0; font-size: 13.5px;">
                   </div>
                 </div>
 

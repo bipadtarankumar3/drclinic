@@ -124,6 +124,24 @@
                 <input type="text" class="form-control" name="custom_domain" value="{{ old('custom_domain', $clinic->custom_domain) }}" placeholder="e.g. drsmithclinic.com">
               </div>
 
+              <!-- Pricing Settings -->
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold">Doctor Consultation Fee (₹)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light font-weight-bold">₹</span>
+                  <input type="number" step="0.01" min="0" class="form-control" name="consultation_fee" value="{{ old('consultation_fee', $clinic->consultation_fee ?? 500) }}" placeholder="500.00" required>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label font-weight-bold">Platform / Convenience Charge (₹)</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light font-weight-bold">₹</span>
+                  <input type="number" step="0.01" min="0" class="form-control" name="platform_fee" value="{{ old('platform_fee', $clinic->platform_fee ?? 0) }}" placeholder="0.00">
+                </div>
+                <small class="text-muted font-11">Charge added on top of doctor fee during online checkout.</small>
+              </div>
+
               <!-- Trial / Plan Extension -->
               <div class="col-12 mb-4">
                 <div class="p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
@@ -160,6 +178,7 @@
             <li><strong>Specialization:</strong> {{ $clinic->specialization ?? 'N/A' }}</li>
             <li><strong>Phone:</strong> {{ $clinic->phone ?? 'N/A' }}</li>
             <li><strong>Consultation Fee:</strong> ₹{{ number_format($clinic->consultation_fee, 2) }}</li>
+            <li><strong>Platform Charge:</strong> ₹{{ number_format($clinic->platform_fee ?? 0, 2) }}</li>
             <li><strong>Doctor Razorpay:</strong> 
               @if($clinic->razorpay_enabled)
                 <span class="badge bg-success text-white">Configured</span>

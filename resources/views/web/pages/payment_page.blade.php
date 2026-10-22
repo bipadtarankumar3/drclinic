@@ -280,9 +280,16 @@
           <hr class="mb-3" style="opacity: 0.1;">
 
           @php
-            $payAmount = (isset($currentClinic) && $currentClinic->consultation_fee) ? (float)$currentClinic->consultation_fee : (float)(isset($setting) ? $setting->pay_amount : 500);
-            $additionalAmount = (float)(isset($setting) ? $setting->pay_additional_amount : 0);
+            $payAmount = (isset($currentClinic) && $currentClinic->consultation_fee !== null) 
+                ? (float)$currentClinic->consultation_fee 
+                : (float)(isset($setting) && $setting->pay_amount !== null ? $setting->pay_amount : 500);
+            $additionalAmount = (isset($currentClinic) && $currentClinic->platform_fee !== null) 
+                ? (float)$currentClinic->platform_fee 
+                : (float)(isset($setting) && $setting->pay_additional_amount !== null ? $setting->pay_additional_amount : 0);
             $totalAmount = $payAmount + $additionalAmount;
+
+            $razorpayEnabled = !isset($currentClinic) || ($currentClinic->razorpay_enabled && (!empty($currentClinic->razorpay_key) || !empty($setting->pay_key) || env('RAZORPAY_KEY')));
+            $cashEnabled = !isset($currentClinic) || $currentClinic->allow_cash_booking;
           @endphp
 
           <div class="d-flex justify-content-between mb-2" style="font-size: 14.5px;">
@@ -292,7 +299,11 @@
 
           <div class="d-flex justify-content-between mb-3" style="font-size: 14.5px;">
             <span class="text-muted">Platform & Processing:</span>
-            <strong style="color: #10b981;">+ ₹ {{ number_format($additionalAmount, 2) }}</strong>
+            @if($additionalAmount > 0)
+              <strong style="color: #10b981;">+ ₹ {{ number_format($additionalAmount, 2) }}</strong>
+            @else
+              <span class="badge" style="background: #e2e8f0; color: #475569; font-weight: 600; font-size: 11px; padding: 3px 8px; border-radius: 6px;">FREE</span>
+            @endif
           </div>
 
           <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
@@ -321,15 +332,23 @@
             </div>
           </div>
 
-          <!-- Pay Button -->
-          <div class="mb-3">
-            <button id="pay-button" class="btn w-100" disabled onclick="payWithRazorpay(event)" type="button">
-              <i class="fa-solid fa-lock mr-2" style="margin-right: 8px;"></i> Pay Now & Confirm Booking
-            </button>
+          <!-- Payment Action Buttons -->
+          <div class="d-grid gap-2 mb-3">
+            @if($razorpayEnabled)
+              <button id="pay-button" class="btn w-100 py-2" disabled onclick="payWithRazorpay(event)" type="button" style="background: #0d9488; border-color: #0d9488; color: #ffffff; font-weight: 700; border-radius: 10px;">
+                <i class="fa-solid fa-lock mr-2" style="margin-right: 8px;"></i> Pay Online (₹ {{ number_format($totalAmount, 2) }})
+              </button>
+            @endif
+
+            @if($cashEnabled)
+              <button id="cash-pay-button" class="btn w-100 py-2 {{ $razorpayEnabled ? 'btn-outline-secondary' : 'btn-primary' }}" disabled onclick="payWithCash(event)" type="button" style="border-radius: 10px; font-weight: 600; {{ !$razorpayEnabled ? 'background: #0d9488; border-color: #0d9488; color: #fff;' : '' }}">
+                <i class="fa-solid fa-hospital-user mr-2" style="margin-right: 8px;"></i> Pay Cash at Clinic upon Arrival
+              </button>
+            @endif
           </div>
 
           <div class="text-center" style="font-size: 12px; color: #94a3b8;">
-            <i class="fa-solid fa-shield-halved mr-1 text-success" style="margin-right: 4px;"></i> 256-Bit SSL Encrypted &bull; Razorpay Verified
+            <i class="fa-solid fa-shield-halved mr-1 text-success" style="margin-right: 4px;"></i> 256-Bit SSL Encrypted &bull; Verified Clinic Booking
           </div>
         </div>
       </div>
@@ -397,6 +416,7 @@ $(document).ready(function () {
     const modalAcceptBtn = document.getElementById("modalAcceptBtn");
     const termsCheckbox = document.getElementById("terms");
     const payButton = document.getElementById("pay-button");
+    const cashPayButton = document.getElementById("cash-pay-button");
     const termsError = document.getElementById("terms-error");
 
     if (modalTermsCheckbox && modalAcceptBtn) {
@@ -410,6 +430,7 @@ $(document).ready(function () {
             if (modalTermsCheckbox && modalTermsCheckbox.checked) {
                 if (termsCheckbox) termsCheckbox.checked = true;
                 if (payButton) payButton.disabled = false;
+                if (cashPayButton) cashPayButton.disabled = false;
                 if (termsError) termsError.classList.add("d-none");
                 if (termsModal) termsModal.hide();
                 $("input[name='first_name']").focus();
@@ -421,11 +442,13 @@ $(document).ready(function () {
         termsCheckbox.addEventListener("change", function () {
             if (this.checked) {
                 if (payButton) payButton.disabled = false;
+                if (cashPayButton) cashPayButton.disabled = false;
                 if (termsError) termsError.classList.add("d-none");
                 if (modalTermsCheckbox) modalTermsCheckbox.checked = true;
                 if (modalAcceptBtn) modalAcceptBtn.disabled = false;
             } else {
                 if (payButton) payButton.disabled = true;
+                if (cashPayButton) cashPayButton.disabled = true;
                 if (termsError) termsError.classList.remove("d-none");
                 if (modalTermsCheckbox) modalTermsCheckbox.checked = false;
                 if (modalAcceptBtn) modalAcceptBtn.disabled = true;
@@ -652,6 +675,96 @@ function payWithRazorpay(e) {
                 icon: 'error',
                 title: 'Gateway Error',
                 text: errMsg
+            });
+        }
+    });
+}
+
+function payWithCash(e) {
+    if (e) e.preventDefault();
+    $(".error-message").remove();
+
+    let isValid = true;
+    let first_name = $("input[name='first_name']").val();
+    let last_name = $("input[name='last_name']").val();
+    let dob = null;
+    let sex = $("select[name='sex']").val();
+    let age = $("input[name='age']").val();
+    let mobile_no = $("input[name='mobile_no']").val();
+    let alternate_mobile_no = $("input[name='alternate_mobile_no']").val();
+    let address = $("textarea[name='address']").val();
+    let patient_problem = $("textarea[name='patient_problem']").val();
+    let actual_amount = $("input[name='actual_amount']").val();
+    let amount = $("input[name='amount']").val();
+    let bookingDate = $("#booking_date").val();
+    let timeSlotId = $("#time_slot_id").val();
+
+    if (!first_name) {
+        $("input[name='first_name']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>First name is required.</span>");
+        isValid = false;
+    }
+    if (!last_name) {
+        $("input[name='last_name']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Last name is required.</span>");
+        isValid = false;
+    }
+    if (!mobile_no) {
+        $("input[name='mobile_no']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Mobile number is required.</span>");
+        isValid = false;
+    } else if (!/^\d{10}$/.test(mobile_no)) {
+        $("input[name='mobile_no']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Enter a valid 10-digit mobile number.</span>");
+        isValid = false;
+    }
+    if (!address) {
+        $("textarea[name='address']").after("<span class='error-message text-danger d-block mt-1' style='font-size:12px;'>Address is required.</span>");
+        isValid = false;
+    }
+
+    if (!isValid) return;
+
+    let cashBtn = $("#cash-pay-button");
+    let originalText = cashBtn.html();
+    cashBtn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm me-2" role="status" style="margin-right:8px;"></span>Confirming Appointment...');
+
+    $.ajax({
+        url: "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/payment-success') : url('payment-success') }}",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            payment_method: 'cash',
+            razorpay_payment_id: 'CASH_PAYMENT',
+            first_name: first_name,
+            last_name: last_name,
+            dob: dob,
+            sex: sex,
+            age: age,
+            mobile_no: mobile_no,
+            alternate_mobile_no: alternate_mobile_no,
+            address: address,
+            patient_problem: patient_problem,
+            actual_amount: actual_amount,
+            amount: amount,
+            booking_date: bookingDate,
+            time_slot_id: timeSlotId,
+            status: "confirmed"
+        },
+        success: function(data) {
+            if (data.success) {
+                window.location.href = "{{ (isset($currentClinic) && ($currentClinic->subdomain || $currentClinic->slug)) ? url('/c/' . ($currentClinic->subdomain ?? $currentClinic->slug) . '/booking-success/') : url('booking-success/') }}/" + data.order_id;
+            } else {
+                cashBtn.prop("disabled", false).html(originalText);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Error',
+                    text: data.message || 'Failed to book appointment. Please try again.'
+                });
+            }
+        },
+        error: function() {
+            cashBtn.prop("disabled", false).html(originalText);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Something went wrong while confirming your booking. Please try again.'
             });
         }
     });

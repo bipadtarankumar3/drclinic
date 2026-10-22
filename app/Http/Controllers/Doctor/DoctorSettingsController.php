@@ -38,6 +38,7 @@ class DoctorSettingsController extends Controller
             'specialization' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
             'consultation_fee' => 'nullable|numeric|min:0',
+            'platform_fee' => 'nullable|numeric|min:0',
             'bio' => 'nullable|string',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
             'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
@@ -50,6 +51,7 @@ class DoctorSettingsController extends Controller
             'specialization' => $request->specialization,
             'address' => $request->address,
             'consultation_fee' => $request->consultation_fee ?? 0,
+            'platform_fee' => $request->filled('platform_fee') ? $request->platform_fee : 0.00,
             'bio' => $request->bio,
             'brand_display_mode' => $request->brand_display_mode ?? 'both',
         ];
@@ -64,9 +66,9 @@ class DoctorSettingsController extends Controller
 
         $clinic->update($data);
 
-        ActivityLog::log('clinic_profile_updated', 'Updated general clinic profile and logo', $clinic->id);
+        ActivityLog::log('clinic_profile_updated', 'Updated general clinic profile, pricing, and logo', $clinic->id);
 
-        return back()->with('success', 'Clinic details and logo updated successfully.');
+        return back()->with('success', 'Clinic details, pricing, and logo updated successfully.');
     }
 
     /**
@@ -81,14 +83,21 @@ class DoctorSettingsController extends Controller
             'razorpay_secret' => 'nullable|string|max:255',
             'razorpay_enabled' => 'nullable|boolean',
             'allow_cash_booking' => 'nullable|boolean',
+            'platform_fee' => 'nullable|numeric|min:0',
         ]);
 
-        $clinic->update([
+        $updateData = [
             'razorpay_key' => $request->razorpay_key,
             'razorpay_secret' => $request->razorpay_secret,
             'razorpay_enabled' => $request->has('razorpay_enabled'),
             'allow_cash_booking' => $request->has('allow_cash_booking'),
-        ]);
+        ];
+
+        if ($request->has('platform_fee')) {
+            $updateData['platform_fee'] = $request->filled('platform_fee') ? $request->platform_fee : 0.00;
+        }
+
+        $clinic->update($updateData);
 
         ActivityLog::log('clinic_razorpay_updated', 'Updated Razorpay payment credentials', $clinic->id);
 

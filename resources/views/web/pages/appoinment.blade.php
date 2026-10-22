@@ -859,9 +859,19 @@
 
                 <input type="hidden" id="selected-time-slot" name="time_slot_id">
 
-                <div class="p-3 rounded-3 mb-3" style="background: #e6fffa; border: 1px solid #b2f5ea; font-size: 13px; color: #234e52;">
-                  <i class="fa fa-info-circle mr-1" style="color: #0d9488;"></i> 
-                  <span>Consultation Fee: <strong>₹{{ number_format($currentClinic->consultation_fee ?? 499, 2) }}</strong></span>
+                <div class="p-3 rounded-3 mb-3" style="background: #e6fffa; border: 1px solid #b2f5ea; font-size: 13px; color: #234e52; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                  <div>
+                    <i class="fa fa-info-circle mr-1" style="color: #0d9488;"></i> 
+                    <span>Consultation Fee: <strong>₹{{ number_format($currentClinic->consultation_fee ?? 499, 2) }}</strong></span>
+                    @if(isset($currentClinic) && $currentClinic->platform_fee > 0)
+                      <span class="text-muted" style="font-size: 12px; margin-left: 6px;">(+ ₹{{ number_format($currentClinic->platform_fee, 2) }} platform charge)</span>
+                    @endif
+                  </div>
+                  @if(isset($currentClinic) && $currentClinic->platform_fee > 0)
+                    <span class="badge" style="background: #0d9488; color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                      Total: ₹{{ number_format(($currentClinic->consultation_fee ?? 499) + $currentClinic->platform_fee, 2) }}
+                    </span>
+                  @endif
                 </div>
 
                 <div class="text-end">

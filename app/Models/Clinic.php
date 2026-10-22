@@ -16,6 +16,7 @@ class Clinic extends Model
         'razorpay_enabled' => 'boolean',
         'allow_cash_booking' => 'boolean',
         'consultation_fee' => 'decimal:2',
+        'platform_fee' => 'decimal:2',
         'trial_ends_at' => 'datetime',
         'extra_features' => 'array',
         'custom_quotas' => 'array',

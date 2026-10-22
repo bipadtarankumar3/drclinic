@@ -1,5 +1,158 @@
 @extends('admin.layouts.main')
 
+@section('style')
+<style>
+  /* Modern Doctor Settings Custom Styles */
+  .brand-option-card {
+    border-radius: 14px !important;
+    position: relative;
+    user-select: none;
+    border: 1.5px solid #e2e8f0 !important;
+    background: #ffffff;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .brand-option-card:hover {
+    border-color: #cbd5e1 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+  .brand-option-card.active-brand-card {
+    border-color: #0d9488 !important;
+    background: #f0fdfa !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.12);
+  }
+  .brand-radio-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  .active-brand-card .brand-radio-indicator {
+    border-color: #0d9488;
+    background: #0d9488;
+  }
+  .active-brand-card .brand-radio-indicator::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffffff;
+  }
+
+  /* Custom Toggle Switch Cards */
+  .doctor-switch-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 14px;
+    transition: all 0.2s ease;
+  }
+  .doctor-switch-card:hover {
+    border-color: #cbd5e1;
+  }
+  .doctor-switch-card.is-active {
+    background: #f0fdfa;
+    border-color: #0d9488;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.08);
+  }
+  .doctor-switch-title {
+    font-weight: 700;
+    font-size: 14.5px;
+    color: #0f172a;
+    cursor: pointer;
+  }
+  .doctor-switch-desc {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: #64748b;
+  }
+  .doctor-toggle-pill {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 28px;
+    flex-shrink: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+  .doctor-toggle-pill input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+  }
+  .doctor-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #cbd5e1;
+    transition: .25s ease;
+    border-radius: 34px;
+  }
+  .doctor-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .25s ease;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  .doctor-toggle-pill input:checked + .doctor-toggle-slider {
+    background-color: #0d9488;
+  }
+  .doctor-toggle-pill input:checked + .doctor-toggle-slider:before {
+    transform: translateX(22px);
+  }
+
+  .doctor-settings-input {
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    background-color: #ffffff !important;
+    padding: 10px 14px !important;
+    font-size: 14px !important;
+    color: #1e293b !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .doctor-settings-input:focus {
+    border-color: #0d9488 !important;
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15) !important;
+    background-color: #ffffff !important;
+  }
+  .btn-doctor-save {
+    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 11px 26px !important;
+    font-weight: 700 !important;
+    font-size: 14px !important;
+    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25) !important;
+    transition: all 0.2s;
+  }
+  .btn-doctor-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.35) !important;
+  }
+</style>
+@endsection
+
 @section('content')
 <div class="content-wrapper">
   <div class="row mb-4">
@@ -88,80 +241,133 @@
 
                   <!-- Header Branding Display Option -->
                   <div class="col-12 mb-3">
-                    <label class="form-label font-weight-bold d-block">Header &amp; Storefront Brand Display</label>
-                    <p class="text-muted small mb-2">Choose what to show in your clinic's top navigation bar and footer.</p>
+                    <label class="form-label font-weight-bold d-block text-dark">Header &amp; Storefront Brand Display</label>
+                    <p class="text-muted small mb-2">Choose what identity elements are shown in your clinic's top navigation bar and footer.</p>
                     
                     <div class="row g-2">
                       <div class="col-md-4">
-                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? '#0d9488' : '#e2e8f0' }} !important;">
+                        <label class="d-flex flex-column p-3 rounded-3 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'active-brand-card' : '' }}" style="cursor: pointer;" onclick="selectBrandCard(this, 'both')">
+                          <input type="radio" name="brand_display_mode" value="both" {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'checked' : '' }} class="d-none">
                           <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="font-weight-bold text-dark"><i class="mdi mdi-view-headline text-teal mr-1"></i> Both (Logo + Name)</span>
-                            <input type="radio" name="brand_display_mode" value="both" {{ ($clinic->brand_display_mode ?? 'both') === 'both' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                            <span class="font-weight-bold text-dark d-flex align-items-center" style="font-size: 13.5px;">
+                              <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">
+                                <i class="mdi mdi-view-headline font-16"></i>
+                              </span>
+                              Both (Logo + Name)
+                            </span>
+                            <span class="brand-radio-indicator"></span>
                           </div>
-                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Shows your logo image side-by-side with your clinic name and specialty.</small>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Shows your logo image side-by-side with your clinic name and department.</small>
                         </label>
                       </div>
 
                       <div class="col-md-4">
-                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? '#0d9488' : '#e2e8f0' }} !important;">
+                        <label class="d-flex flex-column p-3 rounded-3 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'active-brand-card' : '' }}" style="cursor: pointer;" onclick="selectBrandCard(this, 'logo_only')">
+                          <input type="radio" name="brand_display_mode" value="logo_only" {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'checked' : '' }} class="d-none">
                           <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="font-weight-bold text-dark"><i class="mdi mdi-image-outline text-teal mr-1"></i> Only Logo</span>
-                            <input type="radio" name="brand_display_mode" value="logo_only" {{ ($clinic->brand_display_mode ?? 'both') === 'logo_only' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                            <span class="font-weight-bold text-dark d-flex align-items-center" style="font-size: 13.5px;">
+                              <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">
+                                <i class="mdi mdi-image-outline font-16"></i>
+                              </span>
+                              Only Logo
+                            </span>
+                            <span class="brand-radio-indicator"></span>
                           </div>
-                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays only your uploaded graphic logo in the navbar. Perfect for horizontal logos containing text.</small>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays only your graphic logo in the navbar. Ideal for horizontal logos that already have text.</small>
                         </label>
                       </div>
 
                       <div class="col-md-4">
-                        <label class="d-flex flex-column p-3 rounded-3 border h-100 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'active-brand-card' : '' }}" style="cursor: pointer; transition: all 0.2s; background: {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? '#f0fdfa' : '#ffffff' }}; border-color: {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? '#0d9488' : '#e2e8f0' }} !important;">
+                        <label class="d-flex flex-column p-3 rounded-3 brand-option-card {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'active-brand-card' : '' }}" style="cursor: pointer;" onclick="selectBrandCard(this, 'text_only')">
+                          <input type="radio" name="brand_display_mode" value="text_only" {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'checked' : '' }} class="d-none">
                           <div class="d-flex align-items-center justify-content-between mb-2">
-                            <span class="font-weight-bold text-dark"><i class="mdi mdi-format-text text-teal mr-1"></i> Only Text</span>
-                            <input type="radio" name="brand_display_mode" value="text_only" {{ ($clinic->brand_display_mode ?? 'both') === 'text_only' ? 'checked' : '' }} onchange="updateBrandCardStyle()">
+                            <span class="font-weight-bold text-dark d-flex align-items-center" style="font-size: 13.5px;">
+                              <span style="width: 28px; height: 28px; border-radius: 8px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: inline-flex; align-items: center; justify-content: center; margin-right: 8px;">
+                                <i class="mdi mdi-format-text font-16"></i>
+                              </span>
+                              Only Text
+                            </span>
+                            <span class="brand-radio-indicator"></span>
                           </div>
-                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays clean typography of your clinic name and department without any logo icon.</small>
+                          <small class="text-muted" style="font-size: 12px; line-height: 1.4;">Displays clean typography of your clinic name and department without any logo graphic.</small>
                         </label>
                       </div>
                     </div>
                   </div>
 
                   <div class="col-md-6 mb-3">
-                    <label class="form-label font-weight-bold">Clinic / Practice Name</label>
-                    <input type="text" class="form-control" name="name" value="{{ old('name', $clinic->name) }}" required>
+                    <label class="form-label font-weight-bold">Clinic / Practice Name <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control doctor-settings-input" name="name" value="{{ old('name', $clinic->name) }}" required>
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Medical Specialization</label>
-                    <input type="text" class="form-control" name="specialization" value="{{ old('specialization', $clinic->specialization) }}" placeholder="e.g. Neurologist, Cardiologist">
+                    <input type="text" class="form-control doctor-settings-input" name="specialization" value="{{ old('specialization', $clinic->specialization) }}" placeholder="e.g. Neurologist, Cardiologist">
                   </div>
 
-                  <div class="col-md-6 mb-3">
-                    <label class="form-label font-weight-bold">Consultation Fee (₹)</label>
-                    <input type="number" step="0.01" class="form-control" name="consultation_fee" value="{{ old('consultation_fee', $clinic->consultation_fee) }}">
-                    <small class="text-muted">Standard fee charged to patients for booking an appointment.</small>
+                  <!-- Consultation & Platform Pricing Section -->
+                  <div class="col-12 mb-3">
+                    <div class="p-3 rounded-3" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                      <h6 class="font-weight-bold text-dark mb-1 d-flex align-items-center">
+                        <i class="mdi mdi-cash-multiple text-primary mr-2" style="font-size: 18px;"></i> Consultation &amp; Platform Pricing
+                      </h6>
+                      <p class="text-muted small mb-3">Configure standard consultation charges and platform / convenience fees charged to patients during checkout.</p>
+
+                      <div class="row g-3">
+                        <div class="col-md-6">
+                          <label class="form-label font-weight-bold text-dark" style="font-size: 13.5px;">Standard Consultation Fee (₹) <span class="text-danger">*</span></label>
+                          <div class="input-group">
+                            <span class="input-group-text bg-white font-weight-bold text-muted border-end-0">₹</span>
+                            <input type="number" step="0.01" min="0" class="form-control doctor-settings-input border-start-0" name="consultation_fee" id="pricing-consultation-fee" value="{{ old('consultation_fee', $clinic->consultation_fee ?? 500) }}" required oninput="calculateTotalPreview()">
+                          </div>
+                          <small class="text-muted font-12">Consultation amount received by doctor for the appointment.</small>
+                        </div>
+
+                        <div class="col-md-6">
+                          <label class="form-label font-weight-bold text-dark" style="font-size: 13.5px;">Platform / Convenience Charge (₹)</label>
+                          <div class="input-group">
+                            <span class="input-group-text bg-white font-weight-bold text-muted border-end-0">₹</span>
+                            <input type="number" step="0.01" min="0" class="form-control doctor-settings-input border-start-0" name="platform_fee" id="pricing-platform-fee" value="{{ old('platform_fee', $clinic->platform_fee ?? 0) }}" placeholder="0.00" oninput="calculateTotalPreview()">
+                          </div>
+                          <small class="text-muted font-12">Optional booking convenience charge added at checkout (e.g. ₹40 or ₹0 for free).</small>
+                        </div>
+
+                        <div class="col-12 pt-1">
+                          <div class="d-flex align-items-center justify-content-between p-2 px-3 rounded-2" style="background: #ffffff; border: 1px dashed #cbd5e1; font-size: 13.5px;">
+                            <span class="text-muted"><i class="mdi mdi-calculator text-primary mr-1"></i> Patient Checkout Total Preview:</span>
+                            <strong id="pricing-total-preview" style="color: #0d9488; font-size: 16px;">
+                              ₹ {{ number_format(($clinic->consultation_fee ?? 500) + ($clinic->platform_fee ?? 0), 2) }}
+                            </strong>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Helpline Phone Number</label>
-                    <input type="text" class="form-control" name="phone" value="{{ old('phone', $clinic->phone) }}">
+                    <input type="text" class="form-control doctor-settings-input" name="phone" value="{{ old('phone', $clinic->phone) }}">
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Clinic Contact Email</label>
-                    <input type="email" class="form-control" name="email" value="{{ old('email', $clinic->email) }}">
+                    <input type="email" class="form-control doctor-settings-input" name="email" value="{{ old('email', $clinic->email) }}">
                   </div>
 
                   <div class="col-12 mb-3">
                     <label class="form-label font-weight-bold">Clinic Physical Address</label>
-                    <textarea class="form-control" name="address" rows="2">{{ old('address', $clinic->address) }}</textarea>
+                    <textarea class="form-control doctor-settings-input" name="address" rows="2">{{ old('address', $clinic->address) }}</textarea>
                   </div>
 
                   <div class="col-12 mb-4">
                     <label class="form-label font-weight-bold">Doctor Bio / Clinic About</label>
-                    <textarea class="form-control" name="bio" rows="4" placeholder="Brief background about doctor qualifications, experience, and facilities.">{{ old('bio', $clinic->bio) }}</textarea>
+                    <textarea class="form-control doctor-settings-input" name="bio" rows="4" placeholder="Brief background about doctor qualifications, experience, and facilities.">{{ old('bio', $clinic->bio) }}</textarea>
                   </div>
 
                   <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Profile Details & Logo</button>
+                    <button type="submit" class="btn btn-doctor-save">
+                      <i class="mdi mdi-content-save-outline mr-1"></i> Save Profile Details &amp; Pricing
+                    </button>
                   </div>
                 </div>
               </form>
@@ -175,8 +381,12 @@
                 <strong>100% of the funds go directly into your personal Razorpay account</strong>.
               </p>
 
-              <div class="alert alert-info rounded-3 p-3 mb-4">
-                <i class="mdi mdi-information mr-1"></i> You can obtain your <strong>Key ID</strong> and <strong>Key Secret</strong> from your <a href="https://dashboard.razorpay.com/#/access/api-keys" target="_blank" class="font-weight-bold text-primary">Razorpay Dashboard &rarr; Settings &rarr; API Keys</a>.
+              <div class="alert alert-info rounded-3 p-3 mb-4 d-flex align-items-center" style="background: #f0fdfa; border: 1.5px solid #ccfbf1; color: #0f766e;">
+                <i class="mdi mdi-information font-22 mr-2" style="color: #0d9488;"></i>
+                <div>
+                  You can obtain your <strong>Key ID</strong> and <strong>Key Secret</strong> from your 
+                  <a href="https://dashboard.razorpay.com/#/access/api-keys" target="_blank" class="font-weight-bold" style="color: #0d9488; text-decoration: underline;">Razorpay Dashboard &rarr; Settings &rarr; API Keys</a>.
+                </div>
               </div>
 
               <form action="{{ route('doctor.settings.razorpay') }}" method="POST">
@@ -184,32 +394,82 @@
                 <div class="row g-3">
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Razorpay Key ID</label>
-                    <input type="text" class="form-control font-monospace" name="razorpay_key" value="{{ old('razorpay_key', $clinic->razorpay_key) }}" placeholder="rzp_live_...">
+                    <input type="text" class="form-control doctor-settings-input font-monospace" name="razorpay_key" value="{{ old('razorpay_key', $clinic->razorpay_key) }}" placeholder="rzp_live_...">
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Razorpay Key Secret</label>
-                    <input type="password" class="form-control font-monospace" name="razorpay_secret" value="{{ old('razorpay_secret', $clinic->razorpay_secret) }}" placeholder="••••••••••••">
+                    <input type="password" class="form-control doctor-settings-input font-monospace" name="razorpay_secret" value="{{ old('razorpay_secret', $clinic->razorpay_secret) }}" placeholder="••••••••••••">
                   </div>
 
-                  <div class="col-12 mb-3">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="razorpay_enabled" name="razorpay_enabled" value="1" {{ $clinic->razorpay_enabled ? 'checked' : '' }}>
-                      <label class="form-check-label font-weight-bold" for="razorpay_enabled">Enable Online Payments (Razorpay Checkout)</label>
-                      <div class="text-muted font-13">Allow patients to pay online via UPI, Credit/Debit cards, Net Banking, and Wallets.</div>
+                  <!-- Platform Charge Field Inside Payment Tab -->
+                  <div class="col-12 mb-2">
+                    <div class="p-3 rounded-3" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                      <div class="row align-items-center g-3">
+                        <div class="col-md-8">
+                          <h6 class="font-weight-bold text-dark mb-1 d-flex align-items-center">
+                            <i class="mdi mdi-tag-outline text-success mr-2 font-18"></i> Platform / Convenience Charge on Bookings
+                          </h6>
+                          <p class="text-muted font-13 mb-0">
+                            This charge is added directly to your consultation fee at patient checkout. Set to <strong>₹0.00</strong> to offer free platform booking to your patients.
+                          </p>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="input-group">
+                            <span class="input-group-text bg-white font-weight-bold text-muted border-end-0">₹</span>
+                            <input type="number" step="0.01" min="0" class="form-control doctor-settings-input border-start-0 font-weight-bold" name="platform_fee" value="{{ old('platform_fee', $clinic->platform_fee ?? 0) }}" placeholder="40.00">
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  <div class="col-12 mb-4">
-                    <div class="form-check form-switch">
-                      <input class="form-check-input" type="checkbox" id="allow_cash_booking" name="allow_cash_booking" value="1" {{ $clinic->allow_cash_booking ? 'checked' : '' }}>
-                      <label class="form-check-label font-weight-bold" for="allow_cash_booking">Allow "Pay at Clinic" (Cash Payment)</label>
-                      <div class="text-muted font-13">Patients can confirm their appointment and pay the consultation fee in cash upon arrival.</div>
+                  <!-- Online Payments Toggle Card -->
+                  <div class="col-12 mb-1">
+                    <div class="doctor-switch-card {{ $clinic->razorpay_enabled ? 'is-active' : '' }}" onclick="if(event.target.tagName !== 'INPUT') { var cb = this.querySelector('input[type=checkbox]'); cb.checked = !cb.checked; toggleSwitchCardStyle(cb); }">
+                      <div>
+                        <div class="d-flex align-items-center mb-1">
+                          <span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(13, 148, 136, 0.1); color: #0d9488; display: inline-flex; align-items: center; justify-content: center; margin-right: 10px;">
+                            <i class="mdi mdi-credit-card-check-outline font-18"></i>
+                          </span>
+                          <span class="doctor-switch-title">Enable Online Payments (Razorpay Checkout)</span>
+                        </div>
+                        <div class="doctor-switch-desc" style="padding-left: 40px;">
+                          Allow patients to pay online instantly via UPI (GPay, PhonePe, Paytm), Credit/Debit cards, Net Banking, and Wallets.
+                        </div>
+                      </div>
+                      <label class="doctor-toggle-pill" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="razorpay_enabled" name="razorpay_enabled" value="1" {{ $clinic->razorpay_enabled ? 'checked' : '' }} onchange="toggleSwitchCardStyle(this)">
+                        <span class="doctor-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <!-- Cash Payment Toggle Card -->
+                  <div class="col-12 mb-3">
+                    <div class="doctor-switch-card {{ $clinic->allow_cash_booking ? 'is-active' : '' }}" onclick="if(event.target.tagName !== 'INPUT') { var cb = this.querySelector('input[type=checkbox]'); cb.checked = !cb.checked; toggleSwitchCardStyle(cb); }">
+                      <div>
+                        <div class="d-flex align-items-center mb-1">
+                          <span style="width: 30px; height: 30px; border-radius: 8px; background: rgba(37, 99, 235, 0.1); color: #2563eb; display: inline-flex; align-items: center; justify-content: center; margin-right: 10px;">
+                            <i class="mdi mdi-cash-register font-18"></i>
+                          </span>
+                          <span class="doctor-switch-title">Allow "Pay at Clinic" (Cash Payment)</span>
+                        </div>
+                        <div class="doctor-switch-desc" style="padding-left: 40px;">
+                          Patients can book their slot online and pay the consultation fee in cash upon arrival at your clinic reception.
+                        </div>
+                      </div>
+                      <label class="doctor-toggle-pill" onclick="event.stopPropagation();">
+                        <input type="checkbox" id="allow_cash_booking" name="allow_cash_booking" value="1" {{ $clinic->allow_cash_booking ? 'checked' : '' }} onchange="toggleSwitchCardStyle(this)">
+                        <span class="doctor-toggle-slider"></span>
+                      </label>
                     </div>
                   </div>
 
                   <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Payment Gateway Settings</button>
+                    <button type="submit" class="btn btn-doctor-save">
+                      <i class="mdi mdi-content-save-outline mr-1"></i> Save Payment Gateway Settings
+                    </button>
                   </div>
                 </div>
               </form>
@@ -326,19 +586,46 @@ function previewClinicLogo(input, imgId, placeholderId) {
   }
 }
 
-function updateBrandCardStyle() {
-  document.querySelectorAll('.brand-option-card').forEach(function(card) {
-    var radio = card.querySelector('input[type="radio"]');
-    if (radio && radio.checked) {
-      card.classList.add('active-brand-card');
-      card.style.background = '#f0fdfa';
-      card.style.setProperty('border-color', '#0d9488', 'important');
-    } else {
-      card.classList.remove('active-brand-card');
-      card.style.background = '#ffffff';
-      card.style.setProperty('border-color', '#e2e8f0', 'important');
-    }
+function selectBrandCard(label, mode) {
+  document.querySelectorAll('.brand-option-card').forEach(function(c) {
+    c.classList.remove('active-brand-card');
+    c.style.background = '#ffffff';
+    c.style.setProperty('border-color', '#e2e8f0', 'important');
   });
+  label.classList.add('active-brand-card');
+  label.style.background = '#f0fdfa';
+  label.style.setProperty('border-color', '#0d9488', 'important');
+  var radio = label.querySelector('input[type="radio"]');
+  if (radio) {
+    radio.checked = true;
+  }
 }
+
+function toggleSwitchCardStyle(input) {
+  var card = input.closest('.doctor-switch-card');
+  if (card) {
+    if (input.checked) {
+      card.classList.add('is-active');
+    } else {
+      card.classList.remove('is-active');
+    }
+  }
+}
+
+function calculateTotalPreview() {
+  var feeInput = document.getElementById('pricing-consultation-fee');
+  var platInput = document.getElementById('pricing-platform-fee');
+  var totalElem = document.getElementById('pricing-total-preview');
+  if (!totalElem) return;
+
+  var fee = parseFloat(feeInput ? feeInput.value : 0) || 0;
+  var plat = parseFloat(platInput ? platInput.value : 0) || 0;
+  var total = fee + plat;
+  totalElem.innerText = '₹ ' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  calculateTotalPreview();
+});
 </script>
 @endsection
