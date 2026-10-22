@@ -14,4 +14,9 @@ class Patient extends Model
     {
         return $this->belongsTo(Clinic::class);
     }
+
+    public function getNameAttribute()
+    {
+        return trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+    }
 }

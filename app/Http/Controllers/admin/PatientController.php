@@ -155,6 +155,18 @@ class PatientController extends Controller
         if ($request->has('patient_id') && !empty($request->patient_id)) {
             $query->where('orders.patient_id', $request->patient_id);
         }
+
+        if ($request->filled('gender')) {
+            $query->where('patients.sex', 'LIKE', $request->gender);
+        }
+
+        if ($request->filled('mobile_no')) {
+            $mobile = trim($request->mobile_no);
+            $query->where(function($q) use ($mobile) {
+                $q->where('patients.mobile_no', 'LIKE', "%{$mobile}%")
+                  ->orWhere('patients.alternate_mobile_no', 'LIKE', "%{$mobile}%");
+            });
+        }
     
         if ($request->has('from_date') && !empty($request->from_date)) {
             $query->whereDate('orders.created_at', '>=', $request->from_date);
@@ -169,7 +181,7 @@ class PatientController extends Controller
         $data['orders'] = $query->latest('orders.id')->paginate($perPage)->withQueryString();
         $data['patients'] = Patient::when($clinic, function($q) use ($clinic) {
             $q->where('clinic_id', $clinic->id);
-        })->get();
+        })->orderBy('first_name', 'asc')->get();
     
         // Return the view
         return view('admin.pages.patient.booking_history', $data);
@@ -177,38 +189,65 @@ class PatientController extends Controller
 
     public function history_of_customer(Request $request)
     {
-        $data['title'] = 'Patient History List';
+        $data['title'] = 'Patient Master Records';
 
         $user = auth()->user();
         $clinic = $user ? $user->getActiveClinic() : null;
     
-        // Query Builder
-        $query = DB::table('patients')
-            ->select('patients.*');
+        // Query Builder using Eloquent Patient model
+        $query = Patient::query();
 
         if ($clinic) {
-            $query->where('patients.clinic_id', $clinic->id);
+            $query->where('clinic_id', $clinic->id);
         }
     
-        // Apply Filters
-        if ($request->has('patient_id') && !empty($request->patient_id)) {
-            $query->where('patients.id', $request->patient_id);
+        // 1. Direct Patient ID Filter
+        if ($request->filled('patient_id')) {
+            $query->where('id', $request->patient_id);
+        }
+
+        // 2. Search by Keyword / Name / Problem / Address
+        if ($request->filled('search')) {
+            $search = trim($request->search);
+            $query->where(function($q) use ($search) {
+                $q->where('first_name', 'LIKE', "%{$search}%")
+                  ->orWhere('last_name', 'LIKE', "%{$search}%")
+                  ->orWhere('mobile_no', 'LIKE', "%{$search}%")
+                  ->orWhere('alternate_mobile_no', 'LIKE', "%{$search}%")
+                  ->orWhere('address', 'LIKE', "%{$search}%")
+                  ->orWhere('patient_problem', 'LIKE', "%{$search}%");
+            });
+        }
+
+        // 3. Filter by Mobile / Phone Number
+        if ($request->filled('mobile_no')) {
+            $mobile = trim($request->mobile_no);
+            $query->where(function($q) use ($mobile) {
+                $q->where('mobile_no', 'LIKE', "%{$mobile}%")
+                  ->orWhere('alternate_mobile_no', 'LIKE', "%{$mobile}%");
+            });
+        }
+
+        // 4. Filter by Gender
+        if ($request->filled('gender')) {
+            $query->where('sex', 'LIKE', $request->gender);
         }
     
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $query->whereDate('patients.created_at', '>=', $request->from_date);
+        // 5. Date Range Filters
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
         }
     
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $query->whereDate('patients.created_at', '<=', $request->to_date);
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
         }
     
         // Server-Side Paginated Patients
         $perPage = (int) $request->input('per_page', 15);
-        $data['patients_lists'] = $query->latest('patients.id')->paginate($perPage)->withQueryString();
+        $data['patients_lists'] = $query->latest('id')->paginate($perPage)->withQueryString();
         $data['patients'] = Patient::when($clinic, function($q) use ($clinic) {
             $q->where('clinic_id', $clinic->id);
-        })->get();
+        })->orderBy('first_name', 'asc')->get();
     
         // Return the view
         return view('admin.pages.patient.patient_history_list', $data);

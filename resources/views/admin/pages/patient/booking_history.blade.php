@@ -20,40 +20,54 @@
         </div>
 
         <form action="{{ url('admin/booking_history') }}" method="GET">
-            <div class="card my-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label for="patient_id">Patient</label>
-                                <select name="patient_id" class="form-control">
-                                    <option value="">Select Patient</option>
-                                    @foreach ($patients as $patient)
-                                        <option value="{{ $patient->id }}" {{ request('patient_id') == $patient->id ? 'selected' : '' }}>
-                                            {{ $patient->first_name }}   {{ $patient->last_name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+            <div class="card my-4 border-0 shadow-sm rounded-4" style="border-radius: 16px; border: 1.5px solid #e2e8f0;">
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-3 col-sm-6">
+                            <label class="font-11 font-weight-bold text-uppercase text-muted">Patient</label>
+                            <select name="patient_id" class="form-select form-control" style="border-radius: 8px; height: 42px; font-size: 13.5px;">
+                                <option value="">All Patients ({{ count($patients) }})</option>
+                                @foreach ($patients as $patient)
+                                    @php
+                                        $pName = trim(($patient->first_name ?? '') . ' ' . ($patient->last_name ?? ''));
+                                    @endphp
+                                    <option value="{{ $patient->id }}" {{ request('patient_id') == $patient->id ? 'selected' : '' }}>
+                                        {{ $pName ?: 'Patient #'.$patient->id }} {{ $patient->mobile_no ? '('.$patient->mobile_no.')' : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-2 col-sm-6">
+                            <label class="font-11 font-weight-bold text-uppercase text-muted">Mobile Number</label>
+                            <input type="text" class="form-control" name="mobile_no" placeholder="e.g. 9833..." value="{{ request('mobile_no') }}" style="border-radius: 8px; height: 42px; font-size: 13.5px;">
+                        </div>
+
+                        <div class="col-md-2 col-sm-6">
+                            <label class="font-11 font-weight-bold text-uppercase text-muted">Gender</label>
+                            <select name="gender" class="form-select form-control" style="border-radius: 8px; height: 42px; font-size: 13.5px;">
+                                <option value="">All Genders</option>
+                                <option value="male" {{ strtolower(request('gender')) === 'male' ? 'selected' : '' }}>Male</option>
+                                <option value="female" {{ strtolower(request('gender')) === 'female' ? 'selected' : '' }}>Female</option>
+                                <option value="other" {{ strtolower(request('gender')) === 'other' ? 'selected' : '' }}>Other</option>
+                            </select>
                         </div>
         
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="from_date">From Date</label>
-                                <input type="date" class="form-control" name="from_date" value="{{ request('from_date') }}">
-                            </div>
+                        <div class="col-md-2 col-sm-6">
+                            <label class="font-11 font-weight-bold text-uppercase text-muted">From Date</label>
+                            <input type="date" class="form-control" name="from_date" value="{{ request('from_date') }}" style="border-radius: 8px; height: 42px; font-size: 13px;">
                         </div>
         
-                        <div class="col-md-3">
-                            <div class="form-group">
-                                <label for="to_date">To Date</label>
-                                <input type="date" class="form-control" name="to_date" value="{{ request('to_date') }}">
+                        <div class="col-md-3 col-sm-6 d-flex align-items-end justify-content-between gap-2">
+                            <div class="flex-grow-1">
+                                <label class="font-11 font-weight-bold text-uppercase text-muted">To Date</label>
+                                <input type="date" class="form-control" name="to_date" value="{{ request('to_date') }}" style="border-radius: 8px; height: 42px; font-size: 13px;">
                             </div>
-                        </div>
-        
-                        <div class="col-md-2">
-                            <br>
-                            <button type="submit" class="btn btn-primary mt-3">Search</button>
+                            <div>
+                                <button type="submit" class="btn btn-primary font-weight-bold px-3" style="border-radius: 8px; height: 42px;">
+                                    <i class="mdi mdi-magnify me-1"></i> Filter
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
