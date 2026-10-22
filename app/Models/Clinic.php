@@ -266,4 +266,28 @@ class Clinic extends Model
     {
         return in_array($this->brand_display_mode, ['both', 'text_only']);
     }
+
+    /**
+     * Clinic services offered
+     */
+    public function services()
+    {
+        return $this->hasMany(ClinicService::class)->orderBy('sort_order', 'asc');
+    }
+
+    /**
+     * Active clinic services for public display
+     */
+    public function activeServices()
+    {
+        return $this->hasMany(ClinicService::class)->where('status', true)->orderBy('sort_order', 'asc');
+    }
+
+    /**
+     * Custom pages created for this clinic
+     */
+    public function pages()
+    {
+        return $this->hasMany(ClinicPage::class)->orderBy('sort_order', 'asc');
+    }
 }

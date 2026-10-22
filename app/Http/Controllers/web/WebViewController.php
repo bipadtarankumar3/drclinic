@@ -113,6 +113,7 @@ class WebViewController extends Controller
         $data['availabilities'] = Availability::get();
         $data['setting'] = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
         $data['TimeSlot'] = TimeSlot::all();
+        $data['clinicServices'] = $clinic ? $clinic->activeServices : collect();
 
         return view('web.pages.appoinment', $data);
     }

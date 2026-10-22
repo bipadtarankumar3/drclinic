@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\Doctor\DoctorDashboardController;
 use App\Http\Controllers\Doctor\DoctorSettingsController;
 use App\Http\Controllers\Doctor\DoctorPageController;
+use App\Http\Controllers\Doctor\DoctorServiceController;
 use App\Http\Controllers\Doctor\DoctorSubscriptionController;
 use App\Http\Controllers\Admin\SaaSAdminController;
 
@@ -96,6 +97,11 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']]
     Route::post('/settings/razorpay', [DoctorSettingsController::class, 'updateRazorpay'])->name('settings.razorpay');
     Route::post('/settings/branding', [DoctorSettingsController::class, 'updateBranding'])->name('settings.branding');
     Route::post('/settings/domain', [DoctorSettingsController::class, 'updateDomain'])->name('settings.domain');
+
+    // Clinic Services Management
+    Route::post('/services/seed-defaults', [DoctorServiceController::class, 'seedDefaults'])->name('services.seed_defaults');
+    Route::post('/services/{id}/toggle-status', [DoctorServiceController::class, 'toggleStatus'])->name('services.toggle_status');
+    Route::resource('services', DoctorServiceController::class);
 
     // Custom Pages Builder
     Route::post('/pages/seed-defaults', [DoctorPageController::class, 'seedDefaults'])->name('pages.seed_defaults');

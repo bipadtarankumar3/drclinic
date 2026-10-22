@@ -5,10 +5,30 @@
   $clinicUrl = $clinicSlug ? url('/c/' . $clinicSlug) : url('/');
   $bookingUrl = $clinicUrl . '#booking-section';
   $themeColor = $clinic->theme_color ?? '#0d9488';
+  $secondaryColor = $clinic->secondary_color ?? '#14b8a6';
+
+  $cleanHex = ltrim($themeColor, '#');
+  if (strlen($cleanHex) == 3) {
+      $cleanHex = $cleanHex[0].$cleanHex[0].$cleanHex[1].$cleanHex[1].$cleanHex[2].$cleanHex[2];
+  }
+  $primaryRgb = '13, 148, 136';
+  if (strlen($cleanHex) == 6) {
+      $r = hexdec(substr($cleanHex, 0, 2));
+      $g = hexdec(substr($cleanHex, 2, 2));
+      $b = hexdec(substr($cleanHex, 4, 2));
+      $primaryRgb = "{$r}, {$g}, {$b}";
+  }
 @endphp
 
 @section('style')
 <style>
+  :root {
+    --clinic-primary: {{ $themeColor }};
+    --clinic-primary-rgb: {{ $primaryRgb }};
+    --clinic-secondary: {{ $secondaryColor }};
+  }
+  .text-teal { color: var(--clinic-primary) !important; }
+
   .custom-page-body {
     font-size: 15.5px;
     line-height: 1.85;
@@ -42,12 +62,12 @@
     margin-bottom: 0.5rem;
   }
   .custom-page-body blockquote {
-    border-left: 4px solid #0d9488;
-    background: #f0fdfa;
+    border-left: 4px solid var(--clinic-primary);
+    background: rgba(var(--clinic-primary-rgb), 0.08);
     padding: 16px 22px;
     border-radius: 0 12px 12px 0;
     margin: 1.6rem 0;
-    color: #0f766e;
+    color: var(--clinic-primary);
     font-weight: 500;
   }
   .custom-page-body img {
@@ -95,12 +115,12 @@
 <!-- ========================================================
      MODERN CUSTOM PAGE HERO HEADER (100% Responsive)
      ======================================================== -->
-<section class="vital-page-header py-4" style="background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%); border-bottom: 1px solid #e2e8f0;">
+<section class="vital-page-header py-4" style="background: linear-gradient(180deg, rgba(var(--clinic-primary-rgb), 0.06) 0%, #ffffff 100%); border-bottom: 1px solid #e2e8f0;">
   <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-2">
       <ol class="breadcrumb mb-0" style="font-size: 13px; background: transparent; padding: 0;">
-        <li class="breadcrumb-item"><a href="{{ $clinicUrl }}" style="color: #0d9488; text-decoration: none;"><i class="fa-solid fa-house me-1"></i> Home</a></li>
+        <li class="breadcrumb-item"><a href="{{ $clinicUrl }}" style="color: var(--clinic-primary); text-decoration: none;"><i class="fa-solid fa-house me-1"></i> Home</a></li>
         <li class="breadcrumb-item text-muted">Clinic Pages</li>
         <li class="breadcrumb-item active text-dark fw-bold" aria-current="page">{{ $page->title }}</li>
       </ol>
@@ -108,8 +128,8 @@
 
     <div class="row align-items-center">
       <div class="col-lg-8">
-        <div class="vital-hero-badge mb-2 d-inline-flex align-items-center" style="background: rgba(13, 148, 136, 0.1); color: #0d9488; padding: 4px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 700;">
-          <span class="vital-pulse-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #0d9488; margin-right: 8px; display: inline-block;"></span>
+        <div class="vital-hero-badge mb-2 d-inline-flex align-items-center" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary); padding: 4px 14px; border-radius: 50px; font-size: 12.5px; font-weight: 700;">
+          <span class="vital-pulse-dot" style="width: 8px; height: 8px; border-radius: 50%; background: var(--clinic-primary); margin-right: 8px; display: inline-block;"></span>
           <span>{{ $clinic->name }}</span>
         </div>
         <h1 class="fw-bold mb-2" style="font-size: clamp(24px, 4vw, 36px); color: #0f172a; letter-spacing: -0.5px; line-height: 1.2;">
@@ -123,7 +143,7 @@
       </div>
 
       <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-        <a href="{{ $bookingUrl }}" class="btn text-white fw-bold px-4 py-2 rounded-pill shadow-sm" style="background: #0d9488; border: none; font-size: 14.5px;">
+        <a href="{{ $bookingUrl }}" class="btn text-white fw-bold px-4 py-2 rounded-pill shadow-sm" style="background: var(--clinic-primary); border: none; font-size: 14.5px;">
           <i class="fa-regular fa-calendar-check me-1"></i> Book Appointment
         </a>
       </div>
@@ -159,15 +179,15 @@
                   if (str_starts_with($trimmed, '### ')) {
                       $parsedLines[] = '<h5 class="fw-bold mt-4 mb-2" style="color: #0f172a;">' . e(substr($trimmed, 4)) . '</h5>';
                   } elseif (str_starts_with($trimmed, '## ')) {
-                      $parsedLines[] = '<h4 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 20px; border-left: 3px solid #0d9488; padding-left: 12px;">' . e(substr($trimmed, 3)) . '</h4>';
+                      $parsedLines[] = '<h4 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 20px; border-left: 3px solid var(--clinic-primary); padding-left: 12px;">' . e(substr($trimmed, 3)) . '</h4>';
                   } elseif (str_starts_with($trimmed, '# ')) {
                       $parsedLines[] = '<h3 class="fw-bold mt-4 mb-3" style="color: #0f172a; font-size: 24px;">' . e(substr($trimmed, 2)) . '</h3>';
                   } elseif (preg_match('/^[•\-\*]\s*(.+)$/u', $trimmed, $m)) {
                       $bulletText = e($m[1]);
                       $bulletText = preg_replace('/\*\*(.*?)\*\*/', '<strong style="color: #0f172a;">$1</strong>', $bulletText);
-                      $parsedLines[] = '<div class="d-flex align-items-start mb-2" style="gap: 10px;"><i class="fa-solid fa-circle-check mt-1" style="color: #0d9488; font-size: 14px; flex-shrink: 0;"></i><span>' . $bulletText . '</span></div>';
+                      $parsedLines[] = '<div class="d-flex align-items-start mb-2" style="gap: 10px;"><i class="fa-solid fa-circle-check mt-1" style="color: var(--clinic-primary); font-size: 14px; flex-shrink: 0;"></i><span>' . $bulletText . '</span></div>';
                   } elseif (str_starts_with($trimmed, '> ')) {
-                      $parsedLines[] = '<div class="p-3 my-3 rounded-3" style="background: #f0fdfa; border-left: 4px solid #0d9488; color: #0f766e; font-weight: 500;">' . e(substr($trimmed, 2)) . '</div>';
+                      $parsedLines[] = '<div class="p-3 my-3 rounded-3" style="background: rgba(var(--clinic-primary-rgb), 0.08); border-left: 4px solid var(--clinic-primary); color: var(--clinic-primary); font-weight: 500;">' . e(substr($trimmed, 2)) . '</div>';
                   } elseif ($trimmed === '') {
                       $parsedLines[] = '<div class="my-2"></div>';
                   } else {
@@ -184,12 +204,12 @@
         <hr class="my-5" style="opacity: 0.1;">
 
         <!-- Consultation Banner Inside Card -->
-        <div class="p-4 rounded-4 d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); color: #ffffff;">
+        <div class="p-4 rounded-4 d-flex align-items-center justify-content-between flex-wrap gap-3" style="background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%); color: #ffffff;">
           <div>
             <h5 class="fw-bold mb-1" style="font-size: 18px;">Need personalized medical advice?</h5>
             <p class="mb-0 small opacity-90">Schedule an in-person consultation with our certified doctors today.</p>
           </div>
-          <a href="{{ $bookingUrl }}" class="btn btn-light fw-bold px-4 py-2 rounded-pill" style="color: #0d9488; font-size: 14px;">
+          <a href="{{ $bookingUrl }}" class="btn btn-light fw-bold px-4 py-2 rounded-pill" style="color: var(--clinic-primary); font-size: 14px;">
             <i class="fa-regular fa-calendar-check me-1"></i> Book Consultation
           </a>
         </div>
@@ -215,7 +235,7 @@
               @if($clinic && $clinic->logo)
                 <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: {{ $sidebarBrandMode === 'logo_only' ? '54px' : '48px' }}; max-width: {{ $sidebarBrandMode === 'logo_only' ? '200px' : '140px' }}; object-fit: contain;">
               @else
-                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
                   <i class="fa-solid fa-hospital"></i>
                 </div>
               @endif
@@ -240,7 +260,7 @@
             </div>
           </div>
 
-          <a href="{{ $bookingUrl }}" class="btn text-white fw-bold py-2 mb-2 w-100 rounded-3 shadow-sm" style="background: #0d9488; border: none; font-size: 14.5px;">
+          <a href="{{ $bookingUrl }}" class="btn text-white fw-bold py-2 mb-2 w-100 rounded-3 shadow-sm" style="background: var(--clinic-primary); border: none; font-size: 14.5px;">
             <i class="fa-regular fa-calendar-check me-1"></i> Book Slot on Calendar
           </a>
 

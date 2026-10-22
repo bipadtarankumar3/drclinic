@@ -21,7 +21,7 @@
             @if($clinic && $clinic->logo)
               <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="{{ $clinic->name }}" style="max-height: {{ $footerBrandMode === 'logo_only' ? '54px' : '44px' }}; max-width: {{ $footerBrandMode === 'logo_only' ? '220px' : '150px' }}; object-fit: contain;">
             @else
-              <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
+              <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%); display: flex; align-items: center; justify-content: center; color: #ffffff; font-size: 20px;">
                 <i class="fa-solid fa-hospital"></i>
               </div>
             @endif
@@ -40,7 +40,7 @@
         <div class="d-flex mt-3" style="gap: 12px;">
           <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; color: #38bdf8; display: flex; align-items: center; justify-content: center; text-decoration: none;"><i class="fa-brands fa-facebook-f"></i></a>
           <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; color: #f43f5e; display: flex; align-items: center; justify-content: center; text-decoration: none;"><i class="fa-brands fa-instagram"></i></a>
-          <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; color: #0d9488; display: flex; align-items: center; justify-content: center; text-decoration: none;"><i class="fa-brands fa-whatsapp"></i></a>
+          <a href="#" style="width: 36px; height: 36px; border-radius: 50%; background: #1e293b; color: var(--clinic-primary); display: flex; align-items: center; justify-content: center; text-decoration: none;"><i class="fa-brands fa-whatsapp"></i></a>
         </div>
       </div>
 
@@ -57,20 +57,24 @@
             <li><a href="{{ $clinicUrl }}#about-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">About Us</a></li>
             <li><a href="{{ $clinicUrl }}#services-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Our Services</a></li>
           @endif
-          <li><a href="{{ $clinicUrl }}#booking-section" style="color: #0d9488; font-weight: 600; text-decoration: none; transition: color 0.2s;">Book Appointment</a></li>
+          <li><a href="{{ $clinicUrl }}#booking-section" style="color: var(--clinic-primary); font-weight: 600; text-decoration: none; transition: color 0.2s;">Book Appointment</a></li>
         </ul>
       </div>
 
-      <!-- Col 3: Specialties -->
+      <!-- Col 3: Services & Treatments Offered -->
       <div class="col-lg-3 col-md-6">
-        <h6 class="text-white font-weight-bold mb-3" style="text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">Specialties</h6>
+        <h6 class="text-white font-weight-bold mb-3" style="text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">Clinical Services</h6>
         <ul class="list-unstyled" style="font-size: 14px; line-height: 2;">
-          <li><span style="color: #cbd5e1;">Cardiology & Heart Care</span></li>
-          <li><span style="color: #cbd5e1;">General Medicine & Diagnosis</span></li>
-          <li><span style="color: #cbd5e1;">Dental Solutions & Surgery</span></li>
-          <li><span style="color: #cbd5e1;">Women's & Maternal Health</span></li>
-          <li><span style="color: #cbd5e1;">Neurology & Spine Care</span></li>
-          <li><span style="color: #cbd5e1;">Preventive Health Checkups</span></li>
+          @if($clinic && $clinic->activeServices && $clinic->activeServices->count() > 0)
+            @foreach($clinic->activeServices->take(6) as $cs)
+              <li><a href="{{ $clinicUrl }}#services-section" style="color: #cbd5e1; text-decoration: none;"><i class="{{ $cs->icon_class }} me-1" style="color: var(--clinic-primary); font-size: 12px; margin-right: 6px;"></i> {{ $cs->title }}</a></li>
+            @endforeach
+          @else
+            <li><span style="color: #cbd5e1;"><i class="fa-solid fa-user-doctor me-1" style="color: var(--clinic-primary); font-size: 12px; margin-right: 6px;"></i> Specialist Consultation</span></li>
+            <li><span style="color: #cbd5e1;"><i class="fa-solid fa-stethoscope me-1" style="color: var(--clinic-primary); font-size: 12px; margin-right: 6px;"></i> Diagnostics & Health Audits</span></li>
+            <li><span style="color: #cbd5e1;"><i class="fa-solid fa-heart-pulse me-1" style="color: var(--clinic-primary); font-size: 12px; margin-right: 6px;"></i> Preventive Health Screenings</span></li>
+            <li><span style="color: #cbd5e1;"><i class="fa-solid fa-hand-holding-medical me-1" style="color: var(--clinic-primary); font-size: 12px; margin-right: 6px;"></i> Follow-up & Treatment Care</span></li>
+          @endif
         </ul>
       </div>
 
@@ -78,23 +82,23 @@
       <div class="col-lg-3 col-md-6">
         <h6 class="text-white font-weight-bold mb-3" style="text-transform: uppercase; font-size: 13px; letter-spacing: 0.5px;">Emergency & Visit</h6>
         <div class="mb-3 d-flex" style="gap: 12px; font-size: 14px;">
-          <i class="fa-solid fa-location-dot mt-1" style="color: #0d9488;"></i>
+          <i class="fa-solid fa-location-dot mt-1" style="color: var(--clinic-primary);"></i>
           <span>{{ $clinic->address ?? 'Main Medical Street, Health District' }}</span>
         </div>
         <div class="mb-3 d-flex" style="gap: 12px; font-size: 14px;">
-          <i class="fa-solid fa-phone mt-1" style="color: #0d9488;"></i>
+          <i class="fa-solid fa-phone mt-1" style="color: var(--clinic-primary);"></i>
           <a href="tel:{{ $clinic->phone ?? '+919830012345' }}" style="color: #ffffff; font-weight: 700; text-decoration: none;">
             {{ $clinic->phone ?? '+91 9830012345' }}
           </a>
         </div>
         <div class="mb-3 d-flex" style="gap: 12px; font-size: 14px;">
-          <i class="fa-solid fa-envelope mt-1" style="color: #0d9488;"></i>
+          <i class="fa-solid fa-envelope mt-1" style="color: var(--clinic-primary);"></i>
           <a href="mailto:{{ $clinic->email ?? 'doctor@drclinic.com' }}" style="color: #94a3b8; text-decoration: none;">
             {{ $clinic->email ?? 'doctor@drclinic.com' }}
           </a>
         </div>
-        <div class="p-3 rounded-3 mt-3 d-flex align-items-center" style="background: rgba(13, 148, 136, 0.12); border: 1px solid rgba(13, 148, 136, 0.3); gap: 12px;">
-          <div style="width: 38px; height: 38px; border-radius: 50%; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">
+        <div class="p-3 rounded-3 mt-3 d-flex align-items-center" style="background: rgba(var(--clinic-primary-rgb, 13, 148, 136), 0.12); border: 1px solid rgba(var(--clinic-primary-rgb, 13, 148, 136), 0.3); gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 50%; background: var(--clinic-primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">
             <i class="fa-solid fa-headset"></i>
           </div>
           <div>
@@ -112,7 +116,7 @@
       </div>
       <div>
         <a href="{{ url('/admin/login') }}" style="color: #64748b; text-decoration: none; margin-left: 15px;"><i class="fa-solid fa-lock mr-1"></i> Doctor Portal</a>
-        <a href="#booking-section" style="color: #0d9488; text-decoration: none; margin-left: 15px;">Book Consultation</a>
+        <a href="#booking-section" style="color: var(--clinic-primary); text-decoration: none; margin-left: 15px;">Book Consultation</a>
       </div>
     </div>
   </div>

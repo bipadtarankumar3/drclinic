@@ -1,5 +1,24 @@
 @extends('web.layouts.main')
 
+@php
+  $clinic = $currentClinic ?? \App\Models\Clinic::first();
+  $themeColor = $clinic->theme_color ?? '#0d9488';
+  $secondaryColor = $clinic->secondary_color ?? '#14b8a6';
+
+  $hex = ltrim($themeColor, '#');
+  if (strlen($hex) == 3) {
+      $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+      $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+      $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+  } elseif (strlen($hex) == 6) {
+      $r = hexdec(substr($hex, 0, 2));
+      $g = hexdec(substr($hex, 2, 2));
+      $b = hexdec(substr($hex, 4, 2));
+  } else {
+      $r = 13; $g = 148; $b = 136;
+  }
+@endphp
+
 @section('style')
 <link rel="stylesheet" href="{{ URL::to('public/assets/web/css/appointment/appoint-style.css')}}">
 <link rel="stylesheet" href="{{ URL::to('public/assets/web/css/appointment/appoint-responsive.css')}}">
@@ -7,17 +26,20 @@
 
 <style>
   :root {
-    --vital-primary: #0d9488;
-    --vital-primary-dark: #0f766e;
-    --vital-primary-light: #ccfbf1;
-    --vital-secondary: #14b8a6;
+    --vital-primary: {{ $themeColor }};
+    --vital-primary-rgb: {{ $r }}, {{ $g }}, {{ $b }};
+    --vital-primary-dark: {{ $themeColor }};
+    --vital-primary-light: rgba({{ $r }}, {{ $g }}, {{ $b }}, 0.12);
+    --vital-secondary: {{ $secondaryColor }};
+    --clinic-primary: {{ $themeColor }};
+    --clinic-secondary: {{ $secondaryColor }};
   }
 
   /* ========================================================
      1. VITALCARE HERO SECTION
      ======================================================== */
   .vital-hero-section {
-    background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+    background: linear-gradient(180deg, rgba(var(--vital-primary-rgb), 0.05) 0%, #ffffff 100%);
     padding: 40px 0 60px 0;
     position: relative;
     overflow: hidden;
@@ -26,26 +48,26 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: #ccfbf1;
-    color: #0f766e;
+    background: rgba(var(--vital-primary-rgb), 0.1);
+    color: var(--vital-primary);
     font-size: 13.5px;
     font-weight: 700;
     padding: 7px 18px;
     border-radius: 30px;
-    border: 1px solid #99f6e4;
+    border: 1px solid rgba(var(--vital-primary-rgb), 0.25);
   }
   .vital-pulse-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #0d9488;
-    box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7);
+    background: var(--vital-primary);
+    box-shadow: 0 0 0 0 rgba(var(--vital-primary-rgb), 0.7);
     animation: vitalPulse 1.8s infinite;
   }
   @keyframes vitalPulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.7); }
-    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(13, 148, 136, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(var(--vital-primary-rgb), 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(var(--vital-primary-rgb), 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(var(--vital-primary-rgb), 0); }
   }
   .vital-hero-title {
     font-size: 54px;
@@ -55,7 +77,7 @@
     letter-spacing: -1.2px;
   }
   .vital-highlight {
-    color: #0d9488;
+    color: var(--vital-primary);
   }
   .vital-hero-subtitle {
     font-size: 16.5px;
@@ -70,22 +92,22 @@
     gap: 14px;
   }
   .btn-vital-primary {
-    background: #0d9488;
+    background: var(--vital-primary);
     color: #ffffff !important;
     font-weight: 700;
     font-size: 15px;
     padding: 14px 28px;
     border-radius: 30px;
     text-decoration: none;
-    box-shadow: 0 6px 20px rgba(13, 148, 136, 0.35);
+    box-shadow: 0 6px 20px rgba(var(--vital-primary-rgb), 0.35);
     display: inline-flex;
     align-items: center;
     transition: all 0.2s ease;
   }
   .btn-vital-primary:hover {
-    background: #0f766e;
+    background: var(--vital-secondary);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(13, 148, 136, 0.45);
+    box-shadow: 0 8px 24px rgba(var(--vital-primary-rgb), 0.45);
     color: #ffffff;
   }
   .btn-vital-outline {
@@ -102,9 +124,9 @@
     transition: all 0.2s ease;
   }
   .btn-vital-outline:hover {
-    border-color: #0d9488;
-    color: #0d9488 !important;
-    background: #f0fdfa;
+    border-color: var(--vital-primary);
+    color: var(--vital-primary) !important;
+    background: rgba(var(--vital-primary-rgb), 0.05);
   }
   .vital-stats-row {
     display: flex;
@@ -126,7 +148,7 @@
     width: 34px;
     height: 34px;
     border-radius: 50%;
-    background: #0d9488;
+    background: var(--vital-primary);
     color: #ffffff;
     display: flex;
     align-items: center;
@@ -160,14 +182,14 @@
     width: 440px;
     height: 440px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+    background: linear-gradient(135deg, var(--vital-primary) 0%, var(--vital-secondary) 100%);
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1;
     opacity: 0.95;
-    box-shadow: 0 10px 30px rgba(13, 148, 136, 0.2);
+    box-shadow: 0 10px 30px rgba(var(--vital-primary-rgb), 0.2);
   }
   .vital-doctor-img {
     position: relative;
@@ -176,7 +198,7 @@
     height: 460px;
     width: 100%;
     border-radius: 28px;
-    box-shadow: 0 20px 40px rgba(13, 148, 136, 0.25);
+    box-shadow: 0 20px 40px rgba(var(--vital-primary-rgb), 0.25);
     object-fit: cover;
     object-position: top center;
     display: block;
@@ -239,7 +261,7 @@
   .vital-heading-bar {
     width: 48px;
     height: 4px;
-    background: #0d9488;
+    background: var(--vital-primary);
     border-radius: 4px;
     margin: 0 auto;
   }
@@ -256,8 +278,8 @@
   }
   .vital-service-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 14px 30px rgba(13, 148, 136, 0.12);
-    border-color: #99f6e4;
+    box-shadow: 0 14px 30px rgba(var(--vital-primary-rgb), 0.12);
+    border-color: var(--vital-primary);
   }
   .service-icon-box {
     width: 56px;
@@ -283,7 +305,7 @@
     flex-grow: 1;
   }
   .service-link {
-    color: #0d9488;
+    color: var(--vital-primary);
     font-weight: 700;
     font-size: 14px;
     text-decoration: none;
@@ -293,7 +315,7 @@
     transition: gap 0.2s;
   }
   .service-link:hover {
-    color: #0f766e;
+    color: var(--vital-secondary);
     gap: 10px;
   }
 
@@ -318,8 +340,8 @@
     color: #0f172a;
   }
   .btn-outline-teal {
-    border: 1.5px solid #0d9488;
-    color: #0d9488 !important;
+    border: 1.5px solid var(--vital-primary);
+    color: var(--vital-primary) !important;
     background: transparent;
     border-radius: 10px;
     padding: 9px 16px;
@@ -330,11 +352,11 @@
     transition: all 0.2s;
   }
   .btn-outline-teal:hover {
-    background: #0d9488;
+    background: var(--vital-primary);
     color: #ffffff !important;
   }
   .btn-teal-solid {
-    background: #0d9488;
+    background: var(--vital-primary);
     color: #ffffff !important;
     border-radius: 10px;
     padding: 9px 16px;
@@ -346,7 +368,7 @@
     border: none;
   }
   .btn-teal-solid:hover {
-    background: #0f766e;
+    background: var(--vital-secondary);
     color: #ffffff !important;
   }
   .why-choose-list li {
@@ -358,7 +380,7 @@
     font-weight: 500;
   }
   .text-teal {
-    color: #0d9488 !important;
+    color: var(--vital-primary) !important;
   }
 
   /* ========================================================
@@ -378,16 +400,16 @@
     color: #0f172a !important;
   }
   .fc .fc-button-primary {
-    background-color: #0d9488 !important;
-    border-color: #0d9488 !important;
+    background-color: var(--vital-primary) !important;
+    border-color: var(--vital-primary) !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     font-size: 13px !important;
     padding: 6px 14px !important;
   }
   .fc .fc-button-primary:hover {
-    background-color: #0f766e !important;
-    border-color: #0f766e !important;
+    background-color: var(--vital-secondary) !important;
+    border-color: var(--vital-secondary) !important;
   }
   .fc .fc-daygrid-day-number {
     font-weight: 600;
@@ -395,16 +417,16 @@
     padding: 8px !important;
   }
   .fc .fc-day-today {
-    background-color: #f0fdfa !important;
+    background-color: rgba(var(--vital-primary-rgb), 0.08) !important;
   }
   .fc .fc-day-today .fc-daygrid-day-number {
-    color: #0d9488 !important;
+    color: var(--vital-primary) !important;
     font-weight: 800 !important;
   }
   .fc .fc-daygrid-day.fc-daygrid-day-selected,
   .fc-daygrid-day-selected,
   .fc .fc-day-today.fc-daygrid-day-selected {
-    background-color: #0d9488 !important;
+    background-color: var(--vital-primary) !important;
     color: #ffffff !important;
   }
   .fc .fc-daygrid-day.fc-daygrid-day-selected .fc-daygrid-day-number,
@@ -427,29 +449,29 @@
     transition: all 0.2s ease;
   }
   .time-slot-badge:hover {
-    border-color: #0d9488;
-    color: #0d9488;
-    background: #f0fdfa;
+    border-color: var(--vital-primary);
+    color: var(--vital-primary);
+    background: rgba(var(--vital-primary-rgb), 0.06);
   }
   .time-slot-badge.selected {
-    background-color: #0d9488 !important;
+    background-color: var(--vital-primary) !important;
     color: #ffffff !important;
-    border-color: #0d9488 !important;
-    box-shadow: 0 4px 12px rgba(13, 148, 136, 0.35);
+    border-color: var(--vital-primary) !important;
+    box-shadow: 0 4px 12px rgba(var(--vital-primary-rgb), 0.35);
   }
   #SubmitForBooking {
-    background: #0d9488;
+    background: var(--vital-primary);
     border: none;
     color: #ffffff;
     font-weight: 700;
     font-size: 15px;
     padding: 12px 28px;
     border-radius: 30px;
-    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+    box-shadow: 0 4px 16px rgba(var(--vital-primary-rgb), 0.35);
     transition: all 0.2s;
   }
   #SubmitForBooking:hover {
-    background: #0f766e;
+    background: var(--vital-secondary);
     transform: translateY(-2px);
   }
 
@@ -585,12 +607,17 @@
         </div>
 
         <h1 class="vital-hero-title mb-3">
-          Your Health<br>
-          <span class="vital-highlight">Our Priority</span>
+          @if(isset($currentClinic) && $currentClinic->name)
+            {{ $currentClinic->name }}<br>
+            <span class="vital-highlight">{{ $currentClinic->specialization ?? 'Healthcare & Wellness' }}</span>
+          @else
+            Your Health<br>
+            <span class="vital-highlight">Our Priority</span>
+          @endif
         </h1>
 
         <p class="vital-hero-subtitle mb-4">
-          {{ $currentClinic->bio ?? 'Compassionate care, advanced technology, and experienced specialists — all for a healthier you.' }}
+          {{ $currentClinic->bio ?? 'Compassionate care, experienced doctors, and modern healthcare facilities — dedicated to your health and well-being.' }}
         </p>
 
         <div class="vital-hero-cta mb-5">
@@ -606,32 +633,36 @@
         <div class="vital-stats-row">
           <div class="vital-stat-chip">
             <div class="stat-icon"><i class="fa-solid fa-user-doctor"></i></div>
-            <div class="stat-text"><strong>15+</strong><span>Expert Doctors</span></div>
+            <div class="stat-text"><strong>Certified</strong><span>Specialists</span></div>
           </div>
           <div class="vital-stat-chip">
             <div class="stat-icon"><i class="fa-regular fa-face-smile"></i></div>
-            <div class="stat-text"><strong>10k+</strong><span>Happy Patients</span></div>
+            <div class="stat-text"><strong>100%</strong><span>Patient Focus</span></div>
           </div>
           <div class="vital-stat-chip">
-            <div class="stat-icon"><i class="fa-solid fa-stethoscope"></i></div>
-            <div class="stat-text"><strong>25+</strong><span>Specialties</span></div>
+            <div class="stat-icon"><i class="fa-solid fa-shield-heart"></i></div>
+            <div class="stat-text"><strong>Safe &amp; Clean</strong><span>Environment</span></div>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Doctor Portrait & Emergency Badge -->
+      <!-- Right Column: Doctor Portrait / Clinic Banner & Emergency Badge -->
       <div class="col-lg-6 col-md-12 text-center position-relative py-4">
         <div class="vital-hero-img-wrap">
           <div class="vital-hero-backdrop"></div>
-          <img src="{{ URL::to('public/assets/web/modern/hero-doctor.jpg') }}" alt="{{ $currentClinic->name ?? 'Doctor' }}" class="vital-doctor-img">
+          @if(isset($currentClinic) && $currentClinic->banner)
+            <img src="{{ asset('storage/' . $currentClinic->banner) }}" alt="{{ $currentClinic->name ?? 'Clinic' }}" class="vital-doctor-img" style="object-fit: cover;">
+          @else
+            <img src="{{ URL::to('public/assets/web/modern/hero-doctor.jpg') }}" alt="{{ $currentClinic->name ?? 'Doctor' }}" class="vital-doctor-img">
+          @endif
           
           <div class="vital-emergency-card">
             <div class="emerg-icon">
               <i class="fa-solid fa-headset"></i>
             </div>
             <div class="emerg-text">
-              <span class="emerg-title">24/7</span>
-              <span class="emerg-sub">Emergency Support</span>
+              <span class="emerg-title">Direct</span>
+              <span class="emerg-sub">Patient Support</span>
             </div>
           </div>
         </div>
@@ -643,64 +674,103 @@
 
 @section('content')
 <!-- ========================================================
-     SECTION 2: OUR SERVICES (Fluid Responsive)
+     SECTION 2: OUR SERVICES (Dynamic & Universal for Any Clinic)
      ======================================================== -->
 <section id="services-section" class="vital-services-section py-5">
   <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="text-center mb-5">
-      <h2 class="vital-section-heading">Our Services</h2>
+      <h2 class="vital-section-heading">Our Services &amp; Specialties</h2>
       <div class="vital-heading-bar"></div>
-      <p class="text-muted mt-2" style="font-size: 15px;">Compassionate and specialized healthcare solutions tailored for you and your family.</p>
+      <p class="text-muted mt-2" style="font-size: 15px;">Personalized medical and clinical care tailored for your specific health needs.</p>
     </div>
 
     <div class="row g-4">
-      <!-- Service 1: Cardiology -->
+      @forelse($clinicServices as $service)
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-service-card">
-          <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
-            <i class="fa-solid fa-heart-pulse"></i>
+        <div class="vital-service-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="service-icon-box" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary);">
+              <i class="{{ $service->icon_class }}"></i>
+            </div>
+            <h4 class="service-title">{{ $service->title }}</h4>
+            <p class="service-desc">{{ $service->description ?? 'Specialized clinical care and patient-first medical treatment.' }}</p>
           </div>
-          <h4 class="service-title">Cardiology</h4>
-          <p class="service-desc">Comprehensive heart care with advanced diagnostics, ECG monitoring, and personalized treatment.</p>
-          <a href="#booking-section" class="service-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+          <div class="mt-3 pt-3 d-flex align-items-center justify-content-between" style="border-top: 1px dashed #e2e8f0;">
+            @if($service->price > 0)
+              <span class="font-weight-bold" style="color: var(--clinic-primary); font-size: 15px;">₹{{ number_format($service->price, 0) }}</span>
+            @else
+              <span class="text-muted" style="font-size: 12.5px;"><i class="fa-solid fa-circle-check text-success mr-1"></i> Available</span>
+            @endif
+            <a href="#booking-section" class="service-link">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
+        </div>
+      </div>
+      @empty
+      <!-- Universal Healthcare Services Fallback -->
+      <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        <div class="vital-service-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="service-icon-box" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary);">
+              <i class="fa-solid fa-user-doctor"></i>
+            </div>
+            <h4 class="service-title">Clinical Consultation</h4>
+            <p class="service-desc">Comprehensive patient assessment, expert medical diagnosis, and personalized therapy plans.</p>
+          </div>
+          <div class="mt-3 pt-3 d-flex align-items-center justify-content-between" style="border-top: 1px dashed #e2e8f0;">
+            <span class="font-weight-bold" style="color: var(--clinic-primary); font-size: 15px;">From ₹{{ number_format($currentClinic->consultation_fee ?? 499, 0) }}</span>
+            <a href="#booking-section" class="service-link">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
         </div>
       </div>
 
-      <!-- Service 2: General Medicine -->
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-service-card">
-          <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
-            <i class="fa-solid fa-stethoscope"></i>
+        <div class="vital-service-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="service-icon-box" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary);">
+              <i class="fa-solid fa-microscope"></i>
+            </div>
+            <h4 class="service-title">Diagnostics &amp; Screening</h4>
+            <p class="service-desc">Accurate clinical screening, precise diagnostics, and health symptom evaluation with modern equipment.</p>
           </div>
-          <h4 class="service-title">General Medicine</h4>
-          <p class="service-desc">Expert care for everyday health concerns, fevers, seasonal illness, and ongoing chronic conditions.</p>
-          <a href="#booking-section" class="service-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+          <div class="mt-3 pt-3 d-flex align-items-center justify-content-between" style="border-top: 1px dashed #e2e8f0;">
+            <span class="text-muted" style="font-size: 12.5px;"><i class="fa-solid fa-circle-check text-success mr-1"></i> Available</span>
+            <a href="#booking-section" class="service-link">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
         </div>
       </div>
 
-      <!-- Service 3: Dental Care -->
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-service-card">
-          <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
-            <i class="fa-solid fa-tooth"></i>
+        <div class="vital-service-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="service-icon-box" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary);">
+              <i class="fa-solid fa-kit-medical"></i>
+            </div>
+            <h4 class="service-title">Preventive Care</h4>
+            <p class="service-desc">Proactive routine wellness checks, regular health tracking, and lifestyle health guidance.</p>
           </div>
-          <h4 class="service-title">Dental Care</h4>
-          <p class="service-desc">Complete dental solutions for a healthy, vibrant, and confident smile for patients of all ages.</p>
-          <a href="#booking-section" class="service-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+          <div class="mt-3 pt-3 d-flex align-items-center justify-content-between" style="border-top: 1px dashed #e2e8f0;">
+            <span class="text-muted" style="font-size: 12.5px;"><i class="fa-solid fa-circle-check text-success mr-1"></i> Available</span>
+            <a href="#booking-section" class="service-link">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
         </div>
       </div>
 
-      <!-- Service 4: Women's Health -->
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-        <div class="vital-service-card">
-          <div class="service-icon-box" style="background: rgba(13, 148, 136, 0.1); color: #0d9488;">
-            <i class="fa-solid fa-venus"></i>
+        <div class="vital-service-card h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="service-icon-box" style="background: rgba(var(--clinic-primary-rgb), 0.1); color: var(--clinic-primary);">
+              <i class="fa-solid fa-notes-medical"></i>
+            </div>
+            <h4 class="service-title">Follow-up &amp; Monitoring</h4>
+            <p class="service-desc">Continued recovery monitoring, prescription adjustments, and comprehensive follow-up care.</p>
           </div>
-          <h4 class="service-title">Women's Health</h4>
-          <p class="service-desc">Compassionate care for women at every stage of life, routine wellness, and maternal consultation.</p>
-          <a href="#booking-section" class="service-link">Learn More <i class="fa-solid fa-arrow-right"></i></a>
+          <div class="mt-3 pt-3 d-flex align-items-center justify-content-between" style="border-top: 1px dashed #e2e8f0;">
+            <span class="text-muted" style="font-size: 12.5px;"><i class="fa-solid fa-circle-check text-success mr-1"></i> Available</span>
+            <a href="#booking-section" class="service-link">Book Now <i class="fa-solid fa-arrow-right"></i></a>
+          </div>
         </div>
       </div>
+      @endforelse
     </div>
   </div>
 </section>
@@ -711,22 +781,22 @@
 <section id="packages-section" class="vital-features-grid py-4 mb-5">
   <div class="container-fluid" style="max-width: 1440px; padding-left: clamp(16px, 3.5vw, 48px); padding-right: clamp(16px, 3.5vw, 48px);">
     <div class="row g-4">
-      <!-- Card 1: Health Checkup Packages -->
+      <!-- Card 1: Consultation Packages -->
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
-            <h5 class="feature-card-title mb-1">Health Checkup Packages</h5>
+            <h5 class="feature-card-title mb-1">Consultation Packages</h5>
             <div class="package-price mb-3">
               <span class="text-muted" style="font-size: 13px;">Starting From</span>
-              <div class="price-value" style="color: #f59e0b; font-size: 26px; font-weight: 800;">
+              <div class="price-value" style="color: var(--clinic-primary); font-size: 26px; font-weight: 800;">
                 ₹{{ number_format($currentClinic->consultation_fee ?? 499, 0) }}
               </div>
             </div>
             <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}" alt="Family Health Checkup" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}" alt="Consultation Packages" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
-          <a href="#booking-section" class="btn-outline-teal">View Packages</a>
+          <a href="#booking-section" class="btn-outline-teal">Book Consultation</a>
         </div>
       </div>
 
@@ -736,27 +806,27 @@
           <div>
             <h5 class="feature-card-title mb-3">Why Choose Us?</h5>
             <ul class="why-choose-list list-unstyled mb-4">
-              <li><i class="fa-solid fa-circle-check text-teal mr-2" style="margin-right: 8px;"></i> Experienced Doctors</li>
-              <li><i class="fa-solid fa-circle-check text-teal mr-2" style="margin-right: 8px;"></i> Modern Facilities</li>
-              <li><i class="fa-solid fa-circle-check text-teal mr-2" style="margin-right: 8px;"></i> Patient First Approach</li>
-              <li><i class="fa-solid fa-circle-check text-teal mr-2" style="margin-right: 8px;"></i> Affordable Pricing</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Qualified Medical Team</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Modern Clinical Equipment</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Patient-Centered Approach</li>
+              <li><i class="fa-solid fa-circle-check mr-2" style="color: var(--clinic-primary); margin-right: 8px;"></i> Transparent Pricing</li>
             </ul>
           </div>
-          <a href="#about-section" class="btn-outline-teal">Learn More</a>
+          <a href="#booking-section" class="btn-outline-teal">Schedule Visit</a>
         </div>
       </div>
 
-      <!-- Card 3: Take Care of Yourself Today -->
+      <!-- Card 3: Quality Care Today -->
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
-            <h5 class="feature-card-title mb-1">Take Care of Yourself Today</h5>
-            <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.5;">Early diagnosis, better treatment, healthier life.</p>
+            <h5 class="feature-card-title mb-1">Quality Care Today</h5>
+            <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.5;">Prompt consultations, accurate diagnosis, healthier recovery.</p>
             <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/patient-care.jpg') }}" alt="Take Care of Yourself" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/patient-care.jpg') }}" alt="Quality Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
-          <a href="#booking-section" class="btn-teal-solid">Book Now</a>
+          <a href="#booking-section" class="btn-teal-solid">Book Appointment</a>
         </div>
       </div>
 
@@ -764,14 +834,24 @@
       <div class="col-lg-3 col-md-6 col-sm-6 col-12">
         <div class="vital-feature-card h-100 d-flex flex-column justify-content-between">
           <div>
-            <h5 class="feature-card-title mb-1">We're Here for You</h5>
-            <div class="emerg-highlight mb-1" style="color: #f59e0b; font-size: 24px; font-weight: 800;">24/7</div>
-            <p class="text-muted mb-2" style="font-size: 13px;">Emergency Care You Can Trust.</p>
+            <h5 class="feature-card-title mb-1">Direct Clinic Line</h5>
+            <div class="emerg-highlight mb-1" style="color: var(--clinic-secondary, #f59e0b); font-size: 24px; font-weight: 800;">
+              @if(isset($currentClinic) && $currentClinic->phone)
+                {{ $currentClinic->phone }}
+              @else
+                Patient Support
+              @endif
+            </div>
+            <p class="text-muted mb-2" style="font-size: 13px;">Reach out for inquiries, scheduling, or support.</p>
             <div class="feature-img-box mb-3">
-              <img src="{{ URL::to('public/assets/web/modern/ambulance.jpg') }}" alt="Emergency Ambulance" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
+              <img src="{{ URL::to('public/assets/web/modern/ambulance.jpg') }}" alt="Clinic Care" class="w-100 rounded-3" style="height: 140px; object-fit: cover;">
             </div>
           </div>
-          <a href="tel:{{ $currentClinic->phone ?? '+919830012345' }}" class="btn-outline-teal">Get Help Now</a>
+          @if(isset($currentClinic) && $currentClinic->phone)
+            <a href="tel:{{ $currentClinic->phone }}" class="btn-outline-teal">Call Clinic</a>
+          @else
+            <a href="#booking-section" class="btn-outline-teal">Book Online</a>
+          @endif
         </div>
       </div>
     </div>
@@ -836,9 +916,9 @@
             <div class="col-lg-7 col-md-12">
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <h5 class="mb-0 font-weight-bold" style="color: #0f172a; font-size: 18px;">
-                  <i class="fa-regular fa-calendar mr-2" style="color: #0d9488; margin-right: 6px;"></i> 1. Select Date
+                  <i class="fa-regular fa-calendar mr-2" style="color: var(--clinic-primary); margin-right: 6px;"></i> 1. Select Date
                 </h5>
-                <span class="text-muted" style="font-size: 13px;">Dates marked blue have open slots</span>
+                <span class="text-muted" style="font-size: 13px;">Dates marked with open slots</span>
               </div>
               <div id="calendar"></div>
               <input type="hidden" id="selected-date" name="booking_date">
@@ -848,7 +928,7 @@
             <div class="col-lg-5 col-md-12">
               <div class="d-flex align-items-center justify-content-between mb-3">
                 <h5 class="mb-0 font-weight-bold" style="color: #0f172a; font-size: 18px;">
-                  <i class="fa-regular fa-clock mr-2" style="color: #0d9488; margin-right: 6px;"></i> 2. Available Slots
+                  <i class="fa-regular fa-clock mr-2" style="color: var(--clinic-primary); margin-right: 6px;"></i> 2. Available Slots
                 </h5>
               </div>
 
@@ -859,16 +939,16 @@
 
                 <input type="hidden" id="selected-time-slot" name="time_slot_id">
 
-                <div class="p-3 rounded-3 mb-3" style="background: #e6fffa; border: 1px solid #b2f5ea; font-size: 13px; color: #234e52; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                <div class="p-3 rounded-3 mb-3" style="background: rgba(var(--clinic-primary-rgb), 0.08); border: 1px solid rgba(var(--clinic-primary-rgb), 0.2); font-size: 13px; color: #0f172a; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
                   <div>
-                    <i class="fa fa-info-circle mr-1" style="color: #0d9488;"></i> 
+                    <i class="fa fa-info-circle mr-1" style="color: var(--clinic-primary);"></i> 
                     <span>Consultation Fee: <strong>₹{{ number_format($currentClinic->consultation_fee ?? 499, 2) }}</strong></span>
                     @if(isset($currentClinic) && $currentClinic->platform_fee > 0)
                       <span class="text-muted" style="font-size: 12px; margin-left: 6px;">(+ ₹{{ number_format($currentClinic->platform_fee, 2) }} platform charge)</span>
                     @endif
                   </div>
                   @if(isset($currentClinic) && $currentClinic->platform_fee > 0)
-                    <span class="badge" style="background: #0d9488; color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
+                    <span class="badge" style="background: var(--clinic-primary); color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 6px;">
                       Total: ₹{{ number_format(($currentClinic->consultation_fee ?? 499) + $currentClinic->platform_fee, 2) }}
                     </span>
                   @endif

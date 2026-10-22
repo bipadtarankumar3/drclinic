@@ -8,8 +8,8 @@
 
 <style>
   :root {
-    --vital-primary: #0d9488;
-    --vital-primary-dark: #0f766e;
+    --vital-primary: {{ (isset($currentClinic) && $currentClinic->theme_color) ? $currentClinic->theme_color : '#0d9488' }};
+    --vital-primary-dark: {{ (isset($currentClinic) && $currentClinic->theme_color) ? $currentClinic->theme_color : '#0f766e' }};
     --vital-primary-light: #ccfbf1;
   }
 
@@ -608,7 +608,7 @@ function payWithRazorpay(e) {
                         "contact": mobile_no
                     },
                     "theme": {
-                        "color": "#0d9488"
+                        "color": "{{ (isset($currentClinic) && $currentClinic->theme_color) ? $currentClinic->theme_color : '#0d9488' }}"
                     },
                     "modal": {
                         "ondismiss": function() {

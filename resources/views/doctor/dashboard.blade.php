@@ -55,6 +55,9 @@
           <a href="{{ URL::To('admin/patient') }}" class="btn btn-danger btn-sm font-weight-bold px-3 py-2 text-white" style="background: #dc2626; border-radius: 8px; font-size: 12.5px;">
             <i class="mdi mdi-plus me-1"></i> + New Booking
           </a>
+          <a href="{{ route('doctor.services.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
+            <i class="mdi mdi-medical-bag me-1"></i> Manage Services
+          </a>
           <a href="{{ route('doctor.pages.index') }}" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px; font-size: 12.5px; border-color: #e2e8f0; color: #475569; background: #ffffff;">
             <i class="mdi mdi-file-document-edit-outline me-1"></i> Website Builder
           </a>

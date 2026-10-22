@@ -3,12 +3,29 @@
   $themeColor = $clinic->theme_color ?? '#0d9488'; // Modern medical teal default
   $secondaryColor = $clinic->secondary_color ?? '#14b8a6';
   $clinicUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug)) : url('/');
+
+  $hex = ltrim($themeColor, '#');
+  if (strlen($hex) == 3) {
+      $r = hexdec(substr($hex, 0, 1) . substr($hex, 0, 1));
+      $g = hexdec(substr($hex, 1, 1) . substr($hex, 1, 1));
+      $b = hexdec(substr($hex, 2, 1) . substr($hex, 2, 1));
+  } elseif (strlen($hex) == 6) {
+      $r = hexdec(substr($hex, 0, 2));
+      $g = hexdec(substr($hex, 2, 2));
+      $b = hexdec(substr($hex, 4, 2));
+  } else {
+      $r = 13; $g = 148; $b = 136;
+  }
 @endphp
 
 <style>
   :root {
     --clinic-primary: {{ $themeColor }};
     --clinic-secondary: {{ $secondaryColor }};
+    --clinic-primary-rgb: {{ $r }}, {{ $g }}, {{ $b }};
+    --vital-primary: {{ $themeColor }};
+    --vital-primary-rgb: {{ $r }}, {{ $g }}, {{ $b }};
+    --vital-secondary: {{ $secondaryColor }};
   }
 
   /* Top Announcement Sub-Header */
@@ -107,13 +124,13 @@
     width: 42px;
     height: 42px;
     border-radius: 12px;
-    background: linear-gradient(135deg, #0d9488 0%, #14b8a6 100%);
+    background: linear-gradient(135deg, var(--clinic-primary) 0%, var(--clinic-secondary) 100%);
     display: flex;
     align-items: center;
     justify-content: center;
     color: #ffffff;
     font-size: 20px;
-    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+    box-shadow: 0 4px 14px rgba(var(--clinic-primary-rgb), 0.25);
     flex-shrink: 0;
   }
   .vital-brand-info {
@@ -161,7 +178,7 @@
   }
   .vital-nav-links a:hover,
   .vital-nav-links a.active {
-    color: #0d9488;
+    color: var(--clinic-primary);
   }
   .vital-nav-links a.active::after {
     content: '';
@@ -170,7 +187,7 @@
     left: 0;
     width: 100%;
     height: 3px;
-    background: #0d9488;
+    background: var(--clinic-primary);
     border-radius: 3px;
   }
   .vital-nav-actions {
@@ -180,7 +197,7 @@
     flex-shrink: 0;
   }
   .btn-vital-book {
-    background: #0d9488;
+    background: var(--clinic-primary);
     color: #ffffff !important;
     font-weight: 700;
     font-size: 13.5px;
@@ -191,14 +208,14 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    box-shadow: 0 4px 14px rgba(13, 148, 136, 0.3);
+    box-shadow: 0 4px 14px rgba(var(--clinic-primary-rgb), 0.3);
     transition: all 0.2s ease;
     height: 40px;
   }
   .btn-vital-book:hover {
-    background: #0f766e;
+    background: var(--clinic-secondary);
     transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(13, 148, 136, 0.4);
+    box-shadow: 0 6px 18px rgba(var(--clinic-primary-rgb), 0.4);
     color: #ffffff;
   }
   .vital-search-btn {
@@ -218,7 +235,7 @@
   }
   .vital-search-btn:hover {
     background: #f1f5f9;
-    color: #0d9488;
+    color: var(--clinic-primary);
     border-color: #cbd5e1;
   }
 
@@ -238,8 +255,11 @@
   }
   .vital-menu-toggle:hover {
     background: #f1f5f9;
-    color: #0d9488;
+    color: var(--clinic-primary);
     border-color: #cbd5e1;
+  }
+  .text-teal {
+    color: var(--clinic-primary) !important;
   }
   .vital-mobile-menu {
     display: none;
@@ -274,7 +294,7 @@
   }
   .vital-mobile-links a:hover,
   .vital-mobile-links a.active {
-    color: #0d9488;
+    color: var(--clinic-primary);
   }
 
   @media (max-width: 991px) {
@@ -350,12 +370,12 @@
       <div class="vital-top-left">
         <span><i class="fa-regular fa-circle-check text-success mr-1"></i> Your Health, Our Priority</span>
         <span class="divider">|</span>
-        <span><i class="fa-regular fa-clock mr-1" style="color: #0d9488;"></i> Open 7 Days a Week</span>
+        <span><i class="fa-regular fa-clock mr-1" style="color: var(--clinic-primary);"></i> Open 7 Days a Week</span>
       </div>
       <div class="vital-top-right">
         <span><i class="fa-solid fa-globe mr-1" style="color: #94a3b8;"></i> INR (₹)</span>
-        <a href="#booking-section"><i class="fa-regular fa-calendar-check mr-1" style="color: #0d9488;"></i> Book Appointment</a>
-        <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#' }}"><i class="fa-solid fa-phone mr-1" style="color: #0d9488;"></i> {{ $clinic->phone ?? '+91 9830012345' }}</a>
+        <a href="#booking-section"><i class="fa-regular fa-calendar-check mr-1" style="color: var(--clinic-primary);"></i> Book Appointment</a>
+        <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#' }}"><i class="fa-solid fa-phone mr-1" style="color: var(--clinic-primary);"></i> {{ $clinic->phone ?? '+91 9830012345' }}</a>
         <a href="{{ url('/admin/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a>
       </div>
     </div>
@@ -493,7 +513,7 @@
       </ul>
 
       <div class="d-flex flex-column gap-2 pt-2">
-        <a href="#booking-section" class="btn btn-vital-primary w-100 text-center py-2 text-white" style="background: #0d9488; border-radius: 30px; text-decoration: none;" onclick="toggleMobileNav()">
+        <a href="#booking-section" class="btn btn-vital-primary w-100 text-center py-2 text-white" style="background: var(--clinic-primary); border-radius: 30px; text-decoration: none;" onclick="toggleMobileNav()">
           <i class="fa-regular fa-calendar-check me-2"></i> Book Appointment Now
         </a>
         @if($clinic->phone)

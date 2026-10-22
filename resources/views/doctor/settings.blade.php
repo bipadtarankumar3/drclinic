@@ -483,19 +483,70 @@
               <form action="{{ route('doctor.settings.branding') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row g-3">
+                  <!-- Quick Color Palette Presets -->
+                  <div class="col-12 mb-3">
+                    <label class="form-label font-weight-bold d-block">Recommended Healthcare Color Palettes</label>
+                    <div class="d-flex flex-wrap gap-2">
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#0d9488', '#14b8a6')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #0d9488; display: inline-block;"></span> Medical Teal
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#2563eb', '#3b82f6')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #2563eb; display: inline-block;"></span> Royal Blue
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#059669', '#10b981')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #059669; display: inline-block;"></span> Emerald Health
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#6366f1', '#8b5cf6')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #6366f1; display: inline-block;"></span> Indigo Violet
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#e11d48', '#f43f5e')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #e11d48; display: inline-block;"></span> Crimson Rose
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#0f172a', '#334155')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #0f172a; display: inline-block;"></span> Midnight Slate
+                      </button>
+                      <button type="button" class="btn btn-sm btn-light border d-flex align-items-center gap-2" onclick="applyColorPreset('#d97706', '#f59e0b')">
+                        <span style="width: 16px; height: 16px; border-radius: 50%; background: #d97706; display: inline-block;"></span> Amber Warm
+                      </button>
+                    </div>
+                  </div>
+
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Primary Brand Color</label>
                     <div class="d-flex align-items-center gap-2">
-                      <input type="color" class="form-control form-control-color" name="theme_color" value="{{ old('theme_color', $clinic->theme_color ?? '#0d6efd') }}" style="width: 50px; height: 42px;">
-                      <input type="text" class="form-control" value="{{ $clinic->theme_color ?? '#0d6efd' }}" readonly style="font-family: monospace;">
+                      <input type="color" class="form-control form-control-color" id="theme_color_picker" name="theme_color" value="{{ old('theme_color', $clinic->theme_color ?? '#0d9488') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('theme_color_picker', 'theme_color_text')">
+                      <input type="text" class="form-control doctor-settings-input" id="theme_color_text" value="{{ old('theme_color', $clinic->theme_color ?? '#0d9488') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('theme_color_text', 'theme_color_picker')">
                     </div>
+                    <small class="text-muted font-11">Applies to buttons, headers, booking slots, and active highlights across all clinic pages.</small>
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Secondary Accent Color</label>
                     <div class="d-flex align-items-center gap-2">
-                      <input type="color" class="form-control form-control-color" name="secondary_color" value="{{ old('secondary_color', $clinic->secondary_color ?? '#20c997') }}" style="width: 50px; height: 42px;">
-                      <input type="text" class="form-control" value="{{ $clinic->secondary_color ?? '#20c997' }}" readonly style="font-family: monospace;">
+                      <input type="color" class="form-control form-control-color" id="secondary_color_picker" name="secondary_color" value="{{ old('secondary_color', $clinic->secondary_color ?? '#14b8a6') }}" style="width: 50px; height: 42px; cursor: pointer;" oninput="syncColorInput('secondary_color_picker', 'secondary_color_text')">
+                      <input type="text" class="form-control doctor-settings-input" id="secondary_color_text" value="{{ old('secondary_color', $clinic->secondary_color ?? '#14b8a6') }}" style="font-family: monospace; font-weight: 700;" oninput="syncColorPicker('secondary_color_text', 'secondary_color_picker')">
+                    </div>
+                    <small class="text-muted font-11">Used for secondary gradients, badges, and accents.</small>
+                  </div>
+
+                  <!-- Live Preview Demo -->
+                  <div class="col-12 mb-3">
+                    <div class="p-3 rounded-3" style="background: #f8fafc; border: 1.5px dashed #cbd5e1;">
+                      <span class="text-uppercase text-muted font-weight-bold" style="font-size: 11px; letter-spacing: 0.5px;">Live Storefront Component Preview</span>
+                      <div class="d-flex align-items-center flex-wrap gap-3 mt-2">
+                        <button type="button" id="preview-primary-btn" class="btn text-white px-3 py-2 font-weight-bold" style="background: {{ $clinic->theme_color ?? '#0d9488' }}; border-radius: 20px; font-size: 13px;">
+                          <i class="mdi mdi-calendar-check mr-1"></i> Book Appointment
+                        </button>
+                        <span id="preview-badge" class="badge px-3 py-2" style="background: {{ $clinic->secondary_color ?? '#14b8a6' }}; color: #fff; border-radius: 12px; font-size: 12px;">
+                          Instant Confirmation
+                        </span>
+                        <div id="preview-icon-box" style="width: 36px; height: 36px; border-radius: 10px; background: rgba(13, 148, 136, 0.15); color: {{ $clinic->theme_color ?? '#0d9488' }}; display: flex; align-items: center; justify-content: center; font-size: 18px;">
+                          <i class="mdi mdi-stethoscope"></i>
+                        </div>
+                        <span id="preview-text-link" style="color: {{ $clinic->theme_color ?? '#0d9488' }}; font-weight: 700; font-size: 13.5px; text-decoration: underline;">
+                          Learn More &rarr;
+                        </span>
+                      </div>
                     </div>
                   </div>
 
@@ -506,7 +557,7 @@
                         <img src="{{ $clinic->logo_url ?? URL::to('public/' . $clinic->logo) }}" alt="Logo" class="img-thumbnail" style="max-height: 60px;">
                       </div>
                     @endif
-                    <input type="file" class="form-control" name="logo" accept="image/*">
+                    <input type="file" class="form-control doctor-settings-input" name="logo" accept="image/*">
                     <small class="text-muted">Recommended: PNG, SVG, or WEBP with transparent background.</small>
                   </div>
 
@@ -517,12 +568,14 @@
                         <img src="{{ $clinic->banner_url ?? URL::to('public/' . $clinic->banner) }}" alt="Banner" class="img-thumbnail" style="max-height: 60px;">
                       </div>
                     @endif
-                    <input type="file" class="form-control" name="banner" accept="image/*">
+                    <input type="file" class="form-control doctor-settings-input" name="banner" accept="image/*">
                     <small class="text-muted">High-res clinic facade or medical facility banner.</small>
                   </div>
 
                   <div class="col-12">
-                    <button type="submit" class="btn btn-primary px-4 font-weight-bold">Save Branding</button>
+                    <button type="submit" class="btn btn-doctor-save">
+                      <i class="mdi mdi-palette-outline mr-1"></i> Save Branding & Colors
+                    </button>
                   </div>
                 </div>
               </form>
@@ -624,8 +677,61 @@ function calculateTotalPreview() {
   totalElem.innerText = '₹ ' + total.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
+function syncColorInput(pickerId, textId) {
+  var picker = document.getElementById(pickerId);
+  var text = document.getElementById(textId);
+  if (picker && text) {
+    text.value = picker.value;
+    updateLiveBrandingPreview();
+  }
+}
+
+function syncColorPicker(textId, pickerId) {
+  var text = document.getElementById(textId);
+  var picker = document.getElementById(pickerId);
+  if (text && picker && /^#[0-9A-F]{6}$/i.test(text.value)) {
+    picker.value = text.value;
+    updateLiveBrandingPreview();
+  }
+}
+
+function applyColorPreset(primary, secondary) {
+  var tp = document.getElementById('theme_color_picker');
+  var tt = document.getElementById('theme_color_text');
+  var sp = document.getElementById('secondary_color_picker');
+  var st = document.getElementById('secondary_color_text');
+
+  if (tp) tp.value = primary;
+  if (tt) tt.value = primary;
+  if (sp) sp.value = secondary;
+  if (st) st.value = secondary;
+
+  updateLiveBrandingPreview();
+}
+
+function updateLiveBrandingPreview() {
+  var primary = document.getElementById('theme_color_picker')?.value || '#0d9488';
+  var secondary = document.getElementById('secondary_color_picker')?.value || '#14b8a6';
+
+  var btn = document.getElementById('preview-primary-btn');
+  if (btn) btn.style.background = primary;
+
+  var badge = document.getElementById('preview-badge');
+  if (badge) badge.style.background = secondary;
+
+  var iconBox = document.getElementById('preview-icon-box');
+  if (iconBox) {
+    iconBox.style.color = primary;
+    iconBox.style.background = primary + '20';
+  }
+
+  var link = document.getElementById('preview-text-link');
+  if (link) link.style.color = primary;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
   calculateTotalPreview();
+  updateLiveBrandingPreview();
 });
 </script>
 @endsection

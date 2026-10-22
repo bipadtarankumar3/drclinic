@@ -169,6 +169,16 @@
       </a>
     </li>
 
+    <li class="nav-item {{ request()->routeIs('doctor.services.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.services.index') }}">
+        <i class="mdi mdi-medical-bag nav-icon"></i>
+        <span class="menu-title">Clinic Services</span>
+        @if(request()->routeIs('doctor.services.*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
+      </a>
+    </li>
+
     <li class="nav-item {{ request()->routeIs('doctor.pages.*') ? 'active' : '' }}">
       <a class="nav-link" href="{{ route('doctor.pages.index') }}">
         <i class="mdi mdi-file-document-edit-outline nav-icon"></i>
