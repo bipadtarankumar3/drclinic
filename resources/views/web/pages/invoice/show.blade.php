@@ -80,6 +80,13 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        .font-10 { font-size: 10px !important; }
+        .font-11 { font-size: 11px !important; }
+        .font-12 { font-size: 12px !important; }
+        .font-13 { font-size: 13px !important; }
+        .font-14 { font-size: 14px !important; }
+        .font-15 { font-size: 15px !important; }
+
         /* Top Floating Toolbar (No Print) */
         .receipt-toolbar {
             max-width: 880px;
@@ -167,7 +174,7 @@
         }
 
         .receipt-inner {
-            padding: 2.75rem 3rem;
+            padding: 2rem 2.25rem;
         }
 
         /* Clinic Brand Header */
@@ -177,7 +184,7 @@
             align-items: flex-start;
             flex-wrap: wrap;
             gap: 20px;
-            padding-bottom: 1.75rem;
+            padding-bottom: 1.25rem;
             border-bottom: 2px solid #f1f5f9;
         }
         .clinic-logo-wrapper {
@@ -186,35 +193,35 @@
             gap: 16px;
         }
         .clinic-logo-img {
-            max-height: 62px;
-            max-width: 170px;
+            max-height: 56px;
+            max-width: 160px;
             object-fit: contain;
             border-radius: 10px;
         }
         .clinic-fallback-avatar {
-            width: 58px;
-            height: 58px;
-            border-radius: 14px;
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
             background: linear-gradient(135deg, var(--rx-primary), var(--rx-primary-dark));
             color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             flex-shrink: 0;
             box-shadow: 0 4px 12px rgba(13, 148, 136, 0.2);
         }
         .clinic-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.45rem;
+            font-size: 1.35rem;
             font-weight: 800;
             color: #0f172a;
             margin-bottom: 2px;
             letter-spacing: -0.3px;
         }
         .clinic-specialty {
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 600;
             color: var(--rx-primary);
             text-transform: uppercase;
@@ -222,39 +229,39 @@
             margin-bottom: 4px;
         }
         .clinic-contact-line {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: #64748b;
-            line-height: 1.5;
+            line-height: 1.45;
         }
 
         /* Document Title & Meta Box */
         .document-title-meta {
             text-align: right;
-            min-width: 240px;
+            min-width: 220px;
         }
         .receipt-badge-title {
             font-family: 'Outfit', sans-serif;
-            font-size: 1.35rem;
+            font-size: 1.25rem;
             font-weight: 800;
             color: #0f172a;
             letter-spacing: -0.2px;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .receipt-number-pill {
             font-family: monospace;
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 700;
             color: #0f172a;
             background: #f1f5f9;
-            padding: 3px 10px;
+            padding: 2px 8px;
             border-radius: 6px;
             display: inline-block;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .receipt-date-text {
-            font-size: 12px;
+            font-size: 11.5px;
             color: #64748b;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .status-seal-success {
             display: inline-flex;
@@ -264,8 +271,8 @@
             color: #059669;
             border: 1.5px solid #a7f3d0;
             font-weight: 700;
-            font-size: 11.5px;
-            padding: 4px 12px;
+            font-size: 11px;
+            padding: 3px 10px;
             border-radius: 20px;
             letter-spacing: 0.3px;
         }
@@ -277,8 +284,8 @@
             color: #d97706;
             border: 1.5px solid #fde68a;
             font-weight: 700;
-            font-size: 11.5px;
-            padding: 4px 12px;
+            font-size: 11px;
+            padding: 3px 10px;
             border-radius: 20px;
         }
         .status-seal-cancelled {
@@ -289,40 +296,40 @@
             color: #dc2626;
             border: 1.5px solid #fecdd3;
             font-weight: 700;
-            font-size: 11.5px;
-            padding: 4px 12px;
+            font-size: 11px;
+            padding: 3px 10px;
             border-radius: 20px;
         }
 
         /* Section Headings */
         .receipt-section-header {
             font-family: 'Outfit', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.7px;
             color: #64748b;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
         .receipt-section-header i {
             color: var(--rx-primary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         /* Patient & Schedule Grid Card */
         .patient-schedule-box {
             background: #f8fafc;
             border: 1.5px solid #edf2f7;
-            border-radius: 14px;
-            padding: 1.25rem 1.5rem;
-            margin-top: 1.5rem;
-            margin-bottom: 2rem;
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-top: 1.15rem;
+            margin-bottom: 1.25rem;
         }
         .info-cell-label {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -330,11 +337,12 @@
             margin-bottom: 2px;
         }
         .info-cell-value {
-            font-size: 13.5px;
+            font-size: 12.5px;
             font-weight: 600;
             color: #0f172a;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             word-break: break-word;
+            line-height: 1.35;
         }
         .info-cell-value-highlight {
             color: var(--rx-primary);
@@ -346,24 +354,24 @@
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.25rem;
             border: 1.5px solid #edf2f7;
-            border-radius: 12px;
+            border-radius: 10px;
             overflow: hidden;
         }
         .receipt-table thead th {
             background: #f8fafc;
             color: #475569;
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border-bottom: 1.5px solid #edf2f7;
         }
         .receipt-table tbody td {
-            padding: 14px 16px;
-            font-size: 13.5px;
+            padding: 11px 14px;
+            font-size: 12.5px;
             border-bottom: 1px solid #f1f5f9;
             vertical-align: middle;
         }
@@ -377,66 +385,66 @@
             justify-content: space-between;
             align-items: flex-start;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 2rem;
+            gap: 16px;
+            margin-bottom: 1.25rem;
         }
         .words-panel {
             flex: 1;
             min-width: 260px;
             background: #f8fafc;
             border: 1px solid #edf2f7;
-            border-radius: 12px;
-            padding: 14px 18px;
+            border-radius: 10px;
+            padding: 12px 16px;
         }
         .words-title {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.6px;
             color: #64748b;
-            margin-bottom: 4px;
+            margin-bottom: 3px;
         }
         .words-value {
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: #0f172a;
             font-style: italic;
         }
         .calculation-card {
-            width: 320px;
+            width: 300px;
             background: #ffffff;
             border: 1.5px solid #edf2f7;
-            border-radius: 12px;
-            padding: 14px 18px;
+            border-radius: 10px;
+            padding: 12px 16px;
         }
         .calc-row {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
-            margin-bottom: 8px;
+            font-size: 12.5px;
+            margin-bottom: 6px;
             color: #475569;
         }
         .calc-row.grand-total {
             border-top: 2px dashed #cbd5e1;
-            padding-top: 10px;
-            margin-top: 6px;
+            padding-top: 8px;
+            margin-top: 4px;
             margin-bottom: 0;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
             color: #0f172a;
         }
         .calc-row.grand-total .total-price {
             color: var(--rx-primary);
-            font-size: 18px;
+            font-size: 16.5px;
         }
 
         /* Payment Settlement Meta Tile */
         .payment-meta-card {
             background: #f0fdfa;
             border: 1px solid #ccfbf1;
-            border-radius: 12px;
-            padding: 12px 18px;
-            margin-bottom: 2rem;
+            border-radius: 10px;
+            padding: 10px 16px;
+            margin-bottom: 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -444,14 +452,14 @@
             gap: 12px;
         }
         .meta-field-label {
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 700;
             color: #0f766e;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .meta-field-val {
-            font-size: 12.5px;
+            font-size: 12px;
             font-weight: 600;
             color: #0f172a;
             font-family: monospace;
@@ -463,23 +471,23 @@
             justify-content: space-between;
             align-items: flex-end;
             border-top: 1.5px solid #f1f5f9;
-            padding-top: 1.75rem;
+            padding-top: 1.25rem;
             flex-wrap: wrap;
-            gap: 24px;
+            gap: 20px;
         }
         .instructions-list {
-            font-size: 11.5px;
+            font-size: 11px;
             color: #64748b;
-            line-height: 1.7;
+            line-height: 1.6;
             max-width: 480px;
         }
         .signature-box {
             text-align: center;
-            min-width: 220px;
+            min-width: 200px;
         }
         .clinic-stamp-badge {
-            width: 72px;
-            height: 72px;
+            width: 64px;
+            height: 64px;
             border: 2px dashed var(--rx-primary);
             border-radius: 50%;
             display: inline-flex;
@@ -487,26 +495,26 @@
             align-items: center;
             justify-content: center;
             color: var(--rx-primary);
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             text-transform: uppercase;
             line-height: 1.2;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             opacity: 0.85;
         }
         .signature-line {
-            width: 180px;
+            width: 160px;
             height: 1px;
             background: #94a3b8;
-            margin: 0 auto 6px auto;
+            margin: 0 auto 5px auto;
         }
         .signatory-title {
-            font-size: 11.5px;
+            font-size: 11px;
             font-weight: 700;
             color: #0f172a;
         }
         .signatory-subtitle {
-            font-size: 10px;
+            font-size: 9.5px;
             color: #64748b;
         }
 
@@ -515,18 +523,31 @@
             background: #f8fafc;
             border-top: 1px solid #edf2f7;
             text-align: center;
-            padding: 12px;
-            font-size: 11.5px;
+            padding: 10px;
+            font-size: 11px;
             color: #64748b;
             font-weight: 500;
         }
 
-        /* PRINT STYLES - Crisp A4 Clean Output */
+        /* PRINT STYLES - Crisp A4 Clean Output (Strictly 1 Page) */
         @media print {
-            body {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            html, body {
                 background: #ffffff !important;
                 padding: 0 !important;
-                color: #000000 !important;
+                margin: 0 !important;
+                color: #0f172a !important;
+                font-size: 11px !important;
+            }
+            .container-fluid {
+                padding: 0 !important;
             }
             .receipt-toolbar, .no-print {
                 display: none !important;
@@ -535,15 +556,213 @@
                 box-shadow: none !important;
                 border: 1px solid #cbd5e1 !important;
                 max-width: 100% !important;
+                width: 100% !important;
                 margin: 0 !important;
-                border-radius: 0 !important;
+                border-radius: 6px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
             }
             .receipt-inner {
-                padding: 1.5rem 2rem !important;
+                padding: 12px 18px !important;
             }
-            @page {
-                size: A4 portrait;
-                margin: 12mm;
+            .clinic-brand-header {
+                padding-bottom: 8px !important;
+                margin-bottom: 6px !important;
+                border-bottom: 1.5px solid #e2e8f0 !important;
+            }
+            .clinic-logo-wrapper {
+                gap: 12px !important;
+            }
+            .clinic-logo-img {
+                max-height: 44px !important;
+                max-width: 140px !important;
+            }
+            .clinic-fallback-avatar {
+                width: 42px !important;
+                height: 42px !important;
+                font-size: 18px !important;
+                border-radius: 10px !important;
+            }
+            .clinic-title {
+                font-size: 1.15rem !important;
+                margin-bottom: 1px !important;
+            }
+            .clinic-specialty {
+                font-size: 0.72rem !important;
+                margin-bottom: 2px !important;
+            }
+            .clinic-contact-line {
+                font-size: 0.7rem !important;
+                line-height: 1.35 !important;
+            }
+            .document-title-meta {
+                min-width: 200px !important;
+            }
+            .receipt-badge-title {
+                font-size: 1.15rem !important;
+                margin-bottom: 2px !important;
+            }
+            .receipt-number-pill {
+                font-size: 11px !important;
+                padding: 2px 7px !important;
+                margin-bottom: 3px !important;
+            }
+            .receipt-date-text {
+                font-size: 10px !important;
+                margin-bottom: 3px !important;
+            }
+            .status-seal-success, .status-seal-pending, .status-seal-cancelled {
+                font-size: 9.5px !important;
+                padding: 2px 8px !important;
+            }
+            .patient-schedule-box {
+                margin-top: 6px !important;
+                margin-bottom: 6px !important;
+                padding: 8px 12px !important;
+                border-radius: 8px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .receipt-section-header {
+                font-size: 0.72rem !important;
+                margin-bottom: 5px !important;
+            }
+            .info-cell-label {
+                font-size: 8.5px !important;
+                margin-bottom: 1px !important;
+            }
+            .info-cell-value {
+                font-size: 11px !important;
+                margin-bottom: 4px !important;
+                line-height: 1.25 !important;
+            }
+            .receipt-table {
+                margin-bottom: 6px !important;
+                border-radius: 6px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .receipt-table thead th {
+                padding: 5px 8px !important;
+                font-size: 9.5px !important;
+                background: #f8fafc !important;
+            }
+            .receipt-table tbody td {
+                padding: 6px 8px !important;
+                font-size: 11px !important;
+                line-height: 1.25 !important;
+            }
+            .receipt-table tr {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .receipt-table small {
+                font-size: 9.5px !important;
+            }
+            .receipt-totals-panel {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                margin-bottom: 6px !important;
+                gap: 12px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .words-panel {
+                flex: 1 1 auto !important;
+                padding: 6px 10px !important;
+                border-radius: 6px !important;
+            }
+            .words-title {
+                font-size: 9px !important;
+                margin-bottom: 2px !important;
+            }
+            .words-value {
+                font-size: 11px !important;
+                line-height: 1.3 !important;
+            }
+            .words-panel .font-11 {
+                font-size: 8.5px !important;
+                line-height: 1.25 !important;
+                margin-top: 3px !important;
+            }
+            .calculation-card {
+                width: 250px !important;
+                flex-shrink: 0 !important;
+                padding: 6px 10px !important;
+                border-radius: 6px !important;
+            }
+            .calc-row {
+                font-size: 10.5px !important;
+                margin-bottom: 2px !important;
+            }
+            .calc-row.grand-total {
+                font-size: 12.5px !important;
+                padding-top: 4px !important;
+                margin-top: 3px !important;
+            }
+            .calc-row.grand-total .total-price {
+                font-size: 14px !important;
+            }
+            .payment-meta-card {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                justify-content: space-between !important;
+                padding: 6px 10px !important;
+                margin-bottom: 6px !important;
+                border-radius: 6px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .meta-field-label {
+                font-size: 8px !important;
+            }
+            .meta-field-val {
+                font-size: 9.5px !important;
+            }
+            .receipt-footer-row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                justify-content: space-between !important;
+                padding-top: 6px !important;
+                gap: 12px !important;
+                border-top-width: 1px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+            .instructions-list {
+                font-size: 8.5px !important;
+                line-height: 1.35 !important;
+                max-width: 480px !important;
+            }
+            .signature-box {
+                min-width: 140px !important;
+            }
+            .clinic-stamp-badge {
+                width: 44px !important;
+                height: 44px !important;
+                font-size: 7px !important;
+                margin-bottom: 3px !important;
+            }
+            .signature-line {
+                width: 120px !important;
+                margin-bottom: 3px !important;
+            }
+            .signatory-title {
+                font-size: 9.5px !important;
+            }
+            .signatory-subtitle {
+                font-size: 8px !important;
+            }
+            .thankyou-bar {
+                padding: 5px !important;
+                font-size: 8.5px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
         }
     </style>
@@ -652,32 +871,32 @@
 
             <!-- Patient & Appointment Particulars Grid -->
             <div class="patient-schedule-box">
-                <div class="row g-3">
+                <div class="row g-2 g-md-3">
                     <!-- Patient Column -->
-                    <div class="col-md-6 pe-md-3 border-end-md">
+                    <div class="col-6 pe-2 pe-md-3 border-end">
                         <div class="receipt-section-header">
                             <i class="fa-solid fa-id-card-clip"></i> Patient Particulars
                         </div>
                         <div class="row g-2">
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Patient Name</div>
                                 <div class="info-cell-value">
                                     {{ trim(($order->first_name ?? '') . ' ' . ($order->last_name ?? '')) ?: 'Patient #' . $order->patient_id }}
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Patient Record ID</div>
                                 <div class="info-cell-value info-cell-value-highlight">
                                     #PID-{{ $order->patient_id ?: $order->id }}
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Age &amp; Gender</div>
                                 <div class="info-cell-value">
                                     {{ $order->age ? $order->age . ' Yrs' : 'N/A' }} / {{ ucfirst($order->sex ?? 'Unspecified') }}
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Contact Mobile</div>
                                 <div class="info-cell-value">
                                     {{ $order->mobile_no ?? 'N/A' }}
@@ -688,7 +907,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="info-cell-label">Residential Address</div>
-                                <div class="info-cell-value mb-0 text-muted" style="font-size: 13px;">
+                                <div class="info-cell-value mb-0 text-muted" style="font-size: 12px;">
                                     {{ $order->address ?: 'Residential address not specified' }}
                                 </div>
                             </div>
@@ -696,18 +915,18 @@
                     </div>
 
                     <!-- Consultation Schedule Column -->
-                    <div class="col-md-6 ps-md-3">
+                    <div class="col-6 ps-2 ps-md-3">
                         <div class="receipt-section-header">
                             <i class="fa-solid fa-calendar-check"></i> Consultation Particulars
                         </div>
                         <div class="row g-2">
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Consultation Date</div>
                                 <div class="info-cell-value">
                                     {{ $order->booking_date ? \Carbon\Carbon::parse($order->booking_date)->format('D, d M Y') : 'Confirmed' }}
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Allocated Slot</div>
                                 <div class="info-cell-value">
                                     @if(!empty($order->from_time) && !empty($order->to_time))
@@ -717,13 +936,13 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Attending Doctor</div>
                                 <div class="info-cell-value">
                                     {{ $doctor->name ?? 'Dr. Specialist' }}
                                 </div>
                             </div>
-                            <div class="col-sm-6">
+                            <div class="col-6">
                                 <div class="info-cell-label">Department</div>
                                 <div class="info-cell-value">
                                     {{ $clinic->specialization ?? 'Outpatient Medicine' }}
@@ -731,7 +950,7 @@
                             </div>
                             <div class="col-12">
                                 <div class="info-cell-label">Chief Complaint / Symptoms</div>
-                                <div class="info-cell-value mb-0" style="color: var(--rx-primary-dark); font-size: 13px;">
+                                <div class="info-cell-value mb-0" style="color: var(--rx-primary-dark); font-size: 12px;">
                                     {{ $order->patient_problem ?: 'General Medical Consultation & Clinical Evaluation' }}
                                 </div>
                             </div>
@@ -747,34 +966,34 @@
             <table class="receipt-table">
                 <thead>
                     <tr>
-                        <th style="width: 45%;">Service / Item Description</th>
+                        <th style="width: 46%;">Service / Item Description</th>
                         <th style="width: 20%;">Department</th>
-                        <th class="text-center" style="width: 10%;">Qty</th>
-                        <th class="text-end" style="width: 12%;">Rate</th>
-                        <th class="text-end" style="width: 13%;">Amount (₹)</th>
+                        <th class="text-center text-nowrap" style="width: 8%;">Qty</th>
+                        <th class="text-end text-nowrap" style="width: 13%;">Rate</th>
+                        <th class="text-end text-nowrap" style="width: 13%;">Amount (₹)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
                             <strong class="text-dark d-block">Specialist Doctor Consultation &amp; Clinical Checkup</strong>
-                            <small class="text-muted font-12">Comprehensive in-clinic medical assessment by {{ $doctor->name ?? 'Attending Consultant' }}</small>
+                            <small class="text-muted font-11">Comprehensive in-clinic medical assessment by {{ $doctor->name ?? 'Attending Consultant' }}</small>
                         </td>
                         <td class="text-muted">Clinical OPD</td>
-                        <td class="text-center font-weight-bold">1</td>
-                        <td class="text-end">₹ {{ number_format($consultFee, 2) }}</td>
-                        <td class="text-end font-weight-bold text-dark">₹ {{ number_format($consultFee, 2) }}</td>
+                        <td class="text-center font-weight-bold text-nowrap">1</td>
+                        <td class="text-end text-nowrap">₹ {{ number_format($consultFee, 2) }}</td>
+                        <td class="text-end font-weight-bold text-dark text-nowrap">₹ {{ number_format($consultFee, 2) }}</td>
                     </tr>
                     @if($platformFee > 0)
                     <tr>
                         <td>
                             <strong class="text-dark d-block">Digital Health Record &amp; Clinic Administration</strong>
-                            <small class="text-muted font-12">Online booking confirmation, notification dispatch, and digital EHR maintenance</small>
+                            <small class="text-muted font-11">Online booking confirmation, notification dispatch, and digital EHR maintenance</small>
                         </td>
                         <td class="text-muted">Administration</td>
-                        <td class="text-center font-weight-bold">1</td>
-                        <td class="text-end">₹ {{ number_format($platformFee, 2) }}</td>
-                        <td class="text-end font-weight-bold text-dark">₹ {{ number_format($platformFee, 2) }}</td>
+                        <td class="text-center font-weight-bold text-nowrap">1</td>
+                        <td class="text-end text-nowrap">₹ {{ number_format($platformFee, 2) }}</td>
+                        <td class="text-end font-weight-bold text-dark text-nowrap">₹ {{ number_format($platformFee, 2) }}</td>
                     </tr>
                     @endif
                 </tbody>
