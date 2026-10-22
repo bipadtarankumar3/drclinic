@@ -224,8 +224,8 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a class="nav-link" href="{{ URL::To('admin/contact') }}">
+    <li class="nav-item {{ request()->routeIs('doctor.support') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('doctor.support') }}">
         <i class="mdi mdi-help-circle-outline nav-icon"></i>
         <span class="menu-title">Support</span>
       </a>

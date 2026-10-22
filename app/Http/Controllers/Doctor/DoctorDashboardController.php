@@ -52,4 +52,21 @@ class DoctorDashboardController extends Controller
             'totalStaff'
         ));
     }
+
+    /**
+     * Show Doctor Support & Help Center
+     */
+    public function support(Request $request)
+    {
+        $user = Auth::user();
+        $clinic = $user ? $user->getActiveClinic() : null;
+
+        if (!$clinic) {
+            return redirect()->route('doctor.onboarding');
+        }
+
+        $setting = \App\Models\Setting::where('clinic_id', $clinic->id)->first() ?? \App\Models\Setting::first();
+
+        return view('doctor.support', compact('clinic', 'setting', 'user'));
+    }
 }

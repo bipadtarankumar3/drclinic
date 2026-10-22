@@ -111,6 +111,9 @@ Route::group(['prefix' => 'doctor', 'as' => 'doctor.', 'middleware' => ['auth']]
     Route::get('/subscription', [DoctorSubscriptionController::class, 'index'])->name('subscription.index');
     Route::post('/subscription/order', [DoctorSubscriptionController::class, 'createOrder'])->name('subscription.order');
     Route::post('/subscription/verify', [DoctorSubscriptionController::class, 'verifyPayment'])->name('subscription.verify');
+
+    // Doctor Support & Help Center
+    Route::get('/support', [DoctorDashboardController::class, 'support'])->name('support');
 });
 
 
