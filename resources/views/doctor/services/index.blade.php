@@ -1,284 +1,175 @@
 @extends('admin.layouts.main')
 
-@section('style')
-<style>
-.service-mgmt-card {
-  border: 1.5px solid #e2e8f0;
-  border-radius: 14px;
-  background: #ffffff;
-  transition: all 0.2s ease;
-}
-.service-mgmt-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
-  border-color: #cbd5e1;
-}
-.service-icon-preview {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(13, 148, 136, 0.1);
-  color: #0d9488;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  flex-shrink: 0;
-}
-.icon-option-btn {
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 8px 12px;
-  background: #fff;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  transition: all 0.15s ease;
-}
-.icon-option-btn:hover, .icon-option-btn.selected {
-  background: #f0fdfa;
-  border-color: #0d9488;
-  color: #0d9488;
-}
-</style>
-@endsection
-
 @section('content')
 <div class="content-wrapper">
-  <!-- Top Header Banner -->
-  <div class="d-flex align-items-center justify-content-between flex-wrap mb-4" style="gap: 16px;">
+  <!-- Page Header matching Plans Design -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap mb-4 pb-2">
     <div>
-      <h2 class="font-weight-bold mb-1" style="color: #0f172a;">
-        <i class="mdi mdi-medical-bag text-primary mr-1"></i> Clinic Services
-      </h2>
-      <p class="text-muted mb-0 font-14">
-        Manage the medical services and treatments displayed on your clinic's public website.
-      </p>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <h2 class="font-weight-bold mb-0 text-dark" style="font-size: 26px; letter-spacing: -0.5px;">Clinic Services</h2>
+        <span class="badge" style="background: #e0f2fe; color: #0284c7; font-weight: 700; font-size: 11px; padding: 5px 11px; border-radius: 9999px; letter-spacing: 0.5px;">MEDICAL &amp; CLINICAL SERVICES</span>
+      </div>
+      <p class="text-muted mb-0" style="font-size: 13.5px;">Configure treatments, consultation pricing, and display order for your public clinic storefront.</p>
     </div>
-
-    <div class="d-flex align-items-center gap-2">
-      <form action="{{ route('doctor.services.seed_defaults') }}" method="POST" class="d-inline" onsubmit="return confirm('Restore standard services adapted to your specialization ({{ $clinic->specialization ?? 'General Healthcare' }})? Existing services will be reset.');">
+    <div class="d-flex align-items-center gap-2 mt-3 mt-md-0">
+      <form action="{{ route('doctor.services.seed_defaults') }}" method="POST" class="d-inline" onsubmit="return confirm('Restore standard services adapted to your clinic specialization ({{ $clinic->specialization ?? 'Healthcare' }})?');">
         @csrf
-        <button type="submit" class="btn btn-outline-secondary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
-          <i class="mdi mdi-refresh mr-1"></i> Auto-Generate for My Specialty
+        <button type="submit" class="btn font-weight-bold d-inline-flex align-items-center" style="background: #ffffff; border: 1.5px solid #cbd5e1; color: #475569; padding: 9px 18px; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+          <i class="mdi mdi-refresh mr-1" style="font-size: 18px; color: #0284c7;"></i> Auto-Generate for My Specialty
         </button>
       </form>
 
-      <button type="button" class="btn btn-primary btn-sm font-weight-bold px-3 py-2" data-bs-toggle="modal" data-bs-target="#addServiceModal" style="border-radius: 8px;">
-        <i class="mdi mdi-plus mr-1"></i> Add New Service
-      </button>
+      <a href="{{ route('doctor.services.create') }}" class="btn font-weight-bold d-inline-flex align-items-center" style="background: #e11d48; border: none; color: #ffffff; padding: 10px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(225,29,72,0.3);">
+        <i class="mdi mdi-plus mr-1" style="font-size: 18px;"></i> Add New Service
+      </a>
 
-      <a href="{{ $clinic->custom_domain ? 'https://'.$clinic->custom_domain : url('/c/'.($clinic->subdomain ?? $clinic->slug)) }}#services-section" target="_blank" class="btn btn-outline-primary btn-sm font-weight-bold px-3 py-2" style="border-radius: 8px;">
+      <a href="{{ $clinic->custom_domain ? 'https://'.$clinic->custom_domain : url('/c/'.($clinic->subdomain ?? $clinic->slug)) }}#services-section" target="_blank" class="btn btn-outline-secondary font-weight-bold d-inline-flex align-items-center" style="border: 1.5px solid #cbd5e1; padding: 9px 18px; border-radius: 10px;">
         <i class="mdi mdi-open-in-new mr-1"></i> View on Website
       </a>
     </div>
   </div>
 
   @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm mb-4" role="alert">
-      <i class="mdi mdi-check-circle mr-1"></i> {{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
+  <div class="alert alert-success alert-dismissible fade show rounded-3 p-3 mb-4 shadow-sm" role="alert" style="border-left: 4px solid #10b981; background: #f0fdf4; color: #065f46;">
+    <strong><i class="mdi mdi-check-circle mr-1"></i></strong> {{ session('success') }}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
   @endif
 
-  <!-- Services Grid -->
-  <div class="row g-3">
-    @forelse($services as $service)
-      <div class="col-lg-6 col-12 mb-3">
-        <div class="service-mgmt-card p-3 h-100 d-flex flex-column justify-content-between">
-          <div>
-            <div class="d-flex align-items-start justify-content-between mb-2" style="gap: 12px;">
-              <div class="d-flex align-items-center" style="gap: 12px;">
-                <div class="service-icon-preview">
-                  <i class="{{ $service->icon_class }}"></i>
-                </div>
-                <div>
-                  <h5 class="font-weight-bold mb-1" style="color: #0f172a; font-size: 17px;">
-                    {{ $service->title }}
-                  </h5>
-                  <div class="d-flex align-items-center gap-2">
-                    @if($service->status)
-                      <span class="badge bg-success" style="font-size: 11px; font-weight: 600;">Active on Website</span>
-                    @else
-                      <span class="badge bg-secondary" style="font-size: 11px; font-weight: 600;">Hidden</span>
-                    @endif
-
-                    @if($service->price > 0)
-                      <span class="badge bg-light text-dark border" style="font-size: 11px; font-weight: 600;">
-                        ₹{{ number_format($service->price, 2) }}
-                      </span>
-                    @endif
-
-                    <span class="text-muted font-11">Order: #{{ $service->sort_order }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Action Buttons -->
-              <div class="d-flex align-items-center gap-1">
-                <button type="button" class="btn btn-light btn-sm p-2 text-primary rounded-2" title="Edit Service" data-bs-toggle="modal" data-bs-target="#editModal{{ $service->id }}">
-                  <i class="mdi mdi-pencil font-16"></i>
-                </button>
-                <form action="{{ route('doctor.services.destroy', $service->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this service permanently?');">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn btn-light btn-sm p-2 text-danger rounded-2" title="Delete Service">
-                    <i class="mdi mdi-delete-outline font-16"></i>
-                  </button>
-                </form>
-              </div>
-            </div>
-
-            <p class="text-muted font-13 mb-3" style="line-height: 1.6;">
-              {{ $service->description ?: 'No detailed description provided.' }}
-            </p>
-          </div>
-
-          <div class="d-flex align-items-center justify-content-between pt-2 border-top">
-            <small class="text-muted">Icon: <code>{{ $service->icon }}</code></small>
-            <button type="button" class="btn btn-link btn-sm text-decoration-none p-0" data-bs-toggle="modal" data-bs-target="#editModal{{ $service->id }}">
-              Edit Details &rarr;
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Edit Modal for this Service -->
-      <div class="modal fade" id="editModal{{ $service->id }}" tabindex="-1" aria-labelledby="editModalLabel{{ $service->id }}" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-            <div class="modal-header bg-light">
-              <h5 class="modal-title font-weight-bold" id="editModalLabel{{ $service->id }}">
-                <i class="mdi mdi-pencil mr-1 text-primary"></i> Edit Service
-              </h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form action="{{ route('doctor.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
-              @csrf
-              @method('PUT')
-              <div class="modal-body p-4">
-                <div class="mb-3">
-                  <label class="form-label font-weight-bold">Service Title <span class="text-danger">*</span></label>
-                  <input type="text" name="title" class="form-control" value="{{ old('title', $service->title) }}" required>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label font-weight-bold">Short Description</label>
-                  <textarea name="description" class="form-control" rows="3" placeholder="Brief summary shown on your homepage service card...">{{ old('description', $service->description) }}</textarea>
-                </div>
-
-                <div class="mb-3">
-                  <label class="form-label font-weight-bold">Icon (FontAwesome)</label>
-                  <div class="input-group mb-2">
-                    <span class="input-group-text bg-light"><i class="{{ $service->icon_class }}"></i></span>
-                    <input type="text" name="icon" class="form-control" value="{{ old('icon', $service->icon) }}" placeholder="e.g. fa-stethoscope or fa-heart-pulse">
-                  </div>
-                  <small class="text-muted font-11">
-                    Quick suggestions: <code>fa-stethoscope</code>, <code>fa-user-doctor</code>, <code>fa-heart-pulse</code>, <code>fa-tooth</code>, <code>fa-eye</code>, <code>fa-brain</code>, <code>fa-bone</code>, <code>fa-syringe</code>, <code>fa-hospital-user</code>
-                  </small>
-                </div>
-
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <label class="form-label font-weight-bold">Starting Price (₹) <small class="text-muted font-weight-normal">(Optional)</small></label>
-                    <input type="number" step="0.01" min="0" name="price" class="form-control" value="{{ old('price', $service->price) }}" placeholder="e.g. 500">
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label font-weight-bold">Sort Order</label>
-                    <input type="number" name="sort_order" class="form-control" value="{{ old('sort_order', $service->sort_order) }}">
-                  </div>
-                </div>
-
-                <div class="form-check form-switch mb-2">
-                  <input class="form-check-input" type="checkbox" name="status" value="1" id="status{{ $service->id }}" {{ $service->status ? 'checked' : '' }}>
-                  <label class="form-check-label font-weight-bold" for="status{{ $service->id }}">Show on Public Website</label>
-                </div>
-              </div>
-              <div class="modal-footer bg-light">
-                <button type="button" class="btn btn-secondary font-weight-bold" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary font-weight-bold">Save Changes</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    @empty
-      <div class="col-12">
-        <div class="card p-5 text-center border-0 shadow-sm rounded-4" style="background: #ffffff;">
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 28px;">
-            <i class="mdi mdi-medical-bag"></i>
-          </div>
-          <h4 class="font-weight-bold mb-1">No Custom Services Added Yet</h4>
-          <p class="text-muted font-14 mb-4">Add your clinic's specialized services or auto-generate defaults tailored to your medical specialty.</p>
-          <div class="d-flex justify-content-center gap-2">
-            <form action="{{ route('doctor.services.seed_defaults') }}" method="POST">
-              @csrf
-              <button type="submit" class="btn btn-primary font-weight-bold px-4 py-2" style="border-radius: 8px;">
-                <i class="mdi mdi-auto-fix mr-1"></i> Auto-Generate Services for {{ $clinic->specialization ?? 'My Clinic' }}
-              </button>
-            </form>
-          </div>
-        </div>
-      </div>
-    @endforelse
+  @if(isset($errors) && $errors->any())
+  <div class="alert alert-danger rounded-3 p-3 mb-4 shadow-sm" style="border-left: 4px solid #ef4444; background: #fef2f2; color: #991b1b;">
+    <ul class="mb-0">
+      @foreach($errors->all() as $err)
+        <li>{{ $err }}</li>
+      @endforeach
+    </ul>
   </div>
-</div>
+  @endif
 
-<!-- Modal: Add New Service -->
-<div class="modal fade" id="addServiceModal" tabindex="-1" aria-labelledby="addServiceModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px;">
-      <div class="modal-header bg-light">
-        <h5 class="modal-title font-weight-bold" id="addServiceModalLabel">
-          <i class="mdi mdi-plus-circle text-primary mr-1"></i> Add New Clinic Service
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  <!-- Commercial Style Services Grid -->
+  <div class="row g-4 mb-5">
+    @forelse($services as $service)
+    <div class="col-lg-4 col-md-6 mb-4">
+      <div class="card h-100 border-0 shadow-sm rounded-4" style="border: 1px solid #e2e8f0; border-radius: 18px; background: #ffffff; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+        <div class="card-body p-4 d-flex flex-column justify-content-between">
+          <div>
+            <!-- Header: Title & Active Badge -->
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div style="flex: 1; padding-right: 8px;">
+                <h4 class="font-weight-bold text-dark mb-1" style="font-size: 19px;">{{ $service->title }}</h4>
+                <p class="text-muted mb-0 font-13" style="min-height: 38px; line-height: 1.4;">
+                  {{ $service->description ?? 'Specialized clinical care and patient-first medical treatment.' }}
+                </p>
+              </div>
+              @if($service->status)
+                <span class="badge" style="background: #059669; color: #fff; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; padding: 5px 10px; border-radius: 9999px; white-space: nowrap;">ACTIVE TIER</span>
+              @else
+                <span class="badge" style="background: #94a3b8; color: #fff; font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px; padding: 5px 10px; border-radius: 9999px; white-space: nowrap;">INACTIVE TIER</span>
+              @endif
+            </div>
+
+            <!-- Pricing Box -->
+            <div class="rounded-3 p-3 my-3 d-flex justify-content-between align-items-baseline" style="background: #f8fafc; border: 1px solid #edf2f7; border-radius: 12px;">
+              <div>
+                @if($service->price > 0)
+                  <span class="h3 font-weight-bold text-dark mb-0">₹{{ number_format($service->price, 2) }}</span>
+                  <span class="text-muted font-12">/consultation</span>
+                @else
+                  <span class="h3 font-weight-bold text-dark mb-0">Included</span>
+                  <span class="text-muted font-12">in standard visit</span>
+                @endif
+              </div>
+              <div class="text-end">
+                <div class="font-weight-bold text-dark font-13">Display Order</div>
+                <div class="text-muted" style="font-size: 11px;">#{{ $service->sort_order }} on website</div>
+              </div>
+            </div>
+
+            <!-- Service Details & Specifications List -->
+            <div class="py-2 mb-3" style="font-size: 13px; line-height: 2.1;">
+              <div class="d-flex justify-content-between text-muted border-bottom py-1" style="border-color: #f1f5f9 !important;">
+                <span>Display Icon:</span>
+                <strong class="text-dark d-inline-flex align-items-center">
+                  <i class="{{ $service->icon_class }} mr-1" style="color: #0284c7; margin-right: 5px; font-size: 15px;"></i>
+                  {{ $service->icon ?: 'fa-stethoscope' }}
+                </strong>
+              </div>
+              <div class="d-flex justify-content-between text-muted border-bottom py-1" style="border-color: #f1f5f9 !important;">
+                <span>Storefront Visibility:</span>
+                <strong class="text-dark">{{ $service->status ? 'Visible on Storefront' : 'Hidden from Patients' }}</strong>
+              </div>
+              <div class="d-flex justify-content-between text-muted border-bottom py-1" style="border-color: #f1f5f9 !important;">
+                <span>Booking Integration:</span>
+                <strong class="text-dark">Online Calendar Active</strong>
+              </div>
+              <div class="d-flex justify-content-between text-muted py-1">
+                <span>Clinic Specialty:</span>
+                <strong class="text-dark">{{ $clinic->specialization ?? 'General Care' }}</strong>
+              </div>
+            </div>
+
+            <!-- Entitled Features / Highlights Badges -->
+            <div class="mb-4">
+              <div class="text-muted font-weight-bold text-uppercase mb-2" style="font-size: 10.5px; letter-spacing: 0.6px;">ENTITLED FEATURES:</div>
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                  Doctor Consultation
+                </span>
+                <span class="badge" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                  Public Storefront
+                </span>
+                <span class="badge" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                  Appointment History
+                </span>
+                @if($service->price > 0)
+                <span class="badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; font-size: 10.5px; font-weight: 600; padding: 4px 8px; border-radius: 6px;">
+                  Razorpay Direct
+                </span>
+                @endif
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Actions -->
+          <div class="d-flex justify-content-between align-items-center pt-3 border-top" style="border-color: #f1f5f9 !important;">
+            <div class="font-weight-bold text-dark font-13">
+              Sort Order: #{{ $service->sort_order }}
+            </div>
+            <div class="d-flex gap-2">
+              <form action="{{ route('doctor.services.toggle_status', $service->id) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-sm btn-outline-secondary font-weight-bold px-3" style="border-radius: 8px;">
+                  {{ $service->status ? 'Deactivate' : 'Activate' }}
+                </button>
+              </form>
+              <a href="{{ route('doctor.services.edit', $service->id) }}" class="btn btn-sm text-white font-weight-bold px-3" style="background: #e11d48; border-radius: 8px;">
+                Edit
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-      <form action="{{ route('doctor.services.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="modal-body p-4">
-          <div class="mb-3">
-            <label class="form-label font-weight-bold">Service Title <span class="text-danger">*</span></label>
-            <input type="text" name="title" class="form-control" placeholder="e.g. Cardiology Consultation, Dental Implants, Hair Therapy" required>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label font-weight-bold">Short Description</label>
-            <textarea name="description" class="form-control" rows="3" placeholder="Brief summary of what this treatment includes and how it helps patients..."></textarea>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label font-weight-bold">FontAwesome Icon</label>
-            <input type="text" name="icon" class="form-control" value="fa-stethoscope" placeholder="e.g. fa-stethoscope, fa-tooth, fa-heart-pulse">
-            <small class="text-muted font-11">
-              Popular icons: <code>fa-stethoscope</code>, <code>fa-user-doctor</code>, <code>fa-heart-pulse</code>, <code>fa-tooth</code>, <code>fa-eye</code>, <code>fa-brain</code>, <code>fa-bone</code>, <code>fa-syringe</code>, <code>fa-shield-heart</code>
-            </small>
-          </div>
-
-          <div class="row g-2 mb-3">
-            <div class="col-6">
-              <label class="form-label font-weight-bold">Starting Price (₹) <small class="text-muted font-weight-normal">(Optional)</small></label>
-              <input type="number" step="0.01" min="0" name="price" class="form-control" placeholder="e.g. 500.00">
-            </div>
-            <div class="col-6">
-              <label class="form-label font-weight-bold">Sort Order</label>
-              <input type="number" name="sort_order" class="form-control" value="{{ count($services) + 1 }}">
-            </div>
-          </div>
-
-          <div class="form-check form-switch mb-2">
-            <input class="form-check-input" type="checkbox" name="status" value="1" id="newStatus" checked>
-            <label class="form-check-label font-weight-bold" for="newStatus">Show on Public Website Immediately</label>
-          </div>
-        </div>
-        <div class="modal-footer bg-light">
-          <button type="button" class="btn btn-secondary font-weight-bold" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary font-weight-bold">Create Service</button>
-        </div>
-      </form>
     </div>
+    @empty
+    <div class="col-12">
+      <div class="card border-0 shadow-sm rounded-4 p-5 text-center" style="border-radius: 18px; border: 1px dashed #cbd5e1; background: #ffffff;">
+        <i class="mdi mdi-medical-bag mb-3" style="font-size: 48px; color: #94a3b8;"></i>
+        <h4 class="font-weight-bold text-dark mb-2">No Services Added Yet</h4>
+        <p class="text-muted mb-4" style="max-width: 500px; margin: 0 auto;">Click "Auto-Generate for My Specialty" to automatically create relevant services for your clinic, or add custom services manually.</p>
+        <div>
+          <form action="{{ route('doctor.services.seed_defaults') }}" method="POST" class="d-inline">
+            @csrf
+            <button type="submit" class="btn btn-outline-primary font-weight-bold px-4 py-2 me-2" style="border-radius: 8px;">
+              <i class="mdi mdi-refresh mr-1"></i> Auto-Generate for My Specialty
+            </button>
+          </form>
+          <a href="{{ route('doctor.services.create') }}" class="btn text-white font-weight-bold px-4 py-2" style="background: #e11d48; border-radius: 8px;">
+            <i class="mdi mdi-plus mr-1"></i> Add Custom Service
+          </a>
+        </div>
+      </div>
+    </div>
+    @endforelse
   </div>
 </div>
 @endsection

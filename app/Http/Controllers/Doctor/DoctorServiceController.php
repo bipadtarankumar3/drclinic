@@ -32,6 +32,19 @@ class DoctorServiceController extends Controller
     }
 
     /**
+     * Show create service page
+     */
+    public function create()
+    {
+        $clinic = Auth::user()->getActiveClinic();
+        if (!$clinic) {
+            return redirect()->route('doctor.onboarding');
+        }
+
+        return view('doctor.services.create', compact('clinic'));
+    }
+
+    /**
      * Store new clinic service
      */
     public function store(Request $request)
@@ -73,6 +86,21 @@ class DoctorServiceController extends Controller
         ActivityLog::log('clinic_service_created', "Created service '{$request->title}'", $clinic->id);
 
         return redirect()->route('doctor.services.index')->with('success', "Service '{$request->title}' added successfully.");
+    }
+
+    /**
+     * Show edit service page
+     */
+    public function edit($id)
+    {
+        $clinic = Auth::user()->getActiveClinic();
+        if (!$clinic) {
+            return redirect()->route('doctor.onboarding');
+        }
+
+        $service = ClinicService::where('clinic_id', $clinic->id)->findOrFail($id);
+
+        return view('doctor.services.edit', compact('clinic', 'service'));
     }
 
     /**
@@ -130,11 +158,15 @@ class DoctorServiceController extends Controller
         $service->status = !$service->status;
         $service->save();
 
-        return response()->json([
-            'success' => true,
-            'status' => $service->status,
-            'message' => 'Service status updated.'
-        ]);
+        if (request()->wantsJson() || request()->ajax()) {
+            return response()->json([
+                'success' => true,
+                'status' => $service->status,
+                'message' => 'Service status updated.'
+            ]);
+        }
+
+        return redirect()->back()->with('success', "Service '{$service->title}' status updated.");
     }
 
     /**
