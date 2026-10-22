@@ -364,22 +364,34 @@
 </style>
 
 <header>
-  <!-- 1. Top Sub-Header Bar -->
+  <!-- 1. Top Sub-Header Bar (Fully Managed from Doctor Panel) -->
+  @if($clinic->show_topbar ?? true)
   <div class="vital-top-bar">
     <div class="vital-top-main">
       <div class="vital-top-left">
-        <span><i class="fa-regular fa-circle-check text-success mr-1"></i> Your Health, Our Priority</span>
-        <span class="divider">|</span>
-        <span><i class="fa-regular fa-clock mr-1" style="color: var(--clinic-primary);"></i> Open 7 Days a Week</span>
+        @if(!empty($clinic->topbar_tagline ?? 'Your Health, Our Priority'))
+          <span><i class="fa-regular fa-circle-check text-success mr-1"></i> {{ $clinic->topbar_tagline ?? 'Your Health, Our Priority' }}</span>
+        @endif
+        @if(!empty($clinic->topbar_tagline) && !empty($clinic->topbar_hours))
+          <span class="divider">|</span>
+        @endif
+        @if(!empty($clinic->topbar_hours ?? 'Open 7 Days a Week'))
+          <span><i class="fa-regular fa-clock mr-1" style="color: var(--clinic-primary);"></i> {{ $clinic->topbar_hours ?? 'Open 7 Days a Week' }}</span>
+        @endif
       </div>
       <div class="vital-top-right">
-        <span><i class="fa-solid fa-globe mr-1" style="color: #94a3b8;"></i> INR (₹)</span>
+        @if(!empty($clinic->currency_text ?? 'INR (₹)'))
+          <span><i class="fa-solid fa-globe mr-1" style="color: #94a3b8;"></i> {{ $clinic->currency_text ?? 'INR (₹)' }}</span>
+        @endif
         <a href="#booking-section"><i class="fa-regular fa-calendar-check mr-1" style="color: var(--clinic-primary);"></i> Book Appointment</a>
         <a href="{{ $clinic->phone ? 'tel:'.$clinic->phone : '#' }}"><i class="fa-solid fa-phone mr-1" style="color: var(--clinic-primary);"></i> {{ $clinic->phone ?? '+91 9830012345' }}</a>
-        <!-- <a href="{{ url('/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a> -->
+        @if($clinic->show_doctor_portal_link ?? false)
+          <a href="{{ url('/login') }}"><i class="fa-solid fa-user-doctor mr-1"></i> Doctor Portal</a>
+        @endif
       </div>
     </div>
   </div>
+  @endif
 
   <!-- 2. Main Sticky Modern Navbar -->
   <div class="vital-nav-bar">
@@ -508,8 +520,9 @@
           @endforeach
         @endif
 
-        <li><a href="{{ $clinicUrl }}#contact-section"><i class="fa-solid fa-location-dot me-2 text-teal"></i> Contact</a></li>
-        <!-- <li><a href="{{ url('/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li> -->
+        @if($clinic->show_doctor_portal_link ?? false)
+          <li><a href="{{ url('/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li>
+        @endif
       </ul>
 
       <div class="d-flex flex-column gap-2 pt-2">

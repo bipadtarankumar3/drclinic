@@ -20,6 +20,8 @@ class Clinic extends Model
         'trial_ends_at' => 'datetime',
         'extra_features' => 'array',
         'custom_quotas' => 'array',
+        'show_topbar' => 'boolean',
+        'show_doctor_portal_link' => 'boolean',
     ];
 
     /**

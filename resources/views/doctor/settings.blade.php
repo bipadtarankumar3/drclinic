@@ -572,9 +572,70 @@
                     <small class="text-muted">High-res clinic facade or medical facility banner.</small>
                   </div>
 
+                  <!-- Storefront Top Bar & Announcement Header Configuration -->
+                  <div class="col-12 mt-2 mb-3">
+                    <h5 class="font-weight-bold text-dark mb-2 d-flex align-items-center" style="font-size: 15px; border-top: 1px dashed #e2e8f0; padding-top: 20px;">
+                      <i class="mdi mdi-page-layout-header text-primary mr-2" style="margin-right: 8px;"></i> Storefront Top Header Bar &amp; Announcements
+                    </h5>
+                    <p class="text-muted font-12 mb-3">Dynamically control the top bar message, clinic opening hours, currency, and doctor login link on your public website.</p>
+                  </div>
+
+                  <div class="col-12 mb-3">
+                    <div class="doctor-switch-card {{ ($clinic->show_topbar ?? true) ? 'is-active' : '' }}" onclick="if(event.target.tagName !== 'INPUT') { var cb = this.querySelector('input[type=checkbox]'); cb.checked = !cb.checked; toggleSwitchCardStyle(cb); }">
+                      <div>
+                        <div class="doctor-switch-title">Enable Top Sub-Header Bar</div>
+                        <div class="doctor-switch-desc">Show the top informational bar (tagline, hours, phone, currency) above the main navigation.</div>
+                      </div>
+                      <label class="doctor-toggle-pill">
+                        <input type="checkbox" id="show_topbar" name="show_topbar" value="1" {{ ($clinic->show_topbar ?? true) ? 'checked' : '' }} onchange="toggleSwitchCardStyle(this)">
+                        <span class="doctor-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Top Bar Tagline / Motto</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="mdi mdi-check-decagram text-success"></i></span>
+                      <input type="text" class="form-control doctor-settings-input" name="topbar_tagline" value="{{ old('topbar_tagline', $clinic->topbar_tagline ?? 'Your Health, Our Priority') }}" placeholder="e.g. Your Health, Our Priority">
+                    </div>
+                    <small class="text-muted font-11">Displayed on the top left of your storefront.</small>
+                  </div>
+
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label font-weight-bold">Working / Open Hours</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="mdi mdi-clock-outline text-primary"></i></span>
+                      <input type="text" class="form-control doctor-settings-input" name="topbar_hours" value="{{ old('topbar_hours', $clinic->topbar_hours ?? 'Open 7 Days a Week') }}" placeholder="e.g. Open 7 Days a Week or Mon-Sat 9AM-8PM">
+                    </div>
+                    <small class="text-muted font-11">Operating timings shown beside the tagline.</small>
+                  </div>
+
+                  <div class="col-md-6 mb-4">
+                    <label class="form-label font-weight-bold">Currency Indicator Text</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light"><i class="mdi mdi-earth text-muted"></i></span>
+                      <input type="text" class="form-control doctor-settings-input" name="currency_text" value="{{ old('currency_text', $clinic->currency_text ?? 'INR (₹)') }}" placeholder="e.g. INR (₹)">
+                    </div>
+                    <small class="text-muted font-11">Shown in the top right beside appointment &amp; phone.</small>
+                  </div>
+
+                  <div class="col-md-6 mb-4">
+                    <div class="doctor-switch-card h-100 mb-0 {{ ($clinic->show_doctor_portal_link ?? false) ? 'is-active' : '' }}" onclick="if(event.target.tagName !== 'INPUT') { var cb = this.querySelector('input[type=checkbox]'); cb.checked = !cb.checked; toggleSwitchCardStyle(cb); }">
+                      <div>
+                        <div class="doctor-switch-title">Show "Doctor Portal" Link</div>
+                        <div class="doctor-switch-desc">Display doctor login link in the public header and mobile menu.</div>
+                      </div>
+                      <label class="doctor-toggle-pill">
+                        <input type="checkbox" id="show_doctor_portal_link" name="show_doctor_portal_link" value="1" {{ ($clinic->show_doctor_portal_link ?? false) ? 'checked' : '' }} onchange="toggleSwitchCardStyle(this)">
+                        <span class="doctor-toggle-slider"></span>
+                      </label>
+                    </div>
+                  </div>
+
                   <div class="col-12">
                     <button type="submit" class="btn btn-doctor-save">
-                      <i class="mdi mdi-palette-outline mr-1"></i> Save Branding & Colors
+                      <i class="mdi mdi-palette-outline mr-1"></i> Save Branding &amp; Header Settings
                     </button>
                   </div>
                 </div>

@@ -116,11 +116,19 @@ class DoctorSettingsController extends Controller
             'secondary_color' => 'nullable|string|max:30',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
             'banner' => 'nullable|file|mimes:jpeg,png,jpg,webp,gif,bmp|max:5120',
+            'topbar_tagline' => 'nullable|string|max:255',
+            'topbar_hours' => 'nullable|string|max:255',
+            'currency_text' => 'nullable|string|max:50',
         ]);
 
         $data = [
             'theme_color' => $request->theme_color ?? '#0d6efd',
             'secondary_color' => $request->secondary_color ?? '#20c997',
+            'topbar_tagline' => $request->filled('topbar_tagline') ? $request->topbar_tagline : 'Your Health, Our Priority',
+            'topbar_hours' => $request->filled('topbar_hours') ? $request->topbar_hours : 'Open 7 Days a Week',
+            'show_topbar' => $request->has('show_topbar'),
+            'show_doctor_portal_link' => $request->has('show_doctor_portal_link'),
+            'currency_text' => $request->filled('currency_text') ? $request->currency_text : 'INR (₹)',
         ];
 
         if ($request->hasFile('logo')) {
