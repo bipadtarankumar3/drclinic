@@ -45,36 +45,227 @@
   </div>
   @endif
 
-  <!-- Filters & Search -->
+  <!-- 1. Clinic Summary Count KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+      <a href="{{ route('admin.saas.clinics') }}" class="card border-0 shadow-sm rounded-4 text-decoration-none h-100 {{ !request()->hasAny(['status', 'date_preset', 'plan_id']) ? 'border-primary' : '' }}" style="border-radius: 16px; background: #ffffff; border: 1.5px solid #e2e8f0; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted font-11 font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">Total Clinics</span>
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #ecfdf5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              <i class="mdi mdi-hospital-building"></i>
+            </div>
+          </div>
+          <h3 class="font-weight-bold text-dark mb-0 font-22">{{ number_format($counts['total']) }}</h3>
+          <small class="text-muted font-11">All-time database</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+      <a href="{{ route('admin.saas.clinics', ['status' => 'active']) }}" class="card border-0 shadow-sm rounded-4 text-decoration-none h-100" style="border-radius: 16px; background: #ffffff; border: 1.5px solid {{ request('status') == 'active' ? '#10b981' : '#e2e8f0' }}; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted font-11 font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">Active</span>
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #f0fdf4; color: #16a34a; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              <i class="mdi mdi-check-decagram"></i>
+            </div>
+          </div>
+          <h3 class="font-weight-bold text-success mb-0 font-22">{{ number_format($counts['active']) }}</h3>
+          <small class="text-muted font-11">Live practices</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-xl-2 col-lg-4 col-md-4 col-sm-6">
+      <a href="{{ route('admin.saas.clinics', ['status' => 'trialing']) }}" class="card border-0 shadow-sm rounded-4 text-decoration-none h-100" style="border-radius: 16px; background: #ffffff; border: 1.5px solid {{ request('status') == 'trialing' ? '#f59e0b' : '#e2e8f0' }}; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted font-11 font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">Free Trials</span>
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #fffbeb; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              <i class="mdi mdi-clock-fast"></i>
+            </div>
+          </div>
+          <h3 class="font-weight-bold text-warning mb-0 font-22">{{ number_format($counts['trialing']) }}</h3>
+          <small class="text-muted font-11">Trial evaluation</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <a href="{{ route('admin.saas.clinics', ['date_preset' => 'last_7_days']) }}" class="card border-0 shadow-sm rounded-4 text-decoration-none h-100" style="border-radius: 16px; background: #ffffff; border: 1.5px solid {{ request('date_preset') == 'last_7_days' ? '#06b6d4' : '#e2e8f0' }}; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted font-11 font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">New This Week</span>
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #ecfeff; color: #0891b2; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              <i class="mdi mdi-calendar-plus"></i>
+            </div>
+          </div>
+          <div class="d-flex align-items-baseline gap-2">
+            <h3 class="font-weight-bold text-dark mb-0 font-22">{{ number_format($counts['this_week']) }}</h3>
+            <span class="badge" style="background: #e0f2fe; color: #0284c7; font-size: 11px; font-weight: 700;">{{ $counts['today'] }} Today</span>
+          </div>
+          <small class="text-muted font-11">Recent 7-day signups</small>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <a href="{{ route('admin.saas.clinics', ['status' => 'expired']) }}" class="card border-0 shadow-sm rounded-4 text-decoration-none h-100" style="border-radius: 16px; background: #ffffff; border: 1.5px solid {{ request('status') == 'expired' ? '#ef4444' : '#e2e8f0' }}; transition: transform 0.15s ease, box-shadow 0.15s ease;">
+        <div class="card-body p-3">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <span class="text-muted font-11 font-weight-bold text-uppercase" style="letter-spacing: 0.5px;">Expired / Suspended</span>
+            <div style="width: 32px; height: 32px; border-radius: 8px; background: #fef2f2; color: #dc2626; display: flex; align-items: center; justify-content: center; font-size: 16px;">
+              <i class="mdi mdi-alert-circle-outline"></i>
+            </div>
+          </div>
+          <h3 class="font-weight-bold text-danger mb-0 font-22">{{ number_format($counts['expired']) }}</h3>
+          <small class="text-muted font-11">Inactive accounts</small>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- 2. Filters & Day-Wise Search Form -->
   <div class="row mb-4">
     <div class="col-12">
-      <div class="card border-0 shadow-sm rounded-4" style="border-radius: 16px;">
-        <div class="card-body p-3">
-          <form method="GET" action="{{ route('admin.saas.clinics') }}" class="row g-2 align-items-center">
-            <div class="col-md-5">
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0"><i class="mdi mdi-magnify"></i></span>
-                <input type="text" name="search" class="form-control border-start-0" placeholder="Search clinic name, doctor, subdomain, email..." value="{{ request('search') }}">
+      <div class="card border-0 shadow-sm rounded-4" style="border-radius: 16px; background: #ffffff; border: 1.5px solid #e2e8f0;">
+        <div class="card-body p-4">
+          <div class="d-flex align-items-center justify-content-between mb-3 pb-2 border-bottom" style="border-color: #f1f5f9 !important;">
+            <div class="d-flex align-items-center gap-2">
+              <i class="mdi mdi-filter-variant text-primary font-18"></i>
+              <h6 class="font-weight-bold text-dark mb-0 font-14">Search &amp; Day-Wise Date Filters</h6>
+            </div>
+            @if(request()->hasAny(['search', 'status', 'plan_id', 'date_preset', 'from_date', 'to_date']))
+              <a href="{{ route('admin.saas.clinics') }}" class="text-danger font-12 font-weight-bold text-decoration-none d-flex align-items-center gap-1">
+                <i class="mdi mdi-close-circle-outline"></i> Clear All Filters
+              </a>
+            @endif
+          </div>
+
+          <form method="GET" action="{{ route('admin.saas.clinics') }}">
+            <div class="row g-3 align-items-end">
+              <!-- Search Query Input -->
+              <div class="col-lg-4 col-md-6">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1" style="letter-spacing: 0.4px;">Keyword Search</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0 text-muted"><i class="mdi mdi-magnify font-16"></i></span>
+                  <input type="text" name="search" class="form-control border-start-0 font-13" placeholder="Clinic name, doctor, subdomain, phone, email..." value="{{ request('search') }}" style="height: 42px; border-radius: 0 8px 8px 0;">
+                </div>
+              </div>
+
+              <!-- Status Dropdown -->
+              <div class="col-lg-2 col-md-3 col-sm-6">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1" style="letter-spacing: 0.4px;">Clinic Status</label>
+                <select name="status" class="form-select font-13" style="height: 42px; border-radius: 8px;">
+                  <option value="">All Statuses ({{ $counts['total'] }})</option>
+                  <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active ({{ $counts['active'] }})</option>
+                  <option value="trialing" {{ request('status') == 'trialing' ? 'selected' : '' }}>Trialing ({{ $counts['trialing'] }})</option>
+                  <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired ({{ $counts['expired'] }})</option>
+                  <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                </select>
+              </div>
+
+              <!-- Subscription Plan Dropdown -->
+              <div class="col-lg-2 col-md-3 col-sm-6">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1" style="letter-spacing: 0.4px;">Subscription Plan</label>
+                <select name="plan_id" class="form-select font-13" style="height: 42px; border-radius: 8px;">
+                  <option value="">All Plans</option>
+                  @foreach($plans as $p)
+                    <option value="{{ $p->id }}" {{ request('plan_id') == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                  @endforeach
+                </select>
+              </div>
+
+              <!-- Day-Wise Date Preset -->
+              <div class="col-lg-2 col-md-4 col-sm-6">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1" style="letter-spacing: 0.4px;">Day-Wise Filter</label>
+                <select name="date_preset" id="datePresetSelect" class="form-select font-13" style="height: 42px; border-radius: 8px;" onchange="toggleCustomDateInputs(this.value)">
+                  <option value="">All Dates</option>
+                  <option value="today" {{ request('date_preset') == 'today' ? 'selected' : '' }}>Today ({{ $counts['today'] }})</option>
+                  <option value="yesterday" {{ request('date_preset') == 'yesterday' ? 'selected' : '' }}>Yesterday</option>
+                  <option value="last_7_days" {{ request('date_preset') == 'last_7_days' ? 'selected' : '' }}>Last 7 Days ({{ $counts['this_week'] }})</option>
+                  <option value="this_month" {{ request('date_preset') == 'this_month' ? 'selected' : '' }}>This Month ({{ $counts['this_month'] }})</option>
+                  <option value="last_30_days" {{ request('date_preset') == 'last_30_days' ? 'selected' : '' }}>Last 30 Days</option>
+                  <option value="custom" {{ request('date_preset') == 'custom' || request()->filled('from_date') || request()->filled('to_date') ? 'selected' : '' }}>Custom Date Range</option>
+                </select>
+              </div>
+
+              <!-- Actions Buttons -->
+              <div class="col-lg-2 col-md-4 col-sm-6 d-flex gap-2">
+                <button type="submit" class="btn btn-primary font-weight-bold flex-grow-1 d-flex align-items-center justify-content-center gap-1" style="height: 42px; border-radius: 8px;">
+                  <i class="mdi mdi-filter"></i> Apply
+                </button>
+                <a href="{{ route('admin.saas.clinics') }}" class="btn btn-outline-secondary font-weight-bold d-flex align-items-center justify-content-center" title="Reset All Filters" style="height: 42px; width: 44px; border-radius: 8px;">
+                  <i class="mdi mdi-refresh font-18"></i>
+                </a>
               </div>
             </div>
 
-            <div class="col-md-3">
-              <select name="status" class="form-select font-weight-bold">
-                <option value="">All Statuses</option>
-                <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                <option value="trialing" {{ request('status') == 'trialing' ? 'selected' : '' }}>Trialing</option>
-                <option value="expired" {{ request('status') == 'expired' ? 'selected' : '' }}>Expired</option>
-                <option value="suspended" {{ request('status') == 'suspended' ? 'selected' : '' }}>Suspended</option>
-              </select>
-            </div>
-
-            <div class="col-md-4 d-flex gap-2">
-              <button type="submit" class="btn btn-primary font-weight-bold px-4">Filter</button>
-              <a href="{{ route('admin.saas.clinics') }}" class="btn btn-outline-secondary font-weight-bold">Reset</a>
+            <!-- Custom Date Range Expandable Inputs -->
+            <div id="customDateRow" class="row g-3 mt-1 pt-3 border-top {{ request('date_preset') == 'custom' || request()->filled('from_date') || request()->filled('to_date') ? '' : 'd-none' }}" style="border-color: #f1f5f9 !important;">
+              <div class="col-md-3">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1">Registered From Date</label>
+                <input type="date" name="from_date" class="form-control font-13" value="{{ request('from_date') }}" style="height: 40px; border-radius: 8px;">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label font-weight-bold text-muted font-11 text-uppercase mb-1">Registered To Date</label>
+                <input type="date" name="to_date" class="form-control font-13" value="{{ request('to_date') }}" style="height: 40px; border-radius: 8px;">
+              </div>
+              <div class="col-md-6 d-flex align-items-center pt-md-4">
+                <small class="text-muted"><i class="mdi mdi-information-outline text-primary mr-1"></i> Filter clinic accounts registered between the specified dates.</small>
+              </div>
             </div>
           </form>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- 3. Results Header & Count Indicator -->
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3 px-1">
+    <div class="d-flex align-items-center flex-wrap gap-2">
+      <span class="font-weight-bold text-dark font-14">
+        Showing <span class="text-primary">{{ $clinics->firstItem() ?? 0 }} - {{ $clinics->lastItem() ?? 0 }}</span> of <span class="text-primary">{{ $clinics->total() }}</span> clinics
+      </span>
+
+      @if(request()->hasAny(['search', 'status', 'plan_id', 'date_preset', 'from_date', 'to_date']))
+        <span class="badge" style="background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; font-size: 11px; padding: 4px 8px; border-radius: 12px;">
+          Filtered from {{ $counts['total'] }} total
+        </span>
+
+        @if(request('search'))
+          <span class="badge bg-light text-dark font-11 border d-inline-flex align-items-center gap-1">
+            Keyword: "{{ request('search') }}"
+            <a href="{{ request()->fullUrlWithQuery(['search' => null]) }}" class="text-danger text-decoration-none">&times;</a>
+          </span>
+        @endif
+
+        @if(request('status'))
+          <span class="badge bg-light text-dark font-11 border d-inline-flex align-items-center gap-1">
+            Status: {{ ucfirst(request('status')) }}
+            <a href="{{ request()->fullUrlWithQuery(['status' => null]) }}" class="text-danger text-decoration-none">&times;</a>
+          </span>
+        @endif
+
+        @if(request('date_preset'))
+          <span class="badge bg-light text-dark font-11 border d-inline-flex align-items-center gap-1">
+            Date: {{ str_replace('_', ' ', ucfirst(request('date_preset'))) }}
+            <a href="{{ request()->fullUrlWithQuery(['date_preset' => null]) }}" class="text-danger text-decoration-none">&times;</a>
+          </span>
+        @endif
+
+        @if(request('from_date') || request('to_date'))
+          <span class="badge bg-light text-dark font-11 border d-inline-flex align-items-center gap-1">
+            Dates: {{ request('from_date') ?? 'Any' }} &rarr; {{ request('to_date') ?? 'Any' }}
+            <a href="{{ request()->fullUrlWithQuery(['from_date' => null, 'to_date' => null]) }}" class="text-danger text-decoration-none">&times;</a>
+          </span>
+        @endif
+      @endif
+    </div>
+
+    <div>
+      <span class="text-muted font-12"><i class="mdi mdi-clock-outline mr-1"></i> Auto-sorted by newest registration</span>
     </div>
   </div>
 
@@ -101,6 +292,9 @@
                   <td>
                     <div class="font-weight-bold text-dark font-15">{{ $c->name }}</div>
                     <small class="text-muted">{{ $c->specialization ?? 'General Medical' }} &bull; {{ $c->phone }}</small>
+                    <div class="font-11 text-muted mt-1">
+                      <i class="mdi mdi-calendar-check text-success mr-1"></i> Registered: <strong class="text-dark">{{ $c->created_at ? $c->created_at->format('d M Y') : 'N/A' }}</strong> <span class="text-secondary font-10">({{ $c->created_at ? $c->created_at->diffForHumans() : '' }})</span>
+                    </div>
                   </td>
                   <td>
                     <div class="font-weight-bold text-dark">{{ $c->user->name ?? 'Admin' }}</div>
@@ -442,6 +636,16 @@ function toggleModalPassword() {
   } else {
     pwd.type = 'password';
     icon.className = 'mdi mdi-eye-outline';
+  }
+}
+
+function toggleCustomDateInputs(val) {
+  const row = document.getElementById('customDateRow');
+  if (!row) return;
+  if (val === 'custom') {
+    row.classList.remove('d-none');
+  } else {
+    row.classList.add('d-none');
   }
 }
 </script>

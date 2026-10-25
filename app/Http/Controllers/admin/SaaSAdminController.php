@@ -164,34 +164,100 @@ class SaaSAdminController extends Controller
     }
 
     /**
-     * All Clinics Directory with Search and Status Filter
+     * All Clinics Directory with Search, Counts, and Day-wise Date Filter
      */
     public function clinics(Request $request)
     {
+        $today = Carbon::today();
+        $startOfWeek = Carbon::today()->subDays(6)->startOfDay();
+        $startOfMonth = Carbon::today()->startOfMonth();
+
+        // Calculate KPI Metric Counts
+        $counts = [
+            'total' => Clinic::count(),
+            'active' => Clinic::where('status', 'active')->count(),
+            'trialing' => Clinic::where('status', 'trialing')->count(),
+            'expired' => Clinic::whereIn('status', ['expired', 'suspended', 'past_due', 'cancelled'])->count(),
+            'today' => Clinic::whereDate('created_at', $today)->count(),
+            'this_week' => Clinic::where('created_at', '>=', $startOfWeek)->count(),
+            'this_month' => Clinic::where('created_at', '>=', $startOfMonth)->count(),
+            'paid' => Clinic::whereHas('activeSubscription', function ($q) {
+                $q->where('status', 'active');
+            })->count(),
+        ];
+
         $query = Clinic::with('user', 'activeSubscription.plan');
 
+        // Text Search (Clinic Name, Subdomain, Custom Domain, Email, Phone, Doctor Name/Email)
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = trim($request->search);
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
                   ->orWhere('subdomain', 'like', "%{$search}%")
                   ->orWhere('custom_domain', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%");
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhereHas('user', function ($uq) use ($search) {
+                      $uq->where('name', 'like', "%{$search}%")
+                         ->orWhere('email', 'like', "%{$search}%");
+                  });
             });
         }
 
+        // Status Filter
         if ($request->filled('status')) {
-            $query->where('status', $request->status);
+            if ($request->status === 'expired') {
+                $query->whereIn('status', ['expired', 'suspended', 'past_due', 'cancelled']);
+            } else {
+                $query->where('status', $request->status);
+            }
         }
 
-        $clinics = $query->latest()->paginate(15);
+        // Plan Filter
+        if ($request->filled('plan_id')) {
+            $query->whereHas('activeSubscription', function ($q) use ($request) {
+                $q->where('subscription_plan_id', $request->plan_id);
+            });
+        }
+
+        // Day-wise / Date Preset Filter
+        if ($request->filled('date_preset')) {
+            switch ($request->date_preset) {
+                case 'today':
+                    $query->whereDate('created_at', Carbon::today());
+                    break;
+                case 'yesterday':
+                    $query->whereDate('created_at', Carbon::yesterday());
+                    break;
+                case 'last_7_days':
+                    $query->where('created_at', '>=', Carbon::today()->subDays(6)->startOfDay());
+                    break;
+                case 'this_month':
+                    $query->where('created_at', '>=', Carbon::today()->startOfMonth());
+                    break;
+                case 'last_30_days':
+                    $query->where('created_at', '>=', Carbon::today()->subDays(29)->startOfDay());
+                    break;
+            }
+        }
+
+        // Custom Date Range Filters
+        if ($request->filled('from_date')) {
+            $query->whereDate('created_at', '>=', $request->from_date);
+        }
+
+        if ($request->filled('to_date')) {
+            $query->whereDate('created_at', '<=', $request->to_date);
+        }
+
+        $clinics = $query->latest('created_at')->paginate(15)->withQueryString();
         $plans = SubscriptionPlan::where('is_active', true)->orderBy('sort_order', 'asc')->get();
         $availableUsers = User::whereDoesntHave('clinic')
             ->whereNotIn('user_type', ['admin', 'super_admin'])
             ->orderBy('name', 'asc')
             ->get();
 
-        return view('admin.saas.clinics', compact('clinics', 'plans', 'availableUsers'));
+        return view('admin.saas.clinics', compact('clinics', 'plans', 'availableUsers', 'counts'));
     }
 
     /**
