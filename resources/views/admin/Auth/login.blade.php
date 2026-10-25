@@ -23,10 +23,10 @@
 
   <style>
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --primary-light: #eff6ff;
-      --accent: #06b6d4;
+      --primary: #059669;
+      --primary-dark: #047857;
+      --primary-light: #ecfdf5;
+      --accent: #10b981;
       --dark-navy: #0f172a;
       --slate-800: #1e293b;
       --slate-600: #475569;
@@ -59,7 +59,7 @@
     .auth-banner {
       flex: 1.1;
       background: 
-        linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(15, 23, 42, 0.70) 45%, rgba(2, 32, 48, 0.86) 100%),
+        linear-gradient(135deg, rgba(15, 23, 42, 0.88) 0%, rgba(6, 78, 59, 0.78) 45%, rgba(2, 44, 34, 0.92) 100%),
         url("{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}");
       background-position: center center;
       background-size: cover;
@@ -80,7 +80,7 @@
       right: -120px;
       width: 450px;
       height: 450px;
-      background: radial-gradient(circle, rgba(37, 99, 235, 0.25) 0%, rgba(6, 182, 212, 0.05) 70%, transparent 100%);
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.28) 0%, rgba(5, 150, 105, 0.08) 70%, transparent 100%);
       border-radius: 50%;
       pointer-events: none;
     }
@@ -108,14 +108,14 @@
     .brand-icon {
       width: 46px;
       height: 46px;
-      background: linear-gradient(135deg, #2563eb, #06b6d4);
+      background: linear-gradient(135deg, #059669, #10b981);
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
       font-size: 24px;
-      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
     }
 
     .brand-text-title {
@@ -130,11 +130,12 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       text-transform: uppercase;
-      background: rgba(255, 255, 255, 0.12);
-      color: #38bdf8;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
       padding: 3px 8px;
       border-radius: 6px;
       margin-left: 6px;
+      border: 1px solid rgba(52, 211, 153, 0.35);
     }
 
     .banner-content {
@@ -154,7 +155,7 @@
     }
 
     .banner-headline span {
-      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      background: linear-gradient(135deg, #34d399, #10b981);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -189,8 +190,8 @@
     }
 
     .feature-item:hover {
-      background: rgba(15, 23, 42, 0.82);
-      border-color: rgba(56, 189, 248, 0.35);
+      background: rgba(15, 23, 42, 0.85);
+      border-color: rgba(52, 211, 153, 0.4);
       transform: translateX(4px);
     }
 
@@ -227,7 +228,7 @@
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #0284c7, #0d9488);
+      background: linear-gradient(135deg, #059669, #10b981);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -267,8 +268,8 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #eff6ff;
-      color: #2563eb;
+      background: #ecfdf5;
+      color: #059669;
       font-size: 11.5px;
       font-weight: 700;
       letter-spacing: 0.5px;
@@ -276,6 +277,7 @@
       padding: 6px 12px;
       border-radius: 9999px;
       margin-bottom: 14px;
+      border: 1px solid #a7f3d0;
     }
 
     .form-title {
@@ -337,13 +339,13 @@
 
     .custom-form-control:focus {
       outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.14);
       background: #ffffff;
     }
 
     .custom-form-control:focus + .input-icon-left {
-      color: #2563eb;
+      color: #059669;
     }
 
     .password-toggle-btn {
@@ -363,13 +365,22 @@
     }
 
     .password-toggle-btn:hover {
-      color: #2563eb;
+      color: #059669;
+    }
+
+    .form-check-input:checked {
+      background-color: #059669;
+      border-color: #059669;
+    }
+    .form-check-input:focus {
+      border-color: #059669;
+      box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
     }
 
     .btn-submit-login {
       width: 100%;
       height: 48px;
-      background: linear-gradient(135deg, #2563eb, #1d4ed8);
+      background: linear-gradient(135deg, #059669, #047857);
       color: #ffffff;
       border: none;
       border-radius: 10px;
@@ -382,13 +393,13 @@
       gap: 8px;
       cursor: pointer;
       transition: all 0.2s ease;
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.28);
     }
 
     .btn-submit-login:hover {
-      background: linear-gradient(135deg, #1d4ed8, #1e40af);
+      background: linear-gradient(135deg, #047857, #065f46);
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+      box-shadow: 0 6px 20px rgba(5, 150, 105, 0.38);
       color: #ffffff;
     }
 
@@ -455,19 +466,20 @@
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 3px 8px;
+      padding: 4px 10px;
       border-radius: 6px;
       background: #ffffff;
       border: 1px solid #e2e8f0;
       font-weight: 600;
-      color: #2563eb;
+      color: #059669;
       margin: 2px 0;
       transition: all 0.15s ease;
     }
 
     .quick-chip:hover {
-      background: #eff6ff;
-      border-color: #bfdbfe;
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #047857;
     }
 
     .security-badge {
@@ -527,7 +539,7 @@
 
         <div class="feature-points">
           <div class="feature-item">
-            <div class="feature-icon-circle" style="background: rgba(37, 99, 235, 0.2); color: #60a5fa;">
+            <div class="feature-icon-circle" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
               <i class="mdi mdi-calendar-clock"></i>
             </div>
             <div>
@@ -537,7 +549,7 @@
           </div>
 
           <div class="feature-item">
-            <div class="feature-icon-circle" style="background: rgba(6, 182, 212, 0.2); color: #22d3ee;">
+            <div class="feature-icon-circle" style="background: rgba(20, 184, 166, 0.2); color: #2dd4bf;">
               <i class="mdi mdi-credit-card-fast-outline"></i>
             </div>
             <div>
@@ -558,20 +570,20 @@
         </div>
       </div>
 
-      <!-- Bottom Doctor Testimonial -->
+      <!-- Bottom Platform Trust Card (Multi-Clinic SaaS) -->
       <div class="testimonial-card">
         <div class="doctor-avatar-wrap">
-          <div class="doctor-avatar">
-            DR
+          <div class="doctor-avatar" style="font-size: 20px;">
+            <i class="mdi mdi-shield-check"></i>
           </div>
           <div class="online-indicator"></div>
         </div>
         <div style="font-size: 13px;">
           <div style="color: #e2e8f0; font-weight: 500; line-height: 1.45; margin-bottom: 4px;">
-            &ldquo;DrClinic transformed our outpatient queue and online appointment booking seamlessly.&rdquo;
+            &ldquo;Unified practice management, patient queue scheduling, and smart clinical workflows.&rdquo;
           </div>
-          <div style="color: #38bdf8; font-weight: 700; font-size: 12px;">
-            Dr. Rajesh Roy &bull; Roy Neuro Care Clinic
+          <div style="color: #34d399; font-weight: 700; font-size: 12px;">
+            DrClinic Cloud &bull; Multi-Clinic Practice Network
           </div>
         </div>
       </div>
@@ -620,7 +632,7 @@
         @endif
 
         @if(session('info'))
-        <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-3 shadow-sm" style="font-size: 13.5px; border-left: 4px solid #3b82f6; background: #eff6ff; color: #1e40af;">
+        <div class="alert alert-info d-flex align-items-center rounded-3 p-3 mb-3 shadow-sm" style="font-size: 13.5px; border-left: 4px solid #10b981; background: #ecfdf5; color: #065f46;">
           <i class="mdi mdi-information mr-2 font-18" style="margin-right: 8px;"></i>
           <div>{{ session('info') }}</div>
         </div>
@@ -665,7 +677,7 @@
           <div class="custom-input-group mb-2">
             <div class="d-flex justify-content-between align-items-center mb-1">
               <label for="loginPassword" class="mb-0">Password</label>
-              <a href="{{ URL::To('forgot-password') }}" class="text-decoration-none" style="font-size: 12px; font-weight: 700; color: #2563eb;">
+              <a href="{{ URL::To('forgot-password') }}" class="text-decoration-none" style="font-size: 12px; font-weight: 700; color: #059669;">
                 Forgot Password?
               </a>
             </div>
@@ -711,8 +723,8 @@
             <span class="quick-chip" onclick="fillCreds('admin@gmail.com', '123456')">
               <i class="mdi mdi-shield-account mr-1"></i> Super Admin
             </span>
-            <span class="quick-chip" onclick="fillCreds('rajesh@apex.example', '123456')">
-              <i class="mdi mdi-doctor mr-1"></i> Doctor Clinic
+            <span class="quick-chip" onclick="fillCreds('doctor@drclinic.com', '123456')">
+              <i class="mdi mdi-doctor mr-1"></i> Doctor / Clinic
             </span>
           </div>
         </div>
