@@ -129,6 +129,9 @@ class WebViewController extends Controller
         }
     
         $date = $request->input('date');
+        if (\Carbon\Carbon::parse($date)->startOfDay()->lt(\Carbon\Carbon::today())) {
+            return response()->json([]);
+        }
         $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
         $dbDayOfWeek = ($dayOfWeek == 0) ? 7 : $dayOfWeek; // Convert Sunday(0) to 7 (Database format)
     
@@ -166,6 +169,10 @@ class WebViewController extends Controller
 
         $decodedDate = base64_decode($request->booking_date);
         $decodedTimeSlotId = base64_decode($request->time_slot_id);
+
+        if (\Carbon\Carbon::parse($decodedDate)->startOfDay()->lt(\Carbon\Carbon::today())) {
+            return redirect()->back()->with('error', 'Cannot book appointments for past dates. Please choose an upcoming date.');
+        }
 
         $Order = Order::whereDate('booking_date', $decodedDate)->where('time_slot_id', $decodedTimeSlotId)->count();
    

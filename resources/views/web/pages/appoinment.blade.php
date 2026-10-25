@@ -434,6 +434,39 @@
     color: #ffffff !important;
     font-weight: 800 !important;
   }
+  /* Disabled & Past Dates */
+  .fc .fc-day-past:not(.fc-day-today),
+  .fc .fc-day-disabled:not(.fc-day-today),
+  .fc .fc-day-past-disabled:not(.fc-day-today) {
+    background-color: #f8fafc !important;
+    cursor: not-allowed !important;
+    opacity: 0.4 !important;
+  }
+  .fc .fc-day-past:not(.fc-day-today) .fc-daygrid-day-number,
+  .fc .fc-day-disabled:not(.fc-day-today) .fc-daygrid-day-number,
+  .fc .fc-day-past-disabled:not(.fc-day-today) .fc-daygrid-day-number {
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+  }
+  .fc .fc-day-past:not(.fc-day-today) .fc-daygrid-day-frame,
+  .fc .fc-day-disabled:not(.fc-day-today) .fc-daygrid-day-frame,
+  .fc .fc-day-past-disabled:not(.fc-day-today) .fc-daygrid-day-frame {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
+  .fc .fc-daygrid-day:not(.fc-day-disabled):not(.fc-day-past-disabled):not(.fc-day-past):not(.fc-day-other):hover {
+    background-color: rgba(var(--vital-primary-rgb), 0.06) !important;
+    cursor: pointer;
+  }
+  .fc .fc-daygrid-day:not(.fc-day-disabled):not(.fc-day-past-disabled):not(.fc-day-past):not(.fc-day-other) {
+    cursor: pointer;
+  }
+  .fc .fc-button:disabled,
+  .fc .fc-button-primary:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+  }
   .time-slot-badge {
     display: inline-flex;
     align-items: center;
@@ -1015,9 +1048,29 @@
 
         if (!calendarEl) return;
 
+        function getLocalDateString(d) {
+            let year = d.getFullYear();
+            let month = String(d.getMonth() + 1).padStart(2, '0');
+            let day = String(d.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let todayStr = getLocalDateString(today);
+
+        let maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+        let maxDateStr = getLocalDateString(maxDate);
+
         let calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             selectable: true,
+            selectAllow: function(selectInfo) {
+                let startOfDay = new Date();
+                startOfDay.setHours(0, 0, 0, 0);
+                return selectInfo.start >= startOfDay;
+            },
             headerToolbar: {
                 left: 'myTodayButton',
                 center: 'title',
@@ -1032,10 +1085,20 @@
                 }
             },
             validRange: {
-                end: new Date(new Date().setMonth(new Date().getMonth() + 3))
+                start: todayStr,
+                end: maxDateStr
+            },
+            dayCellDidMount: function(arg) {
+                let startOfDay = new Date();
+                startOfDay.setHours(0, 0, 0, 0);
+                if (arg.date < startOfDay) {
+                    arg.el.classList.add('fc-day-disabled', 'fc-day-past-disabled');
+                }
             },
             dateClick: function(info) {
-                if (info.date < new Date().setHours(0, 0, 0, 0)) {
+                let startOfDay = new Date();
+                startOfDay.setHours(0, 0, 0, 0);
+                if (info.date < startOfDay || info.dayEl.classList.contains('fc-day-disabled') || info.dayEl.classList.contains('fc-day-past-disabled')) {
                     return;
                 }
 
