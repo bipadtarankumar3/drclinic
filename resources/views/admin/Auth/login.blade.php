@@ -58,7 +58,12 @@
     /* Left Branding Banner */
     .auth-banner {
       flex: 1.1;
-      background: radial-gradient(circle at 10% 20%, #1e293b 0%, #0f172a 60%, #022030 100%);
+      background: 
+        linear-gradient(135deg, rgba(15, 23, 42, 0.82) 0%, rgba(15, 23, 42, 0.70) 45%, rgba(2, 32, 48, 0.86) 100%),
+        url("{{ URL::to('public/assets/web/modern/family-checkup.jpg') }}");
+      background-position: center center;
+      background-size: cover;
+      background-repeat: no-repeat;
       color: #ffffff;
       padding: 60px 70px;
       display: flex;
@@ -145,6 +150,7 @@
       letter-spacing: -1px;
       margin-bottom: 18px;
       color: #ffffff;
+      text-shadow: 0 2px 14px rgba(0, 0, 0, 0.45);
     }
 
     .banner-headline span {
@@ -156,8 +162,9 @@
     .banner-desc {
       font-size: 15.5px;
       line-height: 1.6;
-      color: #94a3b8;
+      color: #e2e8f0;
       margin-bottom: 34px;
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
     }
 
     .feature-points {
@@ -171,16 +178,19 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       padding: 12px 18px;
       border-radius: 12px;
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18);
       transition: all 0.2s ease;
     }
 
     .feature-item:hover {
-      background: rgba(255, 255, 255, 0.08);
+      background: rgba(15, 23, 42, 0.82);
+      border-color: rgba(56, 189, 248, 0.35);
       transform: translateX(4px);
     }
 
@@ -196,11 +206,13 @@
     }
 
     .testimonial-card {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(15, 23, 42, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.16);
       border-radius: 16px;
       padding: 18px 22px;
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.22);
       display: flex;
       align-items: center;
       gap: 16px;
