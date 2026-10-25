@@ -160,7 +160,11 @@
       </div>
     </div>
 
-    <div>
+    <div class="d-flex align-items-center flex-wrap gap-2">
+      <a href="{{ route('clinic.settings') }}" class="badge text-decoration-none shadow-sm" style="background: #ffffff; color: #334155; border: 1.5px solid #cbd5e1; font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; transition: all 0.2s ease;">
+        <i class="mdi mdi-calendar-range text-success mr-1"></i> Max Booking Window: {{ (int)(auth()->user() && auth()->user()->getActiveClinic() ? auth()->user()->getActiveClinic()->getMaxBookingDays() : 90) }} Days
+        <span class="text-muted ms-1 font-11" style="font-weight: 500;">(Edit)</span>
+      </a>
       <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px;">
         <span style="display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--theme-primary, #059669); margin-right: 6px;"></span>
         <i class="mdi mdi-shield-check-outline mr-1"></i> Patient Booking Guard

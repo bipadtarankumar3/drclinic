@@ -344,6 +344,42 @@
                     </div>
                   </div>
 
+                  <!-- Max Advance Booking Window Card -->
+                  <div class="col-12 mb-3">
+                    <div class="p-3 rounded-3" style="background: #f8fafc; border: 1.5px solid #e2e8f0;">
+                      <div class="d-flex justify-content-between align-items-center flex-wrap mb-2">
+                        <h6 class="font-weight-bold text-dark mb-0 d-flex align-items-center">
+                          <i class="mdi mdi-calendar-range text-primary mr-2" style="font-size: 19px; margin-right: 8px;"></i> Maximum Advance Booking Window
+                        </h6>
+                        <span class="badge" style="background: var(--theme-primary-subtle, #ecfdf5); color: var(--theme-primary, #059669); border: 1px solid var(--theme-primary-border, #a7f3d0); font-size: 11.5px; font-weight: 700;">
+                          Patient Calendar Limit
+                        </span>
+                      </div>
+                      <p class="text-muted small mb-3">Specify how many days in advance patients are allowed to book appointments. Any calendar dates beyond this number of days will be automatically locked and disabled on your public booking page.</p>
+
+                      <div class="row align-items-center g-3">
+                        <div class="col-md-5">
+                          <div class="input-group">
+                            <span class="input-group-text bg-white font-weight-bold text-muted border-end-0"><i class="mdi mdi-calendar-clock"></i></span>
+                            <input type="number" min="1" max="365" class="form-control doctor-settings-input border-start-0 font-weight-bold" name="max_booking_days" id="max_booking_days" value="{{ old('max_booking_days', $clinic->max_booking_days ?? 90) }}" required>
+                            <span class="input-group-text bg-light text-dark font-weight-bold">Days Ahead</span>
+                          </div>
+                          <small class="text-muted font-11 d-block mt-1">E.g. Enter <strong>7</strong> for 1 week, <strong>14</strong> for 2 weeks, <strong>30</strong> for 1 month, or <strong>90</strong> for 3 months.</small>
+                        </div>
+                        <div class="col-md-7">
+                          <div class="d-flex flex-wrap gap-2 align-items-center">
+                            <span class="text-muted small font-weight-bold me-1">Quick Presets:</span>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 font-12" onclick="document.getElementById('max_booking_days').value = 7;">7 Days (1 Wk)</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 font-12" onclick="document.getElementById('max_booking_days').value = 14;">14 Days (2 Wks)</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 font-12" onclick="document.getElementById('max_booking_days').value = 30;">30 Days (1 Mo)</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 font-12" onclick="document.getElementById('max_booking_days').value = 60;">60 Days (2 Mos)</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary py-1 px-2 font-12" onclick="document.getElementById('max_booking_days').value = 90;">90 Days (3 Mos)</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Helpline Phone Number</label>
                     <input type="text" class="form-control doctor-settings-input" name="phone" value="{{ old('phone', $clinic->phone) }}">

@@ -868,7 +868,11 @@
                 <h5 class="mb-0 font-weight-bold" style="color: #0f172a; font-size: 18px;">
                   <i class="fa-regular fa-calendar mr-2" style="color: var(--clinic-primary); margin-right: 6px;"></i> 1. Select Date
                 </h5>
-                <span class="text-muted" style="font-size: 13px;">Dates marked with open slots</span>
+                <span class="text-muted" style="font-size: 13px;">
+                  <span class="badge" style="background: rgba(var(--clinic-primary-rgb, 5, 150, 105), 0.1); color: var(--clinic-primary, #059669); font-size: 11.5px; font-weight: 700; border-radius: 6px; padding: 4px 8px;">
+                    <i class="fa-regular fa-clock me-1"></i> Up to {{ (int)(isset($currentClinic) && $currentClinic ? $currentClinic->getMaxBookingDays() : (isset($clinic) && $clinic ? $clinic->getMaxBookingDays() : 90)) }} days ahead
+                  </span>
+                </span>
               </div>
               <div id="calendar"></div>
               <input type="hidden" id="selected-date" name="booking_date">
@@ -1059,8 +1063,9 @@
         today.setHours(0, 0, 0, 0);
         let todayStr = getLocalDateString(today);
 
+        let maxBookingDays = {{ (int)(isset($currentClinic) && $currentClinic ? $currentClinic->getMaxBookingDays() : (isset($clinic) && $clinic ? $clinic->getMaxBookingDays() : 90)) }};
         let maxDate = new Date();
-        maxDate.setMonth(maxDate.getMonth() + 3);
+        maxDate.setDate(maxDate.getDate() + maxBookingDays);
         let maxDateStr = getLocalDateString(maxDate);
 
         let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -1069,7 +1074,7 @@
             selectAllow: function(selectInfo) {
                 let startOfDay = new Date();
                 startOfDay.setHours(0, 0, 0, 0);
-                return selectInfo.start >= startOfDay;
+                return selectInfo.start >= startOfDay && selectInfo.start <= maxDate;
             },
             headerToolbar: {
                 left: 'myTodayButton',
@@ -1091,14 +1096,14 @@
             dayCellDidMount: function(arg) {
                 let startOfDay = new Date();
                 startOfDay.setHours(0, 0, 0, 0);
-                if (arg.date < startOfDay) {
+                if (arg.date < startOfDay || arg.date > maxDate) {
                     arg.el.classList.add('fc-day-disabled', 'fc-day-past-disabled');
                 }
             },
             dateClick: function(info) {
                 let startOfDay = new Date();
                 startOfDay.setHours(0, 0, 0, 0);
-                if (info.date < startOfDay || info.dayEl.classList.contains('fc-day-disabled') || info.dayEl.classList.contains('fc-day-past-disabled')) {
+                if (info.date < startOfDay || info.date > maxDate || info.dayEl.classList.contains('fc-day-disabled') || info.dayEl.classList.contains('fc-day-past-disabled')) {
                     return;
                 }
 

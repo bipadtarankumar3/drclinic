@@ -207,7 +207,11 @@ class WebViewController extends Controller
         }
     
         $date = $request->input('date');
-        if (\Carbon\Carbon::parse($date)->startOfDay()->lt(\Carbon\Carbon::today())) {
+        $clinic = $this->getClinic($request->clinic_slug ?: $request->clinic_id);
+        $maxDays = $clinic ? $clinic->getMaxBookingDays() : 90;
+        $maxAllowedDate = \Carbon\Carbon::today()->addDays($maxDays);
+
+        if (\Carbon\Carbon::parse($date)->startOfDay()->lt(\Carbon\Carbon::today()) || \Carbon\Carbon::parse($date)->startOfDay()->gt($maxAllowedDate)) {
             return response()->json([]);
         }
         $dayOfWeek = Carbon::parse($date)->dayOfWeek; // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
@@ -228,8 +232,6 @@ class WebViewController extends Controller
         return response()->json($availableSlots);
     }
     
-
-
     public function book_appointment(Request $request, $clinic_slug = null) {
         // Validate that both fields exist and are Base64-encoded
         $validatedData = $request->validate([
@@ -247,9 +249,16 @@ class WebViewController extends Controller
 
         $decodedDate = base64_decode($request->booking_date);
         $decodedTimeSlotId = base64_decode($request->time_slot_id);
+        $clinic = $this->getClinic($clinic_slug);
+        $maxDays = $clinic ? $clinic->getMaxBookingDays() : 90;
+        $maxAllowedDate = \Carbon\Carbon::today()->addDays($maxDays);
 
         if (\Carbon\Carbon::parse($decodedDate)->startOfDay()->lt(\Carbon\Carbon::today())) {
             return redirect()->back()->with('error', 'Cannot book appointments for past dates. Please choose an upcoming date.');
+        }
+
+        if (\Carbon\Carbon::parse($decodedDate)->startOfDay()->gt($maxAllowedDate)) {
+            return redirect()->back()->with('error', "Appointments can only be booked up to {$maxDays} days in advance for this clinic.");
         }
 
         $Order = Order::whereDate('booking_date', $decodedDate)->where('time_slot_id', $decodedTimeSlotId)->count();

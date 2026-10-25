@@ -22,7 +22,16 @@ class Clinic extends Model
         'custom_quotas' => 'array',
         'show_topbar' => 'boolean',
         'show_doctor_portal_link' => 'boolean',
+        'max_booking_days' => 'integer',
     ];
+
+    /**
+     * Get the maximum advance days patients are allowed to book appointments.
+     */
+    public function getMaxBookingDays(): int
+    {
+        return (int)($this->max_booking_days ?: 90);
+    }
 
     /**
      * Check if clinic is entitled to a specific feature (from Plan OR VIP Extra Grant)

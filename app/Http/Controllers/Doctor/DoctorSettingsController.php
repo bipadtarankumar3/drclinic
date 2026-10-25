@@ -42,6 +42,7 @@ class DoctorSettingsController extends Controller
             'bio' => 'nullable|string',
             'logo' => 'nullable|file|mimes:jpeg,png,jpg,webp,svg,gif,bmp|max:5120',
             'brand_display_mode' => 'nullable|in:both,logo_only,text_only',
+            'max_booking_days' => 'nullable|integer|min:1|max:365',
         ]);
 
         $data = [
@@ -54,6 +55,7 @@ class DoctorSettingsController extends Controller
             'platform_fee' => $request->filled('platform_fee') ? $request->platform_fee : 0.00,
             'bio' => $request->bio,
             'brand_display_mode' => $request->brand_display_mode ?? 'both',
+            'max_booking_days' => $request->filled('max_booking_days') ? (int)$request->max_booking_days : 90,
         ];
 
         if ($request->hasFile('logo')) {
