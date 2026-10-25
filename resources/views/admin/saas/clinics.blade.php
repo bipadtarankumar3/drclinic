@@ -332,9 +332,6 @@
                     </small>
                   </td>
                   <td class="text-end text-nowrap">
-                    <a href="{{ route('admin.saas.visit_doctor_plan', $c->id) }}" class="btn btn-sm btn-outline-warning me-1 font-weight-bold" title="Visit & Manage Doctor's Plan & Billing">
-                      <i class="mdi mdi-crown text-warning me-1"></i> Visit Plan
-                    </a>
                     <a href="{{ route('admin.saas.impersonate', $c->id) }}" class="btn btn-sm btn-outline-primary me-1 font-weight-bold" title="Login as Doctor / Clinic Admin">
                       <i class="mdi mdi-login-variant me-1"></i> Enter Clinic
                     </a>
