@@ -3,6 +3,33 @@
 @section('style')
 <style>
   /* Modern Doctor Settings Custom Styles */
+  /* Left Nav Tabs / Pills (Theme Synced) */
+  #settingsTab .nav-link {
+    background: #ffffff !important;
+    color: #475569 !important;
+    border: 1.5px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  #settingsTab .nav-link:hover {
+    background: var(--theme-primary-subtle, #ecfdf5) !important;
+    color: var(--theme-primary, #059669) !important;
+    border-color: var(--theme-primary-border, #a7f3d0) !important;
+    transform: translateX(2px);
+  }
+  #settingsTab .nav-link.active {
+    background: var(--theme-primary-gradient, linear-gradient(135deg, var(--theme-primary, #059669) 0%, var(--theme-secondary, #10b981) 100%)) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 14px var(--theme-primary-glow, rgba(5, 150, 105, 0.28)) !important;
+  }
+  #settingsTab .nav-link.active i,
+  #settingsTab .nav-link.active span {
+    color: #ffffff !important;
+  }
+
   .brand-option-card {
     border-radius: 14px !important;
     position: relative;
@@ -811,10 +838,13 @@ function applyColorPreset(primary, secondary) {
   updateLiveBrandingPreview();
 }
 
+const isSuperAdminUser = {{ (Auth::check() && Auth::user()->isSuperAdmin() && !session()->has('impersonating_admin_id')) ? 'true' : 'false' }};
+
 function updateLiveBrandingPreview() {
   var primary = document.getElementById('theme_color_picker')?.value || '#059669';
   var secondary = document.getElementById('secondary_color_picker')?.value || '#10b981';
 
+  // 1. Live Storefront Component Preview: Always update preview components for both admin & client
   var btn = document.getElementById('preview-primary-btn');
   if (btn) btn.style.background = primary;
 
@@ -830,17 +860,57 @@ function updateLiveBrandingPreview() {
   var link = document.getElementById('preview-text-link');
   if (link) link.style.color = primary;
 
-  // Real-time dynamic portal preview: Immediately propagate chosen color to document root
-  document.documentElement.style.setProperty('--theme-primary', primary);
-  document.documentElement.style.setProperty('--theme-secondary', secondary);
-  document.documentElement.style.setProperty('--theme-primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
-  document.documentElement.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
-  document.documentElement.style.setProperty('--clinic-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+  // 2. Panel Theming: ONLY apply to Clients Panel. SuperAdmin panel color is locked and NEVER changes.
+  if (!isSuperAdminUser) {
+    document.documentElement.style.setProperty('--theme-primary', primary);
+    document.documentElement.style.setProperty('--theme-secondary', secondary);
+    document.documentElement.style.setProperty('--theme-primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+    document.documentElement.style.setProperty('--primary-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+    document.documentElement.style.setProperty('--clinic-gradient', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)');
+
+    // Convert hex to RGB for subtle/border/glow/focus
+    var cleanHex = primary.replace('#', '');
+    if (cleanHex.length === 3) cleanHex = cleanHex.split('').map(function(c) { return c + c; }).join('');
+    if (cleanHex.length === 6) {
+      var r = parseInt(cleanHex.substring(0, 2), 16);
+      var g = parseInt(cleanHex.substring(2, 4), 16);
+      var b = parseInt(cleanHex.substring(4, 6), 16);
+      var rgb = r + ', ' + g + ', ' + b;
+      document.documentElement.style.setProperty('--theme-primary-rgb', rgb);
+      document.documentElement.style.setProperty('--theme-primary-subtle', 'rgba(' + rgb + ', 0.08)');
+      document.documentElement.style.setProperty('--theme-primary-border', 'rgba(' + rgb + ', 0.22)');
+      document.documentElement.style.setProperty('--theme-primary-glow', 'rgba(' + rgb + ', 0.28)');
+      document.documentElement.style.setProperty('--theme-primary-focus', 'rgba(' + rgb + ', 0.16)');
+    }
+
+    // Direct update to active tab button for clients panel
+    document.querySelectorAll('#settingsTab .nav-link').forEach(function(tab) {
+      if (tab.classList.contains('active')) {
+        tab.style.setProperty('background', 'linear-gradient(135deg, ' + primary + ' 0%, ' + secondary + ' 100%)', 'important');
+        tab.style.setProperty('box-shadow', '0 4px 14px rgba(' + (rgb || '5, 150, 105') + ', 0.28)', 'important');
+        tab.style.setProperty('border-color', 'transparent', 'important');
+        tab.style.setProperty('color', '#ffffff', 'important');
+      } else {
+        tab.style.removeProperty('background');
+        tab.style.removeProperty('box-shadow');
+        tab.style.removeProperty('border-color');
+        tab.style.removeProperty('color');
+      }
+    });
+  }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
   calculateTotalPreview();
   updateLiveBrandingPreview();
+
+  // Keep tabs dynamically styled when user clicks between tabs
+  var tabButtons = document.querySelectorAll('#settingsTab button[data-bs-toggle="pill"]');
+  tabButtons.forEach(function(btn) {
+    btn.addEventListener('shown.bs.tab', function() {
+      updateLiveBrandingPreview();
+    });
+  });
 });
 </script>
 @endsection

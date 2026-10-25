@@ -46,11 +46,11 @@
   $activeClinic = Auth::check() ? Auth::user()->getActiveClinic() : null;
 
   if ($isSuperAdmin) {
-      // Signature Master Admin Luxury Emerald Green Default
+      // Signature Master Admin Luxury Emerald Green Default - Locked, NEVER changes for Admin
       $themePrimary = '#059669';
       $themeSecondary = '#10b981';
   } else {
-      // Doctor / Client gets their customized clinic color (or emerald green default)
+      // Clients Panel (Doctor / Clinic) gets their customized clinic color (or emerald green default)
       $themePrimary = ($activeClinic && !empty($activeClinic->theme_color) && $activeClinic->theme_color !== '#0d6efd')
           ? $activeClinic->theme_color
           : '#059669';
@@ -175,11 +175,33 @@
     border-color: var(--theme-primary) !important;
   }
 
-  /* Active Tabs */
+  /* Active Tabs & Nav Pills */
   .custom-nav-tabs .nav-link.active {
     color: var(--theme-primary) !important;
     box-shadow: 0 4px 12px rgba(0,0,0,0.06) !important;
     font-weight: 700 !important;
+  }
+  .nav-pills .nav-link {
+    color: #475569 !important;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+  .nav-pills .nav-link:hover {
+    background: var(--theme-primary-subtle) !important;
+    color: var(--theme-primary) !important;
+    border-color: var(--theme-primary-border) !important;
+  }
+  .nav-pills .nav-link.active,
+  .nav-pills .show > .nav-link {
+    background: var(--theme-primary-gradient) !important;
+    color: #ffffff !important;
+    border-color: transparent !important;
+    box-shadow: 0 4px 14px var(--theme-primary-glow) !important;
+  }
+  .nav-pills .nav-link.active i,
+  .nav-pills .nav-link.active span {
+    color: #ffffff !important;
   }
 
   /* Pagination */
