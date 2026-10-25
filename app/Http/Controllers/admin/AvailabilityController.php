@@ -21,7 +21,9 @@ class AvailabilityController extends Controller
         if ($clinic) {
             $query->where('clinic_id', $clinic->id);
         }
-        $data['availabilities'] = $query->get();
+        $data['availabilities'] = $query->where('from_date', '>=', date('Y-m-d'))
+            ->orderBy('from_date', 'asc')
+            ->get();
         return view('admin.pages.availability.availability_list',$data);
     }
 
@@ -193,7 +195,9 @@ class AvailabilityController extends Controller
     public function markUnavailable(Request $request)
     {
         $request->validate([
-            'date' => 'required|date',
+            'date' => 'required|date|after_or_equal:today',
+        ], [
+            'date.after_or_equal' => 'Cannot mark unavailability for past dates. Please pick today or a future date.',
         ]);
 
         $start_time_end_time = $request->start_time_end_time;

@@ -120,6 +120,27 @@
   border-radius: 6px;
   padding: 2px 8px;
 }
+
+/* Disabled & Past Dates */
+.fc .fc-day-past:not(.fc-day-today),
+.fc .fc-day-disabled:not(.fc-day-today),
+.fc .fc-day-past-disabled:not(.fc-day-today) {
+  background-color: #f8fafc !important;
+  cursor: not-allowed !important;
+  opacity: 0.45 !important;
+}
+.fc .fc-day-past:not(.fc-day-today) .fc-daygrid-day-number,
+.fc .fc-day-disabled:not(.fc-day-today) .fc-daygrid-day-number,
+.fc .fc-day-past-disabled:not(.fc-day-today) .fc-daygrid-day-number {
+  color: #94a3b8 !important;
+  cursor: not-allowed !important;
+}
+.fc .fc-day-past:not(.fc-day-today) .fc-daygrid-day-frame,
+.fc .fc-day-disabled:not(.fc-day-today) .fc-daygrid-day-frame,
+.fc .fc-day-past-disabled:not(.fc-day-today) .fc-daygrid-day-frame {
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
 </style>
 @endsection
 
@@ -204,7 +225,7 @@
               <label for="date" class="form-label font-weight-bold text-dark font-13">Select Date</label>
               <div class="input-group">
                 <span class="input-group-text bg-light text-muted border-end-0"><i class="mdi mdi-calendar"></i></span>
-                <input type="date" class="form-control" id="date" name="date" value="{{ date('Y-m-d') }}" onchange="getTimeSlots(this.value)" required style="border-radius: 8px; height: 42px;">
+                <input type="date" class="form-control" id="date" name="date" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" onchange="getTimeSlots(this.value)" required style="border-radius: 8px; height: 42px;">
               </div>
             </div>
 
@@ -306,6 +327,18 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         dayHeaderFormat: { weekday: 'short' },
         events: '{{ url("admin/availability/get_unavailable_dates") }}',
+        selectAllow: function(selectInfo) {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return selectInfo.start >= today;
+        },
+        dayCellDidMount: function(arg) {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (arg.date < today) {
+                arg.el.classList.add('fc-day-disabled', 'fc-day-past-disabled');
+            }
+        },
         eventClick: function(info) {
             if (info.event.id) {
                 if (confirm('Reopen bookings and delete unavailability for: "' + info.event.title + '"?')) {
@@ -314,6 +347,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         },
         select: function(info) {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (info.start < today) {
+                return false;
+            }
             document.getElementById('date').value = info.startStr;
             getTimeSlots(info.startStr);
         }
@@ -333,6 +371,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Form Submission Handler
     document.getElementById('unavailabilityForm').addEventListener('submit', function(event) {
         event.preventDefault();
+        const dateVal = document.getElementById('date').value;
+        const todayStr = new Date().toISOString().split('T')[0];
+        if (dateVal < todayStr) {
+            alert('Cannot mark unavailability for past dates. Please pick today or a future date.');
+            return;
+        }
+
         const btn = document.getElementById('submitBtn');
         const originalHtml = btn.innerHTML;
         btn.disabled = true;
@@ -347,13 +392,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(err => { throw err; });
+            }
+            return response.json();
+        })
         .then(data => {
             window.location.reload();
         })
         .catch(error => {
             console.error('Error:', error);
-            alert('Failed to save unavailability. Please try again.');
+            const msg = error && error.message ? error.message : 'Failed to save unavailability. Please try again.';
+            alert(msg);
             btn.disabled = false;
             btn.innerHTML = originalHtml;
         });
@@ -376,6 +427,12 @@ function toggleWholeDay(checkbox) {
 }
 
 function getTimeSlots(date) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (date < todayStr) {
+        alert('Cannot select past dates. Setting to today.');
+        document.getElementById('date').value = todayStr;
+        date = todayStr;
+    }
     $.ajax({
         url: '{{ url("admin/availability/get_time_slots") }}',
         type: 'GET',
