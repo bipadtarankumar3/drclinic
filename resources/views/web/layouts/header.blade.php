@@ -3,6 +3,7 @@
   $themeColor = $clinic->theme_color ?? '#0d9488'; // Modern medical teal default
   $secondaryColor = $clinic->secondary_color ?? '#14b8a6';
   $clinicUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug)) : url('/');
+  $contactUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/contact') : url('/contact');
 
   $hex = ltrim($themeColor, '#');
   if (strlen($hex) == 3) {
@@ -471,7 +472,7 @@
           @endforeach
         @endif
 
-        <li><a href="{{ $clinicUrl }}#contact-section">Contact</a></li>
+        <li><a href="{{ $contactUrl }}" class="{{ request()->is('*contact*') ? 'active' : '' }}">Contact</a></li>
       </ul>
 
       <!-- Action Buttons -->
@@ -519,6 +520,8 @@
             <li><a href="{{ url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/page/' . $cp->slug) }}" class="{{ request()->is('*/page/' . $cp->slug) ? 'active' : '' }}"><i class="fa-solid fa-file-lines me-2 text-teal"></i> {{ $cp->title }}</a></li>
           @endforeach
         @endif
+
+        <li><a href="{{ $contactUrl }}" class="{{ request()->is('*contact*') ? 'active' : '' }}"><i class="fa-solid fa-address-book me-2 text-teal"></i> Contact Us</a></li>
 
         @if($clinic->show_doctor_portal_link ?? false)
           <li><a href="{{ url('/login') }}"><i class="fa-solid fa-lock me-2 text-teal"></i> Doctor Portal</a></li>

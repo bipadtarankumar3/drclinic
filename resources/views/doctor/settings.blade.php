@@ -347,16 +347,19 @@
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Helpline Phone Number</label>
                     <input type="text" class="form-control doctor-settings-input" name="phone" value="{{ old('phone', $clinic->phone) }}">
+                    <small class="text-muted font-12 d-block mt-1"><i class="mdi mdi-information-outline text-primary"></i> Shown on your Contact Us page and top bar for patient calls.</small>
                   </div>
 
                   <div class="col-md-6 mb-3">
                     <label class="form-label font-weight-bold">Clinic Contact Email</label>
                     <input type="email" class="form-control doctor-settings-input" name="email" value="{{ old('email', $clinic->email) }}">
+                    <small class="text-muted font-12 d-block mt-1"><i class="mdi mdi-information-outline text-primary"></i> Inquiries from your Contact Us page are delivered to this clinic email.</small>
                   </div>
 
                   <div class="col-12 mb-3">
                     <label class="form-label font-weight-bold">Clinic Physical Address</label>
                     <textarea class="form-control doctor-settings-input" name="address" rows="2">{{ old('address', $clinic->address) }}</textarea>
+                    <small class="text-muted font-12 d-block mt-1"><i class="mdi mdi-information-outline text-primary"></i> Displayed on your Contact Us page and used to embed your clinic's Google Map location.</small>
                   </div>
 
                   <div class="col-12 mb-4">

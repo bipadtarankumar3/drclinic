@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Models\Patient;
 use App\Models\Clinic;
 use App\Models\ClinicPage;
+use App\Models\ClinicInquiry;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Razorpay\Api\Api;
@@ -33,9 +34,86 @@ class WebViewController extends Controller
         $data['title'] = 'Home';
         return view('web.pages.index',$data);
     }
-    public function contact(){
-        $data['title'] = 'contact';
-        return view('web.pages.contact',$data);
+
+    public function contact($clinic_slug = null){
+        $clinic = $this->getClinic($clinic_slug);
+        view()->share('currentClinic', $clinic);
+        $data['clinic'] = $clinic;
+        $data['currentClinic'] = $clinic;
+        $data['setting'] = Setting::where('clinic_id', $clinic->id ?? null)->first() ?? Setting::first();
+        $data['title'] = 'Contact Us - ' . ($clinic->name ?? 'Health Clinic');
+        return view('web.pages.contact', $data);
+    }
+
+    public function submitContact(Request $request, $clinic_slug = null)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:30',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'required|string|max:3000',
+        ]);
+
+        $clinic = $this->getClinic($clinic_slug ?: $request->clinic_id);
+
+        $inquiry = ClinicInquiry::create([
+            'clinic_id' => $clinic?->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'subject' => $request->subject ?: 'General Clinic Inquiry',
+            'message' => $request->message,
+            'ip_address' => $request->ip(),
+            'status' => 'unread',
+        ]);
+
+        $clinicName = $clinic->name ?? 'Healthcare Clinic';
+        $clinicPhone = $clinic->phone ?? '';
+        $clinicAddress = $clinic->address ?? '';
+        $clinicHours = $clinic->topbar_hours ?? 'Open during regular hours';
+        $inquiryRef = '#INQ-' . str_pad($inquiry->id, 5, '0', STR_PAD_LEFT);
+        $clinicEmail = $clinic?->email;
+
+        // 1. Send inquiry notification email to Clinic
+        if (!empty($clinicEmail)) {
+            try {
+                \Illuminate\Support\Facades\Mail::send(
+                    'emails.clinic_inquiry_notification',
+                    ['clinic' => $clinic, 'inquiry' => $inquiry],
+                    function ($message) use ($clinicEmail, $clinicName, $request, $inquiryRef) {
+                        $message->to($clinicEmail)
+                            ->replyTo($request->email, $request->name)
+                            ->subject("New Patient Inquiry: " . ($request->subject ?: 'Contact Form') . " from " . $request->name . " [" . $inquiryRef . "]");
+                    }
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Contact email could not be sent to clinic (' . $clinicEmail . '): ' . $e->getMessage());
+            }
+        }
+
+        // 2. Send Thank-You confirmation email to the Sender / Patient
+        $senderEmail = $request->email;
+        if (!empty($senderEmail)) {
+            try {
+                \Illuminate\Support\Facades\Mail::send(
+                    'emails.patient_contact_acknowledgment',
+                    ['clinic' => $clinic, 'inquiry' => $inquiry],
+                    function ($message) use ($senderEmail, $clinicName, $clinicEmail, $inquiryRef) {
+                        $mail = $message->to($senderEmail)
+                            ->subject("Thank You for Contacting " . $clinicName . " [" . $inquiryRef . "]");
+
+                        if (!empty($clinicEmail)) {
+                            $mail->replyTo($clinicEmail, $clinicName);
+                        }
+                    }
+                );
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::warning('Thank you confirmation email could not be sent to ' . $senderEmail . ': ' . $e->getMessage());
+            }
+        }
+
+        return redirect()->back()->with('success', 'Thank you, ' . $request->name . '! Your message has been sent to ' . $clinicName . ', and a confirmation receipt has been emailed to you.');
     }
     public function about(){
         $data['title'] = 'about';

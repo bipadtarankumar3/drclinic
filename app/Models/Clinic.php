@@ -131,6 +131,11 @@ class Clinic extends Model
         return $this->hasMany(ClinicPage::class)->orderBy('sort_order', 'asc');
     }
 
+    public function inquiries()
+    {
+        return $this->hasMany(ClinicInquiry::class)->orderBy('created_at', 'desc');
+    }
+
     public function patients()
     {
         return $this->hasMany(Patient::class);

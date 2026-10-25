@@ -10,6 +10,7 @@ use App\Http\Controllers\Doctor\DoctorSettingsController;
 use App\Http\Controllers\Doctor\DoctorPageController;
 use App\Http\Controllers\Doctor\DoctorServiceController;
 use App\Http\Controllers\Doctor\DoctorSubscriptionController;
+use App\Http\Controllers\Doctor\DoctorInquiryController;
 use App\Http\Controllers\Admin\SaaSAdminController;
 
 /*
@@ -20,7 +21,8 @@ use App\Http\Controllers\Admin\SaaSAdminController;
 
 // Public Patient Booking & Clinic Pages (Tenant-aware via TenantMiddleware)
 Route::get('/', [WebViewController::class, 'appoinment'])->name('home');
-Route::get('contact', [WebViewController::class, 'contact']);
+Route::get('contact', [WebViewController::class, 'contact'])->name('contact');
+Route::post('contact', [WebViewController::class, 'submitContact'])->name('contact.submit');
 Route::get('about', [WebViewController::class, 'about']);
 Route::get('facilities', [WebViewController::class, 'facilities']);
 Route::get('testimonials', [WebViewController::class, 'testimonials']);
@@ -70,6 +72,8 @@ Route::group(['prefix' => 'c/{clinic_slug}'], function () {
     Route::get('/booking-failed/{order_id}', [WebViewController::class, 'bookingFailed'])->name('clinic.booking.failed');
     Route::get('/invoice/{id}', [WebViewController::class, 'show'])->name('clinic.invoice.show');
     Route::get('/page/{slug}', [WebViewController::class, 'viewCustomPage'])->name('clinic.page.slug');
+    Route::get('/contact', [WebViewController::class, 'contact'])->name('clinic.contact');
+    Route::post('/contact', [WebViewController::class, 'submitContact'])->name('clinic.contact.submit');
     Route::get('/get-timeslots', [WebViewController::class, 'getTimeSlots']);
     Route::post('/check_availability', [WebViewController::class, 'checkAvailability']);
 });
@@ -114,6 +118,11 @@ Route::group(['prefix' => 'clinic', 'as' => 'clinic.', 'middleware' => ['auth']]
     Route::get('/subscription', [DoctorSubscriptionController::class, 'index'])->name('subscription.index');
     Route::post('/subscription/order', [DoctorSubscriptionController::class, 'createOrder'])->name('subscription.order');
     Route::post('/subscription/verify', [DoctorSubscriptionController::class, 'verifyPayment'])->name('subscription.verify');
+
+    // Patient Contact Inquiries
+    Route::get('/inquiries', [DoctorInquiryController::class, 'index'])->name('inquiries.index');
+    Route::get('/inquiries/{id}', [DoctorInquiryController::class, 'show'])->name('inquiries.show');
+    Route::delete('/inquiries/{id}', [DoctorInquiryController::class, 'destroy'])->name('inquiries.destroy');
 
     // Clinic Support & Help Center
     Route::get('/support', [DoctorDashboardController::class, 'support'])->name('support');

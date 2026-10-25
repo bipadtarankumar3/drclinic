@@ -1,6 +1,7 @@
 @php
   $clinic = $currentClinic ?? \App\Models\Clinic::first();
   $clinicUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug)) : url('/');
+  $contactUrl = $clinic ? url('/c/' . ($clinic->subdomain ?? $clinic->slug) . '/contact') : url('/contact');
 @endphp
 
 <footer class="vital-footer" style="background: #0f172a; color: #94a3b8; padding-top: 60px; margin-top: 60px; border-top: 1px solid #1e293b;">
@@ -57,6 +58,7 @@
             <li><a href="{{ $clinicUrl }}#about-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">About Us</a></li>
             <li><a href="{{ $clinicUrl }}#services-section" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Our Services</a></li>
           @endif
+          <li><a href="{{ $contactUrl }}" style="color: #94a3b8; text-decoration: none; transition: color 0.2s;">Contact &amp; Location</a></li>
           <li><a href="{{ $clinicUrl }}#booking-section" style="color: var(--clinic-primary); font-weight: 600; text-decoration: none; transition: color 0.2s;">Book Appointment</a></li>
         </ul>
       </div>

@@ -189,6 +189,16 @@
       </a>
     </li>
 
+    <li class="nav-item {{ request()->routeIs('clinic.inquiries.*') ? 'active' : '' }}">
+      <a class="nav-link" href="{{ route('clinic.inquiries.index') }}">
+        <i class="mdi mdi-email-open-multiple-outline nav-icon"></i>
+        <span class="menu-title">Patient Inquiries</span>
+        @if(request()->routeIs('clinic.inquiries.*'))
+        <i class="mdi mdi-chevron-right nav-chevron"></i>
+        @endif
+      </a>
+    </li>
+
     @if(Auth::check() && Auth::user()->clinic)
       @php
         $clinicStorefront = Auth::user()->clinic->custom_domain 
